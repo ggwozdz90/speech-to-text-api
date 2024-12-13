@@ -1,0 +1,11 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "speach-to-text-api",
+            "request": "launch",
+            "type": "debugpy",
+            "program": "src/main.py"
+        }
+    ]
+}

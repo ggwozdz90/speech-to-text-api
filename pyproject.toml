@@ -1,0 +1,47 @@
+[tool.poetry]
+name = "speach-to-text-api"
+version = "0.1.0"
+description = "A FastAPI project integrating OpenAI's Whisper model for speech-to-text."
+authors = ["Grzegorz Gwóźdź"]
+packages = [{ include = "*", from = "src" }]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+python-dotenv = "^1.0.1"
+fastapi = { extras = ["all"], version = "^0.115.6" }
+openai-whisper = "v20240930"
+numba = "^0.60.0"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^4.0.1"
+flake8 = "^7.1.1"
+Flake8-pyproject = "^1.2.3"
+black = "^24.10.0"
+isort = "^5.13.2"
+bandit = "^1.8.0"
+vulture = "^2.14"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+start = "src.main:main"
+
+[tool.flake8]
+max-line-length = 120
+
+[tool.black]
+line-length = 120
+
+[tool.isort]
+profile = "black"
+
+[tool.mypy]
+files = ["src"]
+strict = true
+ignore_missing_imports = true
+
+[tool.vulture]
+paths = ["src"]
+min_confidence = 70

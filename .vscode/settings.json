@@ -1,0 +1,31 @@
+{
+  "editor.formatOnSave": true,
+  "editor.rulers": [
+    120
+  ],
+  "[python]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit",
+      "source.organizeImports": "explicit"
+    }
+  },
+  "files.exclude": {
+    "**/.venv": true,
+    "**/.mypy_cache": true,
+    "**/__pycache__": true
+  },
+  "black-formatter.args": [
+    "--config",
+    "${workspaceFolder}/pyproject.toml"
+  ],
+  "mypy-type-checker.args": [
+    "--config-file",
+    "${workspaceFolder}/pyproject.toml"
+  ],
+  "bandit.args": [
+    "--config",
+    "${workspaceFolder}/pyproject.toml"
+  ]
+}
