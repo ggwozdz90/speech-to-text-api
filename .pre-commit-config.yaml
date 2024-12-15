@@ -48,3 +48,8 @@ repos:
       - id: bandit
         args: ["-r", "src"]
         exclude: "tests/.*"
+
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v4.1.0
+    hooks:
+      - id: commitizen

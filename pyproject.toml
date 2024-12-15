@@ -23,6 +23,15 @@ vulture = "^2.14"
 pytest = "^8.3.4"
 pytest-asyncio = "^0.25.0"
 coverage = "^7.6.9"
+commitizen = "^4.1.0"
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "$version"
+version_scheme = "semver"
+version_provider = "poetry"
+update_changelog_on_bump = true
+major_version_zero = true
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
