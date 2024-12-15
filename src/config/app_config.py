@@ -24,12 +24,18 @@ class AppConfig:
         self._load_env_variables()
 
     def _load_env_variables(self) -> None:
-        self.file_upload_path = os.getenv("FILE_UPLOAD_PATH")
-        self.delete_files_after_transcription = os.getenv("DELETE_FILES_AFTER_TRANSCRIPTION") == "true"
-        self.fastapi_host = os.getenv("FASTAPI_HOST")
-        self.fastapi_port = int(os.getenv("FASTAPI_PORT", "8000"))
-        self.whisper_model_name = os.getenv("WHISPER_MODEL_NAME")
-        self.whisper_model_download_path = os.getenv("WHISPER_MODEL_DOWNLOAD_PATH")
+        self.file_upload_path = os.getenv("FILE_UPLOAD_PATH", "uploaded_files")
+        self.delete_files_after_transcription = self._str_to_bool(os.getenv("DELETE_FILES_AFTER_TRANSCRIPTION", "true"))
+        self.fastapi_host = os.getenv("FASTAPI_HOST", "127.0.0.1")
+        self.whisper_model_name = os.getenv("WHISPER_MODEL_NAME", "turbo")
+        self.whisper_model_download_path = os.getenv("WHISPER_MODEL_DOWNLOAD_PATH", "downloaded_whisper_models")
+        try:
+            self.fastapi_port = int(os.getenv("FASTAPI_PORT", "8000"))
+        except ValueError:
+            self.fastapi_port = 8000
+
+    def _str_to_bool(self, value: str) -> bool:
+        return value.lower() in ("true", "1", "yes")
 
     def print_config(self) -> None:
         print("### APP CONFIG START ###")
