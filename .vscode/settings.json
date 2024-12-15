@@ -27,5 +27,16 @@
   "bandit.args": [
     "--config",
     "${workspaceFolder}/pyproject.toml"
+  ],
+  "python.testing.pytestArgs": [
+    "tests"
+  ],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true,
+  "github.copilot.chat.generateTests.codeLens": true,
+  "github.copilot.chat.testGeneration.instructions": [
+    {
+      "file": ".github/copilot-instructions/copilot-test-instructions.md"
+    }
   ]
 }
