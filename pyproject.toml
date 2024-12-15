@@ -20,6 +20,9 @@ black = "^24.10.0"
 isort = "^5.13.2"
 bandit = "^1.8.0"
 vulture = "^2.14"
+pytest = "^8.3.4"
+pytest-asyncio = "^0.25.0"
+coverage = "^7.6.9"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -38,10 +41,20 @@ line-length = 120
 profile = "black"
 
 [tool.mypy]
-files = ["src"]
+files = ["src", "tests"]
 strict = true
 ignore_missing_imports = true
 
 [tool.vulture]
-paths = ["src"]
+paths = ["src", "tests"]
 min_confidence = 70
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "tests"]
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.coverage.run]
+branch = true
+command_line = "-m pytest"
+source = ["src"]
+relative_files = true

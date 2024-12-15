@@ -34,6 +34,7 @@ repos:
         additional_dependencies:
           [
             "fastapi>=0.115.6",
+            "pytest>=8.3.4",
           ]
 
   - repo: https://github.com/jendrikseipp/vulture
@@ -45,3 +46,5 @@ repos:
     rev: 1.8.0
     hooks:
       - id: bandit
+        args: ["-r", "src"]
+        exclude: "tests/.*"
