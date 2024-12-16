@@ -1,0 +1,57 @@
+name: deploy
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4.2.2
+
+    - name: Set up Python
+      uses: actions/setup-python@v5.3.0
+      with:
+        python-version: '3.12'
+
+    - name: Install Poetry
+      run: |
+        curl -sSL https://install.python-poetry.org | python3 -
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+    - name: Install dependencies
+      run: poetry install
+    
+    - name: Build
+      run: poetry build
+
+    - name: Deploy GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: dist/*
+        token: ${{ secrets.REPOSITORY_TOKEN }}
+        body_path: CHANGELOG.md
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3.3.0
+      with:
+        username: ${{ vars.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Build and push
+      uses: docker/build-push-action@v6.10.0
+      with:
+        push: true
+        labels: |
+          org.opencontainers.image.title="Speech to Text API"
+          org.opencontainers.image.description="API for converting speech to text using Whisper model"
+          org.opencontainers.image.source="https://github.com/ggwozdz90/speach-to-text-api"
+          org.opencontainers.image.documentation="https://github.com/ggwozdz90/speach-to-text-api/blob/main/README.md"
+        tags: | 
+          ggwozdz/speach-to-text-api:${{ github.ref_name }}
+          ggwozdz/speach-to-text-api:latest

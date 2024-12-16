@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "speach-to-text-api"
-version = "0.1.0"
+version = "0.2.0"
 description = "A FastAPI project integrating OpenAI's Whisper model for speech-to-text."
 authors = ["Grzegorz Gwóźdź"]
 packages = [{ include = "*", from = "src" }]
@@ -20,6 +20,19 @@ black = "^24.10.0"
 isort = "^5.13.2"
 bandit = "^1.8.0"
 vulture = "^2.14"
+pytest = "^8.3.4"
+pytest-asyncio = "^0.25.0"
+coverage = "^7.6.9"
+commitizen = "^4.1.0"
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "$version"
+version_scheme = "semver"
+version_provider = "poetry"
+update_changelog_on_bump = true
+major_version_zero = true
+bump_message = "chore: release $new_version"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -38,10 +51,20 @@ line-length = 120
 profile = "black"
 
 [tool.mypy]
-files = ["src"]
+files = ["src", "tests"]
 strict = true
 ignore_missing_imports = true
 
 [tool.vulture]
-paths = ["src"]
+paths = ["src", "tests"]
 min_confidence = 70
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "tests"]
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.coverage.run]
+branch = true
+command_line = "-m pytest"
+source = ["src"]
+relative_files = true
