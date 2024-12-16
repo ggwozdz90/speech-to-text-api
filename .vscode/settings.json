@@ -38,5 +38,10 @@
     {
       "file": ".github/copilot-instructions/copilot-test-instructions.md"
     }
+  ],
+  "github.copilot.chat.commitMessageGeneration.instructions": [
+    {
+      "file": ".github/copilot-instructions/copilot-commit-instructions.md"
+    }
   ]
 }

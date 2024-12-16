@@ -1,4 +1,4 @@
-# Project Overview
+# Speech to Text API
 
 This project integrates OpenAI's Whisper model in Python and runs within a Docker container. It provides a FastAPI endpoint that processes an uploaded file and returns the extracted text.
 
@@ -10,6 +10,10 @@ This project integrates OpenAI's Whisper model in Python and runs within a Docke
 - **Configurable**: The repository includes a `.env` file that defines configurable environment variables.
 - **Clean Architecture**: The project structure follows the principles of Clean Architecture, ensuring separation of concerns and maintainability.
 - **Pre-commit Hooks**: Ensures code quality and formatting with checks for JSON, TOML, YAML, mixed line endings, trailing whitespace, Black, Flake8, isort, mypy, Bandit, and Vulture.
+
+## Docker Image
+
+The Docker image for this project is available on Docker Hub: [ggwozdz/speach-to-text-api](https://hub.docker.com/r/ggwozdz/speach-to-text-api)
 
 ## Getting Started
 
@@ -79,8 +83,9 @@ The application uses a `.env` file or Docker Compose to define configurable envi
 
 ## Table of Contents
 
-- [Project Overview](#project-overview)
+- [Speech to Text API](#speech-to-text-api)
   - [Features](#features)
+  - [Docker Image](#docker-image)
   - [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
     - [Installation](#installation)
