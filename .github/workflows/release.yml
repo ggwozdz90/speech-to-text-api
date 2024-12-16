@@ -36,23 +36,23 @@ jobs:
         git reset --hard
         git clean -fd
 
-    - name: Create release branch and tag
+    - name: Create release branch
       env:
         GITHUB_TOKEN: ${{ secrets.REPOSITORY_TOKEN }}
       run: |
         git checkout -b release/v$RELEASE_VERSION
         poetry run cz bump --yes --changelog
-        git push origin v$RELEASE_VERSION
         git push origin release/v$RELEASE_VERSION
 
-    - name: Merge release branch to main branch
+    - name: Merge release branch to main branch and create annotated tag
       env:
         GITHUB_TOKEN: ${{ secrets.REPOSITORY_TOKEN }}
       run: |
         git checkout main
         git pull origin main
-        git merge --no-ff release/v$RELEASE_VERSION
-        git push origin main
+        git merge --no-ff release/v$RELEASE_VERSION -m "chore(release): merge release v$RELEASE_VERSION"
+        git tag -a v$RELEASE_VERSION -m "Release v$RELEASE_VERSION"
+        git push origin main --follow-tags
 
     - name: Remove release branch
       env:
@@ -65,5 +65,10 @@ jobs:
       run: |
         git checkout develop
         git pull origin develop
-        git merge --no-ff main
+        git merge --no-ff main -m "chore(release): merge main into develop"
         git push origin develop
+
+    - name: Trigger deploy workflow
+      env:
+        GITHUB_TOKEN: ${{ secrets.REPOSITORY_TOKEN }}
+      run: gh workflow run deploy.yml --ref v$RELEASE_VERSION
