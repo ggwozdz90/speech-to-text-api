@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
 
-class TranscribeResultDTO(BaseModel):
+class TranscribeTextResultDTO(BaseModel):
     filename: str
     content: str
