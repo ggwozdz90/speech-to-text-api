@@ -5,7 +5,8 @@ import pytest
 from fastapi import UploadFile
 
 from config.app_config import AppConfig
-from domain.services.file_service import FileService
+from data.repositories.file_repository_impl import FileRepositoryImpl
+from domain.repositories.directory_repository import DirectoryRepository
 
 
 @pytest.fixture
@@ -14,14 +15,20 @@ def mock_config() -> AppConfig:
 
 
 @pytest.fixture
-def file_service(mock_config: AppConfig) -> FileService:
-    return FileService(config=mock_config)
+def mock_directory_repository() -> DirectoryRepository:
+    return Mock(DirectoryRepository)
+
+
+@pytest.fixture
+def file_repository(mock_config: AppConfig, mock_directory_repository: DirectoryRepository) -> FileRepositoryImpl:
+    return FileRepositoryImpl(config=mock_config, directory_repository=mock_directory_repository)
 
 
 @pytest.mark.asyncio
 async def test_save_file(
-    file_service: FileService,
+    file_repository: FileRepositoryImpl,
     mock_config: AppConfig,
+    mock_directory_repository: DirectoryRepository,
 ) -> None:
     # Given
     mock_file = Mock(UploadFile)
@@ -32,16 +39,17 @@ async def test_save_file(
 
     with patch("builtins.open", mock_open()) as mock_open_func:
         # When
-        result = await file_service.save_file(mock_file)
+        result = await file_repository.save_file(mock_file)
 
         # Then
         assert result == os.path.abspath(expected_path)
         mock_open_func.assert_called_once_with(os.path.abspath(expected_path), "wb")
+        mock_directory_repository.create_directory.assert_called_once_with(mock_config.file_upload_path)
 
 
 @pytest.mark.asyncio
 async def test_save_file_invalid_path(
-    file_service: FileService,
+    file_repository: FileRepositoryImpl,
     mock_config: AppConfig,
 ) -> None:
     # Given
@@ -51,12 +59,13 @@ async def test_save_file_invalid_path(
 
     # When / Then
     with pytest.raises(Exception, match="Invalid file name"):
-        await file_service.save_file(mock_file)
+        await file_repository.save_file(mock_file)
 
 
 def test_delete_file(
-    file_service: FileService,
+    file_repository: FileRepositoryImpl,
     mock_config: AppConfig,
+    mock_directory_repository: DirectoryRepository,
 ) -> None:
     # Given
     mock_config.file_upload_path = "test_upload_path"
@@ -64,14 +73,15 @@ def test_delete_file(
 
     with patch("os.remove") as mock_remove:
         # When
-        file_service.delete_file(test_path)
+        file_repository.delete_file(test_path)
 
         # Then
         mock_remove.assert_called_once_with(os.path.abspath(test_path))
+        mock_directory_repository.create_directory.assert_called_once_with(mock_config.file_upload_path)
 
 
 def test_delete_file_invalid_path(
-    file_service: FileService,
+    file_repository: FileRepositoryImpl,
     mock_config: AppConfig,
 ) -> None:
     # Given
@@ -80,4 +90,4 @@ def test_delete_file_invalid_path(
 
     # When / Then
     with pytest.raises(Exception, match="Invalid file path"):
-        file_service.delete_file(test_path)
+        file_repository.delete_file(test_path)

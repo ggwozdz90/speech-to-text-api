@@ -4,24 +4,31 @@ import whisper
 from fastapi import Depends
 
 from config.app_config import AppConfig
+from data.repositories.directory_repository_impl import DirectoryRepositoryImpl
+from domain.repositories.directory_repository import DirectoryRepository
+from domain.repositories.whisper_repository import WhisperRepository
 
 
-class WhisperRepository:
+class WhisperRepositoryImpl(WhisperRepository):  # type: ignore
     _instance = None
 
     def __new__(
         cls,
         config: Annotated[AppConfig, Depends()],
-    ) -> "WhisperRepository":
+        directory_repository: Annotated[DirectoryRepository, Depends(DirectoryRepositoryImpl)],
+    ) -> "WhisperRepositoryImpl":
         if cls._instance is None:
-            cls._instance = super(WhisperRepository, cls).__new__(cls)
-            cls._instance._initialize(config)
-        return cls._instance
+            cls._instance = super(WhisperRepositoryImpl, cls).__new__(cls)
+            cls._instance._initialize(config, directory_repository)
+        return cls._instance  # type: ignore
 
     def _initialize(
         self,
         config: AppConfig,
+        directory_repository: DirectoryRepository,
     ) -> None:
+        directory_repository.create_directory(config.whisper_model_download_path)
+
         self.model = whisper.load_model(
             config.whisper_model_name,
             download_root=config.whisper_model_download_path,
