@@ -1,3 +1,9 @@
+## 0.3.0 (2024-12-17)
+
+### Fix
+
+- resolve internal server error for non-existent directories
+
 ## 0.2.0 (2024-12-16)
 
 ### Feat
