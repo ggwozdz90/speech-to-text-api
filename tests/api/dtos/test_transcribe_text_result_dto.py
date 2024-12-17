@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from api.dtos.transcribe_result_dto import TranscribeResultDTO
+from api.dtos.transcribe_text_result_dto import TranscribeTextResultDTO
 
 
 @pytest.fixture
@@ -20,22 +20,22 @@ def invalid_data() -> dict[str, str]:
     }
 
 
-def test_transcribe_result_dto_valid(valid_data: dict[str, str]) -> None:
+def test_transcribe_test_result_dto_valid(valid_data: dict[str, str]) -> None:
     # When
-    dto = TranscribeResultDTO(**valid_data)
+    dto = TranscribeTextResultDTO(**valid_data)
 
     # Then
     assert dto.filename == valid_data["filename"]
     assert dto.content == valid_data["content"]
 
 
-def test_transcribe_result_dto_invalid(invalid_data: dict[str, str]) -> None:
+def test_transcribe_test_result_dto_invalid(invalid_data: dict[str, str]) -> None:
     # When / Then
     with pytest.raises(ValidationError):
-        TranscribeResultDTO(**invalid_data)
+        TranscribeTextResultDTO(**invalid_data)
 
 
-def test_transcribe_result_dto_empty_content() -> None:
+def test_transcribe_test_result_dto_empty_content() -> None:
     # Given
     data = {
         "filename": "test_file.txt",
@@ -43,14 +43,14 @@ def test_transcribe_result_dto_empty_content() -> None:
     }
 
     # When
-    dto = TranscribeResultDTO(**data)
+    dto = TranscribeTextResultDTO(**data)
 
     # Then
     assert dto.filename == data["filename"]
     assert dto.content == data["content"]
 
 
-def test_transcribe_result_dto_invalid_filename_type() -> None:
+def test_transcribe_test_result_dto_invalid_filename_type() -> None:
     # Given
     data = {
         "filename": 123,  # Invalid type
@@ -59,4 +59,4 @@ def test_transcribe_result_dto_invalid_filename_type() -> None:
 
     # When / Then
     with pytest.raises(ValidationError):
-        TranscribeResultDTO(**data)
+        TranscribeTextResultDTO(**data)

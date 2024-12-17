@@ -3,8 +3,11 @@ from unittest.mock import AsyncMock, Mock
 import pytest
 from fastapi import UploadFile
 
-from application.usecases.file_transcribe_usecase import FileTranscribeUseCase
+from application.usecases.transcribe_file_to_text_usecase import (
+    TranscribeFileToTextUseCase,
+)
 from config.app_config import AppConfig
+from domain.models.transcription_result_model import TranscriptionResultModel
 from domain.repositories.file_repository import FileRepository
 from domain.services.transcription_service import TranscriptionService
 
@@ -29,8 +32,8 @@ def use_case(
     mock_config: AppConfig,
     mock_file_repository: FileRepository,
     mock_transcription_service: TranscriptionService,
-) -> FileTranscribeUseCase:
-    return FileTranscribeUseCase(
+) -> TranscribeFileToTextUseCase:
+    return TranscribeFileToTextUseCase(
         config=mock_config,
         file_repository=mock_file_repository,
         transcription_service=mock_transcription_service,
@@ -39,7 +42,7 @@ def use_case(
 
 @pytest.mark.asyncio
 async def test_execute_success(
-    use_case: FileTranscribeUseCase,
+    use_case: TranscribeFileToTextUseCase,
     mock_file_repository: FileRepository,
     mock_transcription_service: TranscriptionService,
     mock_config: AppConfig,
@@ -47,7 +50,9 @@ async def test_execute_success(
     # Given
     mock_file = Mock(UploadFile)
     mock_file_repository.save_file = AsyncMock(return_value="test_path")
-    mock_transcription_service.transcribe.return_value = "transcription_result"
+    mock_transcription_service.transcribe.return_value = TranscriptionResultModel(
+        text="transcription_result", segments=[]
+    )
     mock_config.delete_files_after_transcription = False
 
     # When
@@ -62,7 +67,7 @@ async def test_execute_success(
 
 @pytest.mark.asyncio
 async def test_execute_delete_file_after_transcription(
-    use_case: FileTranscribeUseCase,
+    use_case: TranscribeFileToTextUseCase,
     mock_file_repository: FileRepository,
     mock_transcription_service: TranscriptionService,
     mock_config: AppConfig,
@@ -70,7 +75,9 @@ async def test_execute_delete_file_after_transcription(
     # Given
     mock_file = Mock(UploadFile)
     mock_file_repository.save_file = AsyncMock(return_value="test_path")
-    mock_transcription_service.transcribe.return_value = "transcription_result"
+    mock_transcription_service.transcribe.return_value = TranscriptionResultModel(
+        text="transcription_result", segments=[]
+    )
     mock_config.delete_files_after_transcription = True
 
     # When
@@ -85,7 +92,7 @@ async def test_execute_delete_file_after_transcription(
 
 @pytest.mark.asyncio
 async def test_execute_save_file_exception(
-    use_case: FileTranscribeUseCase,
+    use_case: TranscribeFileToTextUseCase,
     mock_file_repository: FileRepository,
 ) -> None:
     # Given
@@ -100,7 +107,7 @@ async def test_execute_save_file_exception(
 
 @pytest.mark.asyncio
 async def test_execute_transcription_exception(
-    use_case: FileTranscribeUseCase,
+    use_case: TranscribeFileToTextUseCase,
     mock_file_repository: FileRepository,
     mock_transcription_service: TranscriptionService,
 ) -> None:

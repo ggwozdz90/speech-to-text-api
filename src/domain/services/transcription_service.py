@@ -4,6 +4,7 @@ from fastapi import Depends
 
 from config.app_config import AppConfig
 from data.repositories.whisper_repository_impl import WhisperRepositoryImpl
+from domain.models.transcription_result_model import TranscriptionResultModel
 from domain.repositories.whisper_repository import WhisperRepository
 
 
@@ -20,7 +21,8 @@ class TranscriptionService:
         self,
         file_path: str,
         language: str,
-    ) -> str:
+    ) -> TranscriptionResultModel:
         result = self.whisper_repository.transcribe(file_path, language=language)
+        transcription_result = TranscriptionResultModel(**result)
 
-        return str(result["text"])
+        return transcription_result

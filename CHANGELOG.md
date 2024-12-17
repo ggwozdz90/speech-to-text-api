@@ -1,3 +1,9 @@
+## 0.4.0 (2024-12-17)
+
+### Feat
+
+- add generate subtitles in srt format
+
 ## 0.3.0 (2024-12-17)
 
 ### Fix

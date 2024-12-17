@@ -59,15 +59,48 @@ The Docker image for this project is available on Docker Hub: [ggwozdz/speach-to
 
 Once the Docker container is running, you can access the FastAPI documentation at `http://localhost:8000/docs`.
 
+#### Transcribe Audio to Text
+
 To transcribe an audio file, use the `/transcribe` endpoint. This endpoint accepts the following parameters:
 
 - `file`: The audio file to be transcribed.
 - `language`: The language of the audio file (e.g., `en` for English).
 
-### Example
+Request:
 
 ```sh
 curl -X POST "http://localhost:8000/transcribe" -F "file=@path/to/your/file" -F "language=en"
+```
+
+Response:
+
+```json
+{
+  "filename": "your_file_name",
+  "content": "transcribed text"
+}
+```
+
+#### Generate Subtitles in SRT Format
+
+To generate subtitles in SRT format from an audio file, use the `/transcribe/srt` endpoint. This endpoint accepts the following parameters:
+
+- `file`: The audio file to be transcribed.
+- `language`: The language of the audio file (e.g., `en` for English).
+
+Request:
+
+```sh
+curl -X POST "http://localhost:8000/transcribe/srt" -F "file=@path/to/your/file" -F "language=en"
+```
+
+Response:
+
+```json
+{
+  "filename": "your_file_name",
+  "srt_content": "1\n00:00:00,000 --> 00:00:05,000\nHello, world!\n\n2\n00:00:05,000 --> 00:00:10,000\nThis is a subtitle.\n"
+}
 ```
 
 ## Configuration
@@ -90,6 +123,7 @@ The application uses a `.env` file or Docker Compose to define configurable envi
     - [Prerequisites](#prerequisites)
     - [Installation](#installation)
     - [Usage](#usage)
-    - [Example](#example)
+      - [Transcribe Audio to Text](#transcribe-audio-to-text)
+      - [Generate Subtitles in SRT Format](#generate-subtitles-in-srt-format)
   - [Configuration](#configuration)
   - [Table of Contents](#table-of-contents)

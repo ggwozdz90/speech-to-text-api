@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "speach-to-text-api"
-version = "0.3.0"
+version = "0.4.0"
 description = "A FastAPI project integrating OpenAI's Whisper model for speech-to-text."
 authors = ["Grzegorz Gwóźdź"]
 packages = [{ include = "*", from = "src" }]

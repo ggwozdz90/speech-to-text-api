@@ -3,6 +3,7 @@ from unittest.mock import Mock
 import pytest
 
 from config.app_config import AppConfig
+from domain.models.transcription_result_model import TranscriptionResultModel
 from domain.repositories.whisper_repository import WhisperRepository
 from domain.services.transcription_service import TranscriptionService
 
@@ -32,14 +33,14 @@ def test_transcribe(
     # Given
     file_path = "test_path"
     language = "en"
-    mock_whisper_repository.transcribe.return_value = {"text": "transcription_result"}
+    mock_whisper_repository.transcribe.return_value = {"text": "transcription_result", "segments": []}
 
     # When
     result = transcription_service.transcribe(file_path, language)
 
     # Then
     mock_whisper_repository.transcribe.assert_called_once_with(file_path, language=language)
-    assert result == "transcription_result"
+    assert result == TranscriptionResultModel(text="transcription_result", segments=[])
 
 
 def test_transcribe_exception(
