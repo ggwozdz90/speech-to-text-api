@@ -3,7 +3,7 @@ from unittest.mock import Mock
 import pytest
 
 from config.app_config import AppConfig
-from data.repositories.whisper_repository import WhisperRepository
+from domain.repositories.whisper_repository import WhisperRepository
 from domain.services.transcription_service import TranscriptionService
 
 
