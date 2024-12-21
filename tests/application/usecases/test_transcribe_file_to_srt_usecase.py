@@ -4,9 +4,10 @@ import pytest
 from fastapi import UploadFile
 
 from config.app_config import AppConfig
-from domain.repositories.file_repository import FileRepository
+from domain.services.sentence_service import SentenceService
 from domain.services.subtitle_service import SubtitleService
 from domain.services.transcription_service import TranscriptionService
+from domain.services.translation_service import TranslationService
 from src.application.usecases.transcribe_file_to_srt_usecase import (
     TranscribeFileToSrtUseCase,
 )
@@ -15,11 +16,6 @@ from src.application.usecases.transcribe_file_to_srt_usecase import (
 @pytest.fixture
 def mock_config() -> AppConfig:
     return Mock(AppConfig)
-
-
-@pytest.fixture
-def mock_file_repository() -> FileRepository:
-    return Mock(FileRepository)
 
 
 @pytest.fixture
@@ -33,97 +29,111 @@ def mock_subtitle_service() -> Mock:
 
 
 @pytest.fixture
+def mock_sentence_service() -> SentenceService:
+    return Mock(SentenceService)
+
+
+@pytest.fixture
+def mock_translation_service() -> TranslationService:
+    return Mock(TranslationService)
+
+
+@pytest.fixture
 def usecase(
     mock_config: Mock,
     mock_transcription_service: Mock,
-    mock_file_repository: Mock,
     mock_subtitle_service: Mock,
+    mock_sentence_service: Mock,
+    mock_translation_service: Mock,
 ) -> TranscribeFileToSrtUseCase:
     return TranscribeFileToSrtUseCase(
         config=mock_config,
         transcription_service=mock_transcription_service,
-        file_repository=mock_file_repository,
         subtitle_service=mock_subtitle_service,
+        sentence_service=mock_sentence_service,
+        translation_service=mock_translation_service,
     )
 
 
 @pytest.mark.asyncio
-async def test_execute_success(
+async def test_execute_success_no_translation(
     usecase: TranscribeFileToSrtUseCase,
-    mock_file_repository: Mock,
     mock_transcription_service: Mock,
     mock_subtitle_service: Mock,
-    mock_config: AppConfig,
+    mock_sentence_service: Mock,
+    mock_translation_service: Mock,
 ) -> None:
     # Given
-    file = Mock(UploadFile)
-    language = "en"
-    file_path = "path/to/file"
-    transcription_result = "transcription result"
-    srt_result = "srt result"
-
-    mock_file_repository.save_file = AsyncMock(return_value=file_path)
-    mock_transcription_service.transcribe.return_value = transcription_result
-    mock_subtitle_service.convert_to_srt.return_value = srt_result
-    mock_config.delete_files_after_transcription = True
+    mock_file = Mock(UploadFile)
+    mock_transcription_service.transcribe = AsyncMock(return_value="transcription_result")
+    mock_subtitle_service.convert_to_subtitle_segments.return_value = ["segment1", "segment2"]
+    mock_subtitle_service.generate_srt_result.return_value = "srt_result"
 
     # When
-    result = await usecase.execute(file, language)
+    result = await usecase.execute(mock_file, "en", None)
 
     # Then
-    assert result == srt_result
-    mock_file_repository.save_file.assert_awaited_once_with(file)
-    mock_transcription_service.transcribe.assert_called_once_with(file_path, language)
-    mock_subtitle_service.convert_to_srt.assert_called_once_with(transcription_result)
-    mock_file_repository.delete_file.assert_called_once_with(file_path)
+    assert result == "srt_result"
+    mock_transcription_service.transcribe.assert_awaited_once_with(mock_file, "en")
+    mock_subtitle_service.convert_to_subtitle_segments.assert_called_once_with("transcription_result")
+    mock_subtitle_service.generate_srt_result.assert_called_once_with(["segment1", "segment2"])
+    mock_sentence_service.create_sentence_models.assert_not_called()
+    mock_translation_service.translate_sentences.assert_not_called()
+    mock_sentence_service.apply_translated_sentences.assert_not_called()
 
 
 @pytest.mark.asyncio
-async def test_execute_no_delete(
+async def test_execute_success_with_translation(
     usecase: TranscribeFileToSrtUseCase,
-    mock_file_repository: Mock,
     mock_transcription_service: Mock,
     mock_subtitle_service: Mock,
-    mock_config: Mock,
+    mock_sentence_service: Mock,
+    mock_translation_service: Mock,
 ) -> None:
     # Given
-    mock_config.delete_files_after_transcription = False
-    file = Mock(UploadFile)
-    language = "en"
-    file_path = "path/to/file"
-    transcription_result = "transcription result"
-    srt_result = "srt result"
-
-    mock_file_repository.save_file = AsyncMock(return_value=file_path)
-    mock_transcription_service.transcribe.return_value = transcription_result
-    mock_subtitle_service.convert_to_srt.return_value = srt_result
+    mock_file = Mock(UploadFile)
+    mock_transcription_service.transcribe = AsyncMock(return_value="transcription_result")
+    mock_subtitle_service.convert_to_subtitle_segments.return_value = ["segment1", "segment2"]
+    mock_sentence_service.create_sentence_models.return_value = ["sentence1", "sentence2"]
+    mock_translation_service.translate_sentences.return_value = ["translated_sentence1", "translated_sentence2"]
+    mock_sentence_service.apply_translated_sentences.return_value = ["translated_segment1", "translated_segment2"]
+    mock_subtitle_service.generate_srt_result.return_value = "translated_srt_result"
 
     # When
-    result = await usecase.execute(file, language)
+    result = await usecase.execute(mock_file, "en", "pl")
 
     # Then
-    assert result == srt_result
-    mock_file_repository.save_file.assert_awaited_once_with(file)
-    mock_transcription_service.transcribe.assert_called_once_with(file_path, language)
-    mock_subtitle_service.convert_to_srt.assert_called_once_with(transcription_result)
-    mock_file_repository.delete_file.assert_not_called()
+    assert result == "translated_srt_result"
+    mock_transcription_service.transcribe.assert_awaited_once_with(mock_file, "en")
+    mock_subtitle_service.convert_to_subtitle_segments.assert_called_once_with("transcription_result")
+    mock_sentence_service.create_sentence_models.assert_called_once_with(["segment1", "segment2"])
+    mock_translation_service.translate_sentences.assert_called_once_with(["sentence1", "sentence2"], "en", "pl")
+    mock_sentence_service.apply_translated_sentences.assert_called_once_with(
+        ["segment1", "segment2"], ["sentence1", "sentence2"]
+    )
+    mock_subtitle_service.generate_srt_result.assert_called_once_with(["segment1", "segment2"])
 
 
 @pytest.mark.asyncio
-async def test_execute_transcription_failure(
-    usecase: TranscribeFileToSrtUseCase, mock_file_repository: Mock, mock_transcription_service: Mock
+async def test_execute_failure(
+    usecase: TranscribeFileToSrtUseCase,
+    mock_transcription_service: Mock,
+    mock_subtitle_service: Mock,
+    mock_sentence_service: Mock,
+    mock_translation_service: Mock,
 ) -> None:
     # Given
-    file = Mock(UploadFile)
-    language = "en"
-    file_path = "path/to/file"
+    mock_file = Mock(UploadFile)
+    mock_transcription_service.transcribe = AsyncMock(side_effect=Exception("Transcription error"))
 
-    mock_file_repository.save_file = AsyncMock(return_value=file_path)
-    mock_transcription_service.transcribe.side_effect = Exception("Transcription failed")
+    # When
+    with pytest.raises(Exception, match="Transcription error"):
+        await usecase.execute(mock_file, "en", "pl")
 
-    # When / Then
-    with pytest.raises(Exception, match="Transcription failed"):
-        await usecase.execute(file, language)
-    mock_file_repository.save_file.assert_awaited_once_with(file)
-    mock_transcription_service.transcribe.assert_called_once_with(file_path, language)
-    mock_file_repository.delete_file.assert_not_called()
+    # Then
+    mock_transcription_service.transcribe.assert_awaited_once_with(mock_file, "en")
+    mock_subtitle_service.convert_to_subtitle_segments.assert_not_called()
+    mock_sentence_service.create_sentence_models.assert_not_called()
+    mock_translation_service.translate_sentences.assert_not_called()
+    mock_sentence_service.apply_translated_sentences.assert_not_called()
+    mock_subtitle_service.generate_srt_result.assert_not_called()

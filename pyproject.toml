@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "speach-to-text-api"
-version = "0.4.0"
+version = "0.5.0"
 description = "A FastAPI project integrating OpenAI's Whisper model for speech-to-text."
 authors = ["Grzegorz Gwóźdź"]
 packages = [{ include = "*", from = "src" }]
@@ -11,6 +11,9 @@ python-dotenv = "^1.0.1"
 fastapi = { extras = ["all"], version = "^0.115.6" }
 openai-whisper = "v20240930"
 numba = "^0.60.0"
+transformers = "^4.47.1"
+protobuf = "^5.29.0"
+sentencepiece = "^0.2.0"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^4.0.1"

@@ -13,6 +13,8 @@ class AppConfig:
     fastapi_port: Optional[int]
     whisper_model_name: Optional[str]
     whisper_model_download_path: Optional[str]
+    translation_model_name: Optional[str]
+    translation_model_download_path: Optional[str]
 
     def __new__(cls) -> "AppConfig":
         if cls._instance is None:
@@ -29,6 +31,10 @@ class AppConfig:
         self.fastapi_host = os.getenv("FASTAPI_HOST", "127.0.0.1")
         self.whisper_model_name = os.getenv("WHISPER_MODEL_NAME", "turbo")
         self.whisper_model_download_path = os.getenv("WHISPER_MODEL_DOWNLOAD_PATH", "downloaded_whisper_models")
+        self.translation_model_name = os.getenv("TRANSLATION_MODEL_NAME", "facebook/mbart-large-50-many-to-many-mmt")
+        self.translation_model_download_path = os.getenv(
+            "TRANSLATION_MODEL_DOWNLOAD_PATH", "downloaded_translation_models"
+        )
         try:
             self.fastapi_port = int(os.getenv("FASTAPI_PORT", "8000"))
         except ValueError:
@@ -45,4 +51,6 @@ class AppConfig:
         print(f"FASTAPI_PORT: {self.fastapi_port}")
         print(f"WHISPER_MODEL_NAME: {self.whisper_model_name}")
         print(f"WHISPER_MODEL_DOWNLOAD_PATH: {self.whisper_model_download_path}")
+        print(f"TRANSLATION_MODEL_NAME: {self.translation_model_name}")
+        print(f"TRANSLATION_MODEL_DOWNLOAD_PATH: {self.translation_model_download_path}")
         print("### APP CONFIG END ###")

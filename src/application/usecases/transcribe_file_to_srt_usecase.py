@@ -1,12 +1,13 @@
-from typing import Annotated
+from typing import Annotated, Optional
 
 from fastapi import Depends, UploadFile
 
 from config.app_config import AppConfig
-from data.repositories.file_repository_impl import FileRepositoryImpl
-from domain.repositories.file_repository import FileRepository
+from domain.models.subtitle_segment_model import SubtitleSegmentModel
+from domain.services.sentence_service import SentenceService
 from domain.services.subtitle_service import SubtitleService
 from domain.services.transcription_service import TranscriptionService
+from domain.services.translation_service import TranslationService
 
 
 class TranscribeFileToSrtUseCase:
@@ -14,25 +15,45 @@ class TranscribeFileToSrtUseCase:
         self,
         config: Annotated[AppConfig, Depends()],
         transcription_service: Annotated[TranscriptionService, Depends()],
-        file_repository: Annotated[FileRepository, Depends(FileRepositoryImpl)],
         subtitle_service: Annotated[SubtitleService, Depends()],
+        sentence_service: Annotated[SentenceService, Depends()],
+        translation_service: Annotated[TranslationService, Depends()],
     ) -> None:
         self.config = config
         self.transcription_service = transcription_service
-        self.file_repository = file_repository
         self.subtitle_service = subtitle_service
+        self.sentence_service = sentence_service
+        self.translation_service = translation_service
 
     async def execute(
         self,
         file: UploadFile,
-        language: str,
+        source_language: str,
+        target_language: Optional[str],
     ) -> str:
-        file_path = await self.file_repository.save_file(file)
-        result = self.transcription_service.transcribe(file_path, language)
+        transcription_result = await self.transcription_service.transcribe(file, source_language)
+        subtitle_segments = self.subtitle_service.convert_to_subtitle_segments(transcription_result)
 
-        if self.config.delete_files_after_transcription:
-            self.file_repository.delete_file(file_path)
+        if not target_language or source_language == target_language:
+            return self._generate_srt(subtitle_segments)
 
-        srt_result = self.subtitle_service.convert_to_srt(result)
+        self._translate_subtitles(subtitle_segments, source_language, target_language)
 
-        return srt_result  # type: ignore
+        return self._generate_srt(subtitle_segments)
+
+    def _generate_srt(
+        self,
+        subtitle_segments: list[SubtitleSegmentModel],
+    ) -> str:
+        srt_result: str = self.subtitle_service.generate_srt_result(subtitle_segments)
+        return srt_result
+
+    def _translate_subtitles(
+        self,
+        subtitle_segments: list[SubtitleSegmentModel],
+        source_language: str,
+        target_language: str,
+    ) -> None:
+        sentences = self.sentence_service.create_sentence_models(subtitle_segments)
+        self.translation_service.translate_sentences(sentences, source_language, target_language)
+        self.sentence_service.apply_translated_sentences(subtitle_segments, sentences)
