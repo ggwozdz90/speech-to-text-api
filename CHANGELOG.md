@@ -1,3 +1,9 @@
+## 0.5.0 (2024-12-21)
+
+### Feat
+
+- add translation functionality
+
 ## 0.4.0 (2024-12-17)
 
 ### Feat
