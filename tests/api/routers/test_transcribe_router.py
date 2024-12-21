@@ -44,7 +44,14 @@ def test_transcribe_success(
     mock_transcribe_file_to_text_usecase.execute = AsyncMock(return_value="transcription_result")
 
     # When
-    response = client.post("/transcribe", files={"file": ("test_file.txt", b"file content")})
+    response = client.post(
+        "/transcribe",
+        params={
+            "source_language": "en_US",
+            "target_language": "pl_PL",
+        },
+        files={"file": ("test_file.txt", b"file content")},
+    )
 
     # Then
     assert response.status_code == 200
@@ -63,7 +70,11 @@ def test_transcribe_failure(
     mock_transcribe_file_to_text_usecase.execute = AsyncMock(side_effect=Exception("Transcription error"))
 
     # When
-    response = client.post("/transcribe", files={"file": ("test_file.txt", b"file content")})
+    response = client.post(
+        "/transcribe",
+        params={"source_language": "en_US"},
+        files={"file": ("test_file.txt", b"file content")},
+    )
 
     # Then
     assert response.status_code == 500
@@ -79,6 +90,17 @@ def test_transcribe_missing_file(client: TestClient) -> None:
     assert response.status_code == 422  # Unprocessable Entity
 
 
+def test_transcribe_missing_source_language(client: TestClient) -> None:
+    # When
+    response = client.post(
+        "/transcribe",
+        files={"file": ("test_file.txt", b"file content")},
+    )
+
+    # Then
+    assert response.status_code == 422  # Unprocessable Entity
+
+
 def test_transcribe_srt_success(
     client: TestClient,
     mock_transcribe_file_to_srt_usecase: TranscribeFileToSrtUseCase,
@@ -87,14 +109,18 @@ def test_transcribe_srt_success(
     mock_transcribe_file_to_srt_usecase.execute = AsyncMock(return_value="transcription_result")
 
     # When
-    response = client.post("/transcribe/srt", files={"file": ("test_file.txt", b"file content")})
+    response = client.post(
+        "/transcribe/srt",
+        params={
+            "source_language": "en_US",
+            "target_language": "pl_PL",
+        },
+        files={"file": ("test_file.txt", b"file content")},
+    )
 
     # Then
     assert response.status_code == 200
-    assert response.json() == {
-        "filename": "test_file.txt",
-        "srt_content": "transcription_result",
-    }
+    assert response.text == "transcription_result"
 
 
 def test_transcribe_srt_failure(
@@ -105,7 +131,11 @@ def test_transcribe_srt_failure(
     mock_transcribe_file_to_srt_usecase.execute = AsyncMock(side_effect=Exception("Transcription error"))
 
     # When
-    response = client.post("/transcribe/srt", files={"file": ("test_file.txt", b"file content")})
+    response = client.post(
+        "/transcribe/srt",
+        params={"source_language": "en_US"},
+        files={"file": ("test_file.txt", b"file content")},
+    )
 
     # Then
     assert response.status_code == 500
@@ -115,7 +145,21 @@ def test_transcribe_srt_failure(
 
 def test_transcribe_srt_missing_file(client: TestClient) -> None:
     # When
-    response = client.post("/transcribe/srt")
+    response = client.post(
+        "/transcribe/srt",
+        params={"source_language": "en_US"},
+    )
+
+    # Then
+    assert response.status_code == 422  # Unprocessable Entity
+
+
+def test_transcribe_srt_missing_source_language(client: TestClient) -> None:
+    # When
+    response = client.post(
+        "/transcribe/srt",
+        files={"file": ("test_file.txt", b"file content")},
+    )
 
     # Then
     assert response.status_code == 422  # Unprocessable Entity

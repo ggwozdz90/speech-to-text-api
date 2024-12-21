@@ -1,11 +1,10 @@
-from typing import Annotated
+from typing import Annotated, Optional
 
 from fastapi import Depends, UploadFile
 
 from config.app_config import AppConfig
-from data.repositories.file_repository_impl import FileRepositoryImpl
-from domain.repositories.file_repository import FileRepository
 from domain.services.transcription_service import TranscriptionService
+from domain.services.translation_service import TranslationService
 
 
 class TranscribeFileToTextUseCase:
@@ -13,21 +12,27 @@ class TranscribeFileToTextUseCase:
         self,
         config: Annotated[AppConfig, Depends()],
         transcription_service: Annotated[TranscriptionService, Depends()],
-        file_repository: Annotated[FileRepository, Depends(FileRepositoryImpl)],
+        translation_service: Annotated[TranslationService, Depends()],
     ) -> None:
         self.config = config
         self.transcription_service = transcription_service
-        self.file_repository = file_repository
+        self.translation_service = translation_service
 
     async def execute(
         self,
         file: UploadFile,
-        language: str,
+        source_language: str,
+        target_language: Optional[str],
     ) -> str:
-        file_path = await self.file_repository.save_file(file)
-        result = self.transcription_service.transcribe(file_path, language)
+        transcription_result = await self.transcription_service.transcribe(file, source_language)
 
-        if self.config.delete_files_after_transcription:
-            self.file_repository.delete_file(file_path)
+        if not target_language or source_language == target_language:
+            return str(transcription_result.text)
 
-        return result.text  # type: ignore
+        translation_result: str = self.translation_service.translate_text(
+            transcription_result.text,
+            source_language,
+            target_language,
+        )
+
+        return translation_result

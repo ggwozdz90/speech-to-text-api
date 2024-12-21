@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Optional
 
 import whisper
 from fastapi import Depends
@@ -10,7 +10,7 @@ from domain.repositories.whisper_repository import WhisperRepository
 
 
 class WhisperRepositoryImpl(WhisperRepository):  # type: ignore
-    _instance = None
+    _instance: Optional["WhisperRepositoryImpl"] = None
 
     def __new__(
         cls,
@@ -20,7 +20,7 @@ class WhisperRepositoryImpl(WhisperRepository):  # type: ignore
         if cls._instance is None:
             cls._instance = super(WhisperRepositoryImpl, cls).__new__(cls)
             cls._instance._initialize(config, directory_repository)
-        return cls._instance  # type: ignore
+        return cls._instance
 
     def _initialize(
         self,
@@ -42,9 +42,11 @@ class WhisperRepositoryImpl(WhisperRepository):  # type: ignore
         if self.model is None:
             raise ValueError("Model is not initialized")
 
-        result = self.model.transcribe(
+        short_language = language[:2]
+
+        result: dict[str, str] = self.model.transcribe(
             file_path,
-            language=language,
+            language=short_language,
         )
 
-        return result  # type: ignore
+        return result

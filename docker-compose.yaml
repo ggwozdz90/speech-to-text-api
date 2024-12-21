@@ -11,6 +11,8 @@ services:
       - FASTAPI_PORT=8000
       - WHISPER_MODEL_NAME=turbo
       - WHISPER_MODEL_DOWNLOAD_PATH=downloaded_whisper_models
+      - TRANSLATION_MODEL_NAME=facebook/mbart-large-50-many-to-many-mmt
+      - TRANSLATION_MODEL_DOWNLOAD_PATH=downloaded_translation_models
     ports:
       - "8000:8000"
     volumes:
