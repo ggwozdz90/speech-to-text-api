@@ -2,8 +2,8 @@ from unittest.mock import Mock
 
 import pytest
 
-from config.app_config import AppConfig
-from config.logger_config import Logger
+from core.config.app_config import AppConfig
+from core.logger.logger import Logger
 from domain.models.sentence_model import SentenceModel
 from domain.repositories.translation_model_repository import TranslationModelRepository
 from domain.services.translation_service import TranslationService

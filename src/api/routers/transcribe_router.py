@@ -12,7 +12,7 @@ from application.usecases.transcribe_file_to_srt_usecase import (
 from application.usecases.transcribe_file_to_text_usecase import (
     TranscribeFileToTextUseCase,
 )
-from config.logger_config import Logger
+from core.logger.logger import Logger
 
 
 class TranscribeRouter:

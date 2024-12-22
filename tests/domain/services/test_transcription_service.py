@@ -3,8 +3,8 @@ from unittest.mock import AsyncMock, Mock
 import pytest
 from fastapi import UploadFile
 
-from config.app_config import AppConfig
-from config.logger_config import Logger
+from core.config.app_config import AppConfig
+from core.logger.logger import Logger
 from domain.repositories.file_repository import FileRepository
 from domain.repositories.whisper_repository import WhisperRepository
 from domain.services.transcription_service import TranscriptionService

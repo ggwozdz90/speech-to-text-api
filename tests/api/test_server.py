@@ -5,7 +5,7 @@ import uvicorn
 from fastapi import FastAPI
 
 from api.server import APIServer
-from config.app_config import AppConfig
+from core.config.app_config import AppConfig
 
 
 @pytest.fixture

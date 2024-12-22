@@ -1,0 +1,41 @@
+import threading
+from typing import Callable, Optional
+
+
+class Timer:
+    def __init__(self) -> None:
+        self.interval: float = 0.0
+        self.function: Optional[Callable] = None  # type: ignore
+        self._timer: Optional[threading.Timer] = None
+        self._cancelled: bool = False
+
+    def start(
+        self,
+        interval: int,
+        function: Callable,  # type: ignore
+    ) -> None:
+        if interval <= 0:
+            raise ValueError("Interval must be greater than 0")
+
+        self.interval = interval
+        self.function = function
+        self._cancelled = False
+        self._reset_timer()
+
+    def _reset_timer(self) -> None:
+        if self._timer:
+            self._timer.cancel()
+        if not self._cancelled:
+            self._timer = threading.Timer(self.interval, self._execute)
+            self._timer.start()
+
+    def _execute(self) -> None:
+        if self.function and not self._cancelled:
+            self.function()
+            self._reset_timer()
+
+    def cancel(self) -> None:
+        self._cancelled = True
+        if self._timer:
+            self._timer.cancel()
+            self._timer = None

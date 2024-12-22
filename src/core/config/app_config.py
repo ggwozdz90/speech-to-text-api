@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 class AppConfig:
     _instance: Optional["AppConfig"] = None
 
+    device: Optional[str]
     file_upload_path: Optional[str]
     delete_files_after_transcription: Optional[bool]
     fastapi_host: Optional[str]
@@ -15,6 +16,7 @@ class AppConfig:
     whisper_model_download_path: Optional[str]
     translation_model_name: Optional[str]
     translation_model_download_path: Optional[str]
+    model_idle_timeout: Optional[int]
 
     def __new__(cls) -> "AppConfig":
         if cls._instance is None:
@@ -26,9 +28,11 @@ class AppConfig:
         self._load_env_variables()
 
     def _load_env_variables(self) -> None:
+        self.device = os.getenv("DEVICE", "cpu")
         self.file_upload_path = os.getenv("FILE_UPLOAD_PATH", "uploaded_files")
         self.delete_files_after_transcription = self._str_to_bool(os.getenv("DELETE_FILES_AFTER_TRANSCRIPTION", "true"))
         self.fastapi_host = os.getenv("FASTAPI_HOST", "127.0.0.1")
+        self.model_idle_timeout = int(os.getenv("MODEL_IDLE_TIMEOUT", "60"))
         self.whisper_model_name = os.getenv("WHISPER_MODEL_NAME", "turbo")
         self.whisper_model_download_path = os.getenv("WHISPER_MODEL_DOWNLOAD_PATH", "downloaded_whisper_models")
         self.translation_model_name = os.getenv("TRANSLATION_MODEL_NAME", "facebook/mbart-large-50-many-to-many-mmt")
@@ -45,6 +49,7 @@ class AppConfig:
 
     def print_config(self) -> None:
         print("### APP CONFIG START ###")
+        print(f"DEVICE: {self.device}")
         print(f"FILE_UPLOAD_PATH: {self.file_upload_path}")
         print(f"DELETE_FILES_AFTER_TRANSCRIPTION: {self.delete_files_after_transcription}")
         print(f"FASTAPI_HOST: {self.fastapi_host}")
@@ -53,4 +58,5 @@ class AppConfig:
         print(f"WHISPER_MODEL_DOWNLOAD_PATH: {self.whisper_model_download_path}")
         print(f"TRANSLATION_MODEL_NAME: {self.translation_model_name}")
         print(f"TRANSLATION_MODEL_DOWNLOAD_PATH: {self.translation_model_download_path}")
+        print(f"MODEL_IDLE_TIMEOUT: {self.model_idle_timeout}")
         print("### APP CONFIG END ###")

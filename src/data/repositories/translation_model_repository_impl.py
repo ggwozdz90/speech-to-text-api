@@ -4,7 +4,7 @@ import torch
 from fastapi import Depends
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
-from config.app_config import AppConfig
+from core.config.app_config import AppConfig
 from data.repositories.directory_repository_impl import DirectoryRepositoryImpl
 from domain.repositories.directory_repository import DirectoryRepository
 from domain.repositories.translation_model_repository import TranslationModelRepository
@@ -29,6 +29,7 @@ class TranslationModelRepositoryImpl(TranslationModelRepository):  # type: ignor
         directory_repository: DirectoryRepository,
     ) -> None:
         directory_repository.create_directory(config.translation_model_download_path)
+        self.config = config
 
         kwargs = {}
         kwargs["cache_dir"] = config.translation_model_download_path
@@ -49,7 +50,7 @@ class TranslationModelRepositoryImpl(TranslationModelRepository):  # type: ignor
         inputs = self.tokenizer([text], truncation=True, padding=True, max_length=1024, return_tensors="pt")
 
         for key in inputs:
-            inputs[key] = inputs[key].to("cpu")
+            inputs[key] = inputs[key].to(self.config.device)
 
         with torch.no_grad():
             kwargs = {}

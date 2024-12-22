@@ -2,7 +2,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from config.logger_config import Logger
+from core.logger.logger import Logger
 from domain.models.subtitle_segment_model import SubtitleSegmentModel
 from domain.models.transcription_result_model import (
     SegmentModel,

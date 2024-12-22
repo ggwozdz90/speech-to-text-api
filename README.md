@@ -120,6 +120,7 @@ This is a subtitle.
 
 The application uses a `.env` file or Docker Compose to define configurable environment variables. Below are the available configuration options:
 
+- `DEVICE`: Device to run the models on (`cpu` or `cuda`). Default is `cpu`.
 - `FILE_UPLOAD_PATH`: Path where uploaded files will be stored. Default is `uploaded_files`.
 - `DELETE_FILES_AFTER_TRANSCRIPTION`: Whether to delete files after transcription. Set to `true` or `false`. Default is `true`.
 - `FASTAPI_HOST`: Host for the FastAPI server. Default is `127.0.0.1`.
@@ -128,6 +129,7 @@ The application uses a `.env` file or Docker Compose to define configurable envi
 - `WHISPER_MODEL_DOWNLOAD_PATH`: Path where Whisper models are downloaded. Default is `downloaded_whisper_models`.
 - `TRANSLATION_MODEL_NAME`: Name of the translation model to use. Default is `facebook/mbart-large-50-many-to-many-mmt`.
 - `TRANSLATION_MODEL_DOWNLOAD_PATH`: Path where translation models are downloaded. Default is `downloaded_translation_models`.
+- `MODEL_IDLE_TIMEOUT`: Time in seconds after which the model will be unloaded if not used. Default is `120`.
 
 ## Table of Contents
 

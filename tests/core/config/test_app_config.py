@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 import pytest
 
-from src.config.app_config import AppConfig
+from core.config.app_config import AppConfig
 
 
 @pytest.fixture
@@ -22,6 +22,9 @@ def test_load_config(app_config: AppConfig) -> None:
             "FASTAPI_PORT": "8000",
             "WHISPER_MODEL_NAME": "base",
             "WHISPER_MODEL_DOWNLOAD_PATH": "model_path",
+            "TRANSLATION_MODEL_NAME": "test_translation_model",
+            "TRANSLATION_MODEL_DOWNLOAD_PATH": "translation_model_path",
+            "MODEL_IDLE_TIMEOUT": "150",
         },
     ):
         # When
@@ -34,6 +37,9 @@ def test_load_config(app_config: AppConfig) -> None:
         assert app_config.fastapi_port == 8000
         assert app_config.whisper_model_name == "base"
         assert app_config.whisper_model_download_path == "model_path"
+        assert app_config.translation_model_name == "test_translation_model"
+        assert app_config.translation_model_download_path == "translation_model_path"
+        assert app_config.model_idle_timeout == 150
 
 
 def test_print_config(
@@ -47,6 +53,9 @@ def test_print_config(
     app_config.fastapi_port = 8000
     app_config.whisper_model_name = "base"
     app_config.whisper_model_download_path = "model_path"
+    app_config.translation_model_name = "test_translation_model"
+    app_config.translation_model_download_path = "translation_model_path"
+    app_config.model_idle_timeout = 150
 
     # When
     app_config.print_config()
@@ -60,6 +69,9 @@ def test_print_config(
     assert "FASTAPI_PORT: 8000" in captured.out
     assert "WHISPER_MODEL_NAME: base" in captured.out
     assert "WHISPER_MODEL_DOWNLOAD_PATH: model_path" in captured.out
+    assert "TRANSLATION_MODEL_NAME: test_translation_model" in captured.out
+    assert "TRANSLATION_MODEL_DOWNLOAD_PATH: translation_model_path" in captured.out
+    assert "MODEL_IDLE_TIMEOUT: 150" in captured.out
     assert "### APP CONFIG END ###" in captured.out
 
 
@@ -76,6 +88,9 @@ def test_load_config_missing_env_vars(app_config: AppConfig) -> None:
         assert app_config.fastapi_port == 8000
         assert app_config.whisper_model_name == "turbo"
         assert app_config.whisper_model_download_path == "downloaded_whisper_models"
+        assert app_config.translation_model_name == "facebook/mbart-large-50-many-to-many-mmt"
+        assert app_config.translation_model_download_path == "downloaded_translation_models"
+        assert app_config.model_idle_timeout == 60
 
 
 def test_load_config_invalid_port(app_config: AppConfig) -> None:

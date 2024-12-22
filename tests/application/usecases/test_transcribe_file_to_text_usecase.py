@@ -6,7 +6,7 @@ from fastapi import UploadFile
 from application.usecases.transcribe_file_to_text_usecase import (
     TranscribeFileToTextUseCase,
 )
-from config.app_config import AppConfig
+from core.config.app_config import AppConfig
 from domain.models.transcription_result_model import TranscriptionResultModel
 from domain.repositories.file_repository import FileRepository
 from domain.services.transcription_service import TranscriptionService

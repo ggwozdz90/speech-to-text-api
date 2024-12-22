@@ -2,8 +2,8 @@ from typing import Annotated
 
 from fastapi import Depends, UploadFile
 
-from config.app_config import AppConfig
-from config.logger_config import Logger
+from core.config.app_config import AppConfig
+from core.logger.logger import Logger
 from data.repositories.file_repository_impl import FileRepositoryImpl
 from data.repositories.whisper_repository_impl import WhisperRepositoryImpl
 from domain.models.transcription_result_model import TranscriptionResultModel

@@ -2,7 +2,7 @@ from typing import Annotated, Optional
 
 from fastapi import Depends, UploadFile
 
-from config.app_config import AppConfig
+from core.config.app_config import AppConfig
 from domain.services.transcription_service import TranscriptionService
 from domain.services.translation_service import TranslationService
 

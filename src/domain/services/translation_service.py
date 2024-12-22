@@ -2,8 +2,8 @@ from typing import Annotated, List
 
 from fastapi import Depends
 
-from config.app_config import AppConfig
-from config.logger_config import Logger
+from core.config.app_config import AppConfig
+from core.logger.logger import Logger
 from data.repositories.translation_model_repository_impl import (
     TranslationModelRepositoryImpl,
 )

@@ -2,7 +2,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from config.logger_config import Logger
+from core.logger.logger import Logger
 from src.domain.models.sentence_model import SentenceModel
 from src.domain.models.subtitle_segment_model import SubtitleSegmentModel
 from src.domain.services.sentence_service import SentenceService

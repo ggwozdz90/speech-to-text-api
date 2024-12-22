@@ -3,7 +3,7 @@ from unittest.mock import AsyncMock, Mock
 import pytest
 from fastapi import UploadFile
 
-from config.app_config import AppConfig
+from core.config.app_config import AppConfig
 from domain.services.sentence_service import SentenceService
 from domain.services.subtitle_service import SubtitleService
 from domain.services.transcription_service import TranscriptionService
