@@ -90,3 +90,20 @@ def test_cancel_when_no_timer(timer_instance: Timer) -> None:
     # Then
     assert timer_instance._cancelled
     assert timer_instance._timer is None
+
+
+def test_reset_timer_cancels_existing_timer(timer_instance: Timer) -> None:
+    # Given
+    timer_instance.interval = 5
+    timer_instance._cancelled = False
+    mock_timer = Mock(threading.Timer)
+    timer_instance._timer = mock_timer
+
+    # When
+    with patch("threading.Timer") as mock_new_timer:
+        timer_instance._reset_timer()
+
+    # Then
+    mock_timer.cancel.assert_called_once()
+    mock_new_timer.assert_called_once_with(5, timer_instance._execute)
+    mock_new_timer.return_value.start.assert_called_once()

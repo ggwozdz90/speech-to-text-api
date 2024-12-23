@@ -6,7 +6,7 @@ from core.config.app_config import AppConfig
 from core.logger.logger import Logger
 from core.timer.timer import Timer
 from data.repositories.whisper_repository_impl import WhisperRepositoryImpl
-from data.workers.whisper_worker import WhisperWorker
+from data.workers.whisper_worker import WhisperConfig, WhisperWorker
 from domain.repositories.directory_repository import DirectoryRepository
 
 
@@ -70,7 +70,13 @@ def test_transcribe_success(
 
     # Then
     assert result == {"text": "transcribed text"}
-    mock_worker.start.assert_called_once_with("cpu", "base", "/models")
+    mock_worker.start.assert_called_once_with(
+        WhisperConfig(
+            device="cpu",
+            model_name="base",
+            model_download_path="/models",
+        )
+    )
     mock_worker.transcribe.assert_called_once_with("path/to/file", "en")
     mock_timer.start.assert_called_once_with(60, whisper_repository_impl._check_idle_timeout)
 

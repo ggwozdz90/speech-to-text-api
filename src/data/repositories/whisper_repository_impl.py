@@ -8,7 +8,7 @@ from core.config.app_config import AppConfig
 from core.logger.logger import Logger
 from core.timer.timer import Timer
 from data.repositories.directory_repository_impl import DirectoryRepositoryImpl
-from data.workers.whisper_worker import WhisperWorker
+from data.workers.whisper_worker import WhisperConfig, WhisperWorker
 from domain.repositories.directory_repository import DirectoryRepository
 from domain.repositories.whisper_repository import WhisperRepository
 
@@ -55,9 +55,11 @@ class WhisperRepositoryImpl(WhisperRepository):  # type: ignore
         with self._lock:
             if not self.worker.is_alive():
                 self.worker.start(
-                    self.config.device,
-                    self.config.whisper_model_name,
-                    self.config.whisper_model_download_path,
+                    WhisperConfig(
+                        device=self.config.device,
+                        model_name=self.config.whisper_model_name,
+                        model_download_path=self.config.whisper_model_download_path,
+                    )
                 )
 
         result: dict[str, str] = self.worker.transcribe(

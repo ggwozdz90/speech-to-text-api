@@ -25,6 +25,7 @@ bandit = "^1.8.0"
 vulture = "^2.14"
 pytest = "^8.3.4"
 pytest-asyncio = "^0.25.0"
+pytest-cov = "^6.0.0"
 coverage = "^7.6.9"
 commitizen = "^4.1.0"
 

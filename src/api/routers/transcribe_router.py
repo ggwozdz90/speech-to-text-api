@@ -52,7 +52,7 @@ class TranscribeRouter:
             logger.error(f"Validation error: {e.errors()}")
             raise HTTPException(
                 status_code=422,
-                detail=e.errors(),
+                detail=[{"loc": err["loc"], "msg": err["msg"], "type": err["type"]} for err in e.errors()],
             )
         except Exception as e:
             logger.error(f"Unexpected error: {str(e)}")
@@ -89,7 +89,7 @@ class TranscribeRouter:
             logger.error(f"Validation error: {e.errors()}")
             raise HTTPException(
                 status_code=422,
-                detail=e.errors(),
+                detail=[{"loc": err["loc"], "msg": err["msg"], "type": err["type"]} for err in e.errors()],
             )
         except Exception as e:
             logger.error(f"Unexpected error: {str(e)}")
