@@ -6,7 +6,7 @@ from fastapi import Depends
 
 from core.config.app_config import AppConfig
 from core.logger.logger import Logger
-from core.timer.timer import Timer
+from core.timer.timer import TimerFactory
 from data.repositories.directory_repository_impl import DirectoryRepositoryImpl
 from data.workers.whisper_worker import WhisperConfig, WhisperWorker
 from domain.repositories.directory_repository import DirectoryRepository
@@ -21,7 +21,7 @@ class WhisperRepositoryImpl(WhisperRepository):  # type: ignore
         cls,
         config: Annotated[AppConfig, Depends()],
         directory_repository: Annotated[DirectoryRepository, Depends(DirectoryRepositoryImpl)],
-        timer: Annotated[Timer, Depends()],
+        timer_factory: Annotated[TimerFactory, Depends()],
         logger: Annotated[Logger, Depends()],
         worker: Annotated[WhisperWorker, Depends()],
     ) -> "WhisperRepositoryImpl":
@@ -29,20 +29,20 @@ class WhisperRepositoryImpl(WhisperRepository):  # type: ignore
             with cls._lock:
                 if cls._instance is None:
                     cls._instance = super(WhisperRepositoryImpl, cls).__new__(cls)
-                    cls._instance._initialize(config, directory_repository, timer, logger, worker)
+                    cls._instance._initialize(config, directory_repository, timer_factory, logger, worker)
         return cls._instance
 
     def _initialize(
         self,
         config: AppConfig,
         directory_repository: DirectoryRepository,
-        timer: Timer,
+        timer_factory: TimerFactory,
         logger: Logger,
         worker: WhisperWorker,
     ) -> None:
         directory_repository.create_directory(config.whisper_model_download_path)
         self.config = config
-        self.timer = timer
+        self.timer = timer_factory.create()
         self.logger = logger
         self.worker = worker
         self.last_access_time = 0.0

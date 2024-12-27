@@ -1,41 +1,51 @@
+import threading
+import time
 from typing import Annotated, Optional
 
-import torch
 from fastapi import Depends
-from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
 from core.config.app_config import AppConfig
+from core.logger.logger import Logger
+from core.timer.timer import TimerFactory
 from data.repositories.directory_repository_impl import DirectoryRepositoryImpl
+from data.workers.mbart_worker import MBartConfig, MBartWorker
 from domain.repositories.directory_repository import DirectoryRepository
 from domain.repositories.translation_model_repository import TranslationModelRepository
 
 
 class TranslationModelRepositoryImpl(TranslationModelRepository):  # type: ignore
     _instance: Optional["TranslationModelRepositoryImpl"] = None
+    _lock = threading.Lock()
 
     def __new__(
         cls,
         config: Annotated[AppConfig, Depends()],
         directory_repository: Annotated[DirectoryRepository, Depends(DirectoryRepositoryImpl)],
+        timer_factory: Annotated[TimerFactory, Depends()],
+        logger: Annotated[Logger, Depends()],
+        worker: Annotated[MBartWorker, Depends()],
     ) -> "TranslationModelRepositoryImpl":
         if cls._instance is None:
-            cls._instance = super(TranslationModelRepositoryImpl, cls).__new__(cls)
-            cls._instance._initialize(config, directory_repository)
+            with cls._lock:
+                if cls._instance is None:
+                    cls._instance = super(TranslationModelRepositoryImpl, cls).__new__(cls)
+                    cls._instance._initialize(config, directory_repository, timer_factory, logger, worker)
         return cls._instance
 
     def _initialize(
         self,
         config: AppConfig,
         directory_repository: DirectoryRepository,
+        timer_factory: TimerFactory,
+        logger: Logger,
+        worker: MBartWorker,
     ) -> None:
         directory_repository.create_directory(config.translation_model_download_path)
         self.config = config
-
-        kwargs = {}
-        kwargs["cache_dir"] = config.translation_model_download_path
-
-        self.model = AutoModelForSeq2SeqLM.from_pretrained(config.translation_model_name, **kwargs)
-        self.tokenizer = AutoTokenizer.from_pretrained(config.translation_model_name, **kwargs)
+        self.timer = timer_factory.create()
+        self.logger = logger
+        self.worker = worker
+        self.last_access_time = 0.0
 
     def translate(
         self,
@@ -43,21 +53,36 @@ class TranslationModelRepositoryImpl(TranslationModelRepository):  # type: ignor
         source_language: str,
         target_language: str,
     ) -> str:
-        if self.model is None:
-            raise ValueError("Model is not initialized")
+        with self._lock:
+            if not self.worker.is_alive():
+                self.worker.start(
+                    MBartConfig(
+                        device=self.config.device,
+                        model_name=self.config.translation_model_name,
+                        model_download_path=self.config.translation_model_download_path,
+                    )
+                )
 
-        self.tokenizer.src_lang = source_language
-        inputs = self.tokenizer([text], truncation=True, padding=True, max_length=1024, return_tensors="pt")
+        result: str = self.worker.translate(
+            text,
+            source_language,
+            target_language,
+        )
 
-        for key in inputs:
-            inputs[key] = inputs[key].to(self.config.device)
+        self.timer.start(
+            self.config.model_idle_timeout,
+            self._check_idle_timeout,
+        )
 
-        with torch.no_grad():
-            kwargs = {}
-            kwargs["forced_bos_token_id"] = self.tokenizer.lang_code_to_id[target_language]
+        self.last_access_time = time.time()
 
-            translated = self.model.generate(**inputs, num_beams=5, **kwargs)
+        return result
 
-            output = [self.tokenizer.decode(t, skip_special_tokens=True) for t in translated]
+    def _check_idle_timeout(self) -> None:
+        self.logger.info("Checking translation model idle timeout")
 
-        return "".join(output)
+        if self.worker.is_alive() and not self.worker.is_processing():
+            with self._lock:
+                self.worker.stop()
+                self.timer.cancel()
+                self.logger.info("Translation model stopped due to idle timeout")

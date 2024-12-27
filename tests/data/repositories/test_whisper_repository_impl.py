@@ -4,7 +4,7 @@ import pytest
 
 from core.config.app_config import AppConfig
 from core.logger.logger import Logger
-from core.timer.timer import Timer
+from core.timer.timer import Timer, TimerFactory
 from data.repositories.whisper_repository_impl import WhisperRepositoryImpl
 from data.workers.whisper_worker import WhisperConfig, WhisperWorker
 from domain.repositories.directory_repository import DirectoryRepository
@@ -31,6 +31,13 @@ def mock_timer() -> Mock:
 
 
 @pytest.fixture
+def mock_timer_factory(mock_timer: Mock) -> Mock:
+    factory = Mock(spec=TimerFactory)
+    factory.create.return_value = mock_timer
+    return factory
+
+
+@pytest.fixture
 def mock_logger() -> Mock:
     return Mock(spec=Logger)
 
@@ -44,7 +51,7 @@ def mock_worker() -> Mock:
 def whisper_repository_impl(
     mock_config: Mock,
     mock_directory_repository: Mock,
-    mock_timer: Mock,
+    mock_timer_factory: Mock,
     mock_logger: Mock,
     mock_worker: Mock,
 ) -> WhisperRepositoryImpl:
@@ -52,7 +59,7 @@ def whisper_repository_impl(
         return WhisperRepositoryImpl(
             config=mock_config,
             directory_repository=mock_directory_repository,
-            timer=mock_timer,
+            timer_factory=mock_timer_factory,
             logger=mock_logger,
             worker=mock_worker,
         )

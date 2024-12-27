@@ -2,6 +2,11 @@ import threading
 from typing import Callable, Optional
 
 
+class TimerFactory:
+    def create(self) -> "Timer":
+        return Timer()
+
+
 class Timer:
     def __init__(self) -> None:
         self.interval: float = 0.0
