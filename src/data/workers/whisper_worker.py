@@ -66,7 +66,7 @@ class WhisperWorker(
                     is_processing.value = True
 
                 file_path, language = args
-                kwargs: dict[str, Any] = {"language": language[:2]}
+                kwargs: dict[str, Any] = {"language": language}
 
                 if config.device == "cpu":
                     kwargs["fp16"] = False
