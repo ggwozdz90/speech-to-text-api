@@ -1,3 +1,18 @@
+## 0.6.0 (2024-12-28)
+
+### Feat
+
+- implement language mapping service for improved language handling
+- update translation model and add seamless worker factory
+- implement MBartWorker for translation processing
+- implement whisper worker for asynchronous transcription
+
+### Refactor
+
+- rename and restructure translation and speech-to-text worker classes
+- rename Whisper references to SpeachToText for consistency
+- restructure WhisperWorker and introduce BaseWorker for improved extensibility
+
 ## 0.5.0 (2024-12-21)
 
 ### Feat
