@@ -93,7 +93,7 @@ def test_load_config_missing_env_vars(app_config: AppConfig) -> None:
         assert app_config.speach_to_text_model_name == "openai/whisper"
         assert app_config.speach_to_text_model_type == "turbo"
         assert app_config.speach_to_text_model_download_path == "downloaded_speach_to_text_models"
-        assert app_config.translation_model_name == "facebook/mbart-large-50-many-to-many-mmt"
+        assert app_config.translation_model_name == "facebook/seamless-m4t-v2-large"
         assert app_config.translation_model_download_path == "downloaded_translation_models"
         assert app_config.model_idle_timeout == 60
 

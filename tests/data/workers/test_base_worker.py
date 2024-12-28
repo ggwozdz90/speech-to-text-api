@@ -39,33 +39,25 @@ class MockBaseWorker(BaseWorker[str, str, dict, None]):  # type: ignore
 
 
 @pytest.fixture
-def base_worker() -> Generator[MockBaseWorker, None, None]:
-    worker = MockBaseWorker()
+def base_worker(base_config: str) -> Generator[MockBaseWorker, None, None]:
+    worker = MockBaseWorker(base_config)
     yield worker
     worker.stop()
 
 
 @pytest.fixture
-def whisper_config() -> str:
+def base_config() -> str:
     return "cpu"
-
-
-@pytest.fixture
-def whisper_worker() -> Generator[MockBaseWorker, None, None]:
-    worker = MockBaseWorker()
-    yield worker
-    worker.stop()
 
 
 def test_start_creates_new_process(base_worker: MockBaseWorker) -> None:
     # Given
-    config = {"test": "config"}
     with patch("multiprocessing.Process") as MockProcess:
         mock_process = Mock()
         MockProcess.return_value = mock_process
 
         # When
-        base_worker.start(config)
+        base_worker.start()
 
         # Then
         MockProcess.assert_called_once()
@@ -80,7 +72,7 @@ def test_stop_terminates_process(base_worker: MockBaseWorker) -> None:
         MockProcess.return_value = mock_process
 
         # Given
-        base_worker.start({"test": "config"})
+        base_worker.start()
         assert base_worker.is_alive()
 
         # When
@@ -98,7 +90,7 @@ def test_is_alive_returns_correct_status(base_worker: MockBaseWorker) -> None:
         MockProcess.return_value = mock_process
 
         # Given
-        base_worker.start({"test": "config"})
+        base_worker.start()
 
         # When
         alive_status = base_worker.is_alive()

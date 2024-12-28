@@ -20,7 +20,7 @@
 
 ### Feat
 
-- add speech-to-text API project using Whisper model
+- add speach-to-text API project using Whisper model
 
 ### Fix
 

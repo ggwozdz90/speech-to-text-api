@@ -7,8 +7,8 @@ from fastapi import Depends
 from core.config.app_config import AppConfig
 from core.logger.logger import Logger
 from core.timer.timer import TimerFactory
+from data.factories.translation_worker_factory import TranslationWorkerFactory
 from data.repositories.directory_repository_impl import DirectoryRepositoryImpl
-from data.workers.mbart_worker import MBartConfig, MBartWorker
 from domain.repositories.directory_repository import DirectoryRepository
 from domain.repositories.translation_model_repository import TranslationModelRepository
 
@@ -23,13 +23,13 @@ class TranslationModelRepositoryImpl(TranslationModelRepository):  # type: ignor
         directory_repository: Annotated[DirectoryRepository, Depends(DirectoryRepositoryImpl)],
         timer_factory: Annotated[TimerFactory, Depends()],
         logger: Annotated[Logger, Depends()],
-        worker: Annotated[MBartWorker, Depends()],
+        worker_factory: Annotated[TranslationWorkerFactory, Depends()],
     ) -> "TranslationModelRepositoryImpl":
         if cls._instance is None:
             with cls._lock:
                 if cls._instance is None:
                     cls._instance = super(TranslationModelRepositoryImpl, cls).__new__(cls)
-                    cls._instance._initialize(config, directory_repository, timer_factory, logger, worker)
+                    cls._instance._initialize(config, directory_repository, timer_factory, logger, worker_factory)
         return cls._instance
 
     def _initialize(
@@ -38,13 +38,13 @@ class TranslationModelRepositoryImpl(TranslationModelRepository):  # type: ignor
         directory_repository: DirectoryRepository,
         timer_factory: TimerFactory,
         logger: Logger,
-        worker: MBartWorker,
+        worker_factory: TranslationWorkerFactory,
     ) -> None:
         directory_repository.create_directory(config.translation_model_download_path)
         self.config = config
         self.timer = timer_factory.create()
         self.logger = logger
-        self.worker = worker
+        self.worker = worker_factory.create()
         self.last_access_time = 0.0
 
     def translate(
@@ -55,13 +55,7 @@ class TranslationModelRepositoryImpl(TranslationModelRepository):  # type: ignor
     ) -> str:
         with self._lock:
             if not self.worker.is_alive():
-                self.worker.start(
-                    MBartConfig(
-                        device=self.config.device,
-                        model_name=self.config.translation_model_name,
-                        model_download_path=self.config.translation_model_download_path,
-                    )
-                )
+                self.worker.start()
 
         result: str = self.worker.translate(
             text,

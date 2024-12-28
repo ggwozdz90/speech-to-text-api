@@ -13,13 +13,13 @@ def whisper_config() -> WhisperConfig:
 
 
 @pytest.fixture
-def whisper_worker() -> Generator[WhisperWorker, None, None]:
-    worker = WhisperWorker()
+def whisper_worker(whisper_config: WhisperConfig) -> Generator[WhisperWorker, None, None]:
+    worker = WhisperWorker(whisper_config)
     yield worker
     worker.stop()
 
 
-def test_transcribe_sends_correct_command(whisper_worker: WhisperWorker, whisper_config: WhisperConfig) -> None:
+def test_transcribe_sends_correct_command(whisper_worker: WhisperWorker) -> None:
     with patch("multiprocessing.Process") as MockProcess, patch(
         "data.workers.whisper_worker.whisper.load_model"
     ) as mock_load_model:
@@ -29,7 +29,7 @@ def test_transcribe_sends_correct_command(whisper_worker: WhisperWorker, whisper
         mock_load_model.return_value = mock_model
 
         # Given
-        whisper_worker.start(whisper_config)
+        whisper_worker.start()
         file_path = "test.wav"
         language = "en"
 
@@ -54,7 +54,7 @@ def test_transcribe_raises_error_if_worker_not_running(whisper_worker: WhisperWo
 
 
 def test_initialize_shared_object(whisper_config: WhisperConfig) -> None:
-    worker = WhisperWorker()
+    worker = WhisperWorker(whisper_config)
     with patch("data.workers.whisper_worker.whisper.load_model") as mock_load_model:
         mock_model = Mock()
         mock_load_model.return_value = mock_model
@@ -72,7 +72,7 @@ def test_initialize_shared_object(whisper_config: WhisperConfig) -> None:
 
 
 def test_handle_command_transcribe(whisper_config: WhisperConfig) -> None:
-    worker = WhisperWorker()
+    worker = WhisperWorker(whisper_config)
     model = Mock()
     pipe = Mock()
     is_processing = multiprocessing.Value("b", False)
@@ -93,7 +93,7 @@ def test_handle_command_transcribe(whisper_config: WhisperConfig) -> None:
 
 
 def test_handle_command_transcribe_error(whisper_config: WhisperConfig) -> None:
-    worker = WhisperWorker()
+    worker = WhisperWorker(whisper_config)
     model = Mock()
     pipe = Mock()
     is_processing = multiprocessing.Value("b", False)

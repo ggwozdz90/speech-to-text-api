@@ -12,7 +12,7 @@ class Logger:
         return cls._instance
 
     def _initialize(self) -> None:
-        self.logger = logging.getLogger("speech_to_text_api")
+        self.logger = logging.getLogger("speach_to_text_api")
         self.logger.setLevel(logging.INFO)
         handler = logging.StreamHandler()
         handler.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))

@@ -1,10 +1,10 @@
-# Speech to Text API
+# Speach to Text API
 
-This project integrates various speech-to-text models, including OpenAI's Whisper, in Python and runs within a Docker container. It provides FastAPI endpoints for processing uploaded audio files to extract text and generate subtitles in SRT format. The detected text can also be translated using the mBART model.
+This project integrates various speach-to-text models, including OpenAI's Whisper, in Python and runs within a Docker container. It provides FastAPI endpoints for processing uploaded audio files to extract text and generate subtitles in SRT format. The detected text can also be translated using the mBART model.
 
 ## Features
 
-- **Speech-to-Text Model Integration**: Utilizes advanced speech-to-text models like Whisper for transcription.
+- **Speach-to-Text Model Integration**: Utilizes advanced speach-to-text models like Whisper for transcription.
 - **Translation Model Integration**: Translates detected text using translation models like the mBART model.
 - **Dockerized**: The application runs in a Docker container for easy deployment.
 - **FastAPI**: Exposes RESTful API endpoints for file uploads, text extraction, and subtitle generation.
@@ -125,16 +125,16 @@ The application uses a `.env` file or Docker Compose to define configurable envi
 - `DELETE_FILES_AFTER_TRANSCRIPTION`: Whether to delete files after transcription. Set to `true` or `false`. Default is `true`.
 - `FASTAPI_HOST`: Host for the FastAPI server. Default is `127.0.0.1`.
 - `FASTAPI_PORT`: Port for the FastAPI server. Default is `8000`.
-- `SPEACH_TO_TEXT_MODEL_NAME`: Name of the speech-to-text model to use. Supported models are `openai/whisper`. Default is `openai/whisper`.
-- `SPEACH_TO_TEXT_MODEL_TYPE`: Type of the speech-to-text model to use. Example types are `tiny`, `tiny.en`, `base`, `base.en`, `small`, `small.en`, `medium`, `medium.en`, `large`, and `turbo`. Default is `turbo`.
-- `SPEACH_TO_TEXT_MODEL_DOWNLOAD_PATH`: Path where speech-to-text models are downloaded. Default is `downloaded_speach_to_text_models`.
-- `TRANSLATION_MODEL_NAME`: Name of the translation model to use. Default is `facebook/mbart-large-50-many-to-many-mmt`.
+- `SPEACH_TO_TEXT_MODEL_NAME`: Name of the speach-to-text model to use. Supported models are `openai/whisper`. Default is `openai/whisper`.
+- `SPEACH_TO_TEXT_MODEL_TYPE`: Type of the speach-to-text model to use. Example types are `tiny`, `tiny.en`, `base`, `base.en`, `small`, `small.en`, `medium`, `medium.en`, `large`, and `turbo`. Default is `turbo`.
+- `SPEACH_TO_TEXT_MODEL_DOWNLOAD_PATH`: Path where speach-to-text models are downloaded. Default is `downloaded_speach_to_text_models`.
+- `TRANSLATION_MODEL_NAME`: Name of the translation model to use. Supported models are `facebook/mbart-large-50-many-to-many-mmt` and `facebook/seamless-m4t-v2-large`. Default is `facebook/mbart-large-50-many-to-many-mmt`.
 - `TRANSLATION_MODEL_DOWNLOAD_PATH`: Path where translation models are downloaded. Default is `downloaded_translation_models`.
 - `MODEL_IDLE_TIMEOUT`: Time in seconds after which the model will be unloaded if not used. Default is `120`.
 
 ## Table of Contents
 
-- [Speech to Text API](#speech-to-text-api)
+- [Speach to Text API](#speach-to-text-api)
   - [Features](#features)
   - [Docker Image](#docker-image)
   - [Getting Started](#getting-started)

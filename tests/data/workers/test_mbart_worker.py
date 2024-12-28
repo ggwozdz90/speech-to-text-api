@@ -19,8 +19,8 @@ def mbart_config() -> MBartConfig:
 
 
 @pytest.fixture
-def mbart_worker() -> Generator[MBartWorker, None, None]:
-    worker = MBartWorker()
+def mbart_worker(mbart_config: MBartConfig) -> Generator[MBartWorker, None, None]:
+    worker = MBartWorker(mbart_config)
     yield worker
     worker.stop()
 
@@ -30,7 +30,7 @@ class MockTensor:
         return self
 
 
-def test_translate_sends_correct_command(mbart_worker: MBartWorker, mbart_config: MBartConfig) -> None:
+def test_translate_sends_correct_command(mbart_worker: MBartWorker) -> None:
     with patch("multiprocessing.Process") as MockProcess, patch(
         "data.workers.mbart_worker.AutoModelForSeq2SeqLM.from_pretrained"
     ) as mock_load_model, patch("data.workers.mbart_worker.AutoTokenizer.from_pretrained") as mock_load_tokenizer:
@@ -42,7 +42,7 @@ def test_translate_sends_correct_command(mbart_worker: MBartWorker, mbart_config
         mock_load_tokenizer.return_value = mock_tokenizer
 
         # Given
-        mbart_worker.start(mbart_config)
+        mbart_worker.start()
         text = "Hello, world!"
         source_language = "en"
         target_language = "fr"
@@ -69,7 +69,7 @@ def test_translate_raises_error_if_worker_not_running(mbart_worker: MBartWorker)
 
 
 def test_initialize_shared_object(mbart_config: MBartConfig) -> None:
-    worker = MBartWorker()
+    worker = MBartWorker(mbart_config)
     with patch("data.workers.mbart_worker.AutoModelForSeq2SeqLM.from_pretrained") as mock_load_model, patch(
         "data.workers.mbart_worker.AutoTokenizer.from_pretrained"
     ) as mock_load_tokenizer:

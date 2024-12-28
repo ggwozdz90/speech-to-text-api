@@ -20,7 +20,11 @@ class BaseWorker(
         SharedObjectType,
     ],
 ):
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        config: ConfigType,
+    ) -> None:
+        self._config = config
         self._process: Optional[multiprocessing.Process] = None
         self._is_processing: Synchronized = multiprocessing.Value("b", False)  # type: ignore
         self._processing_lock: multiprocessing.synchronize.Lock = multiprocessing.Lock()
@@ -47,15 +51,12 @@ class BaseWorker(
     ) -> None:
         pass
 
-    def start(
-        self,
-        config: ConfigType,
-    ) -> None:
+    def start(self) -> None:
         if self._process is None or not self._process.is_alive():
             self._stop_event.clear()
             self._process = multiprocessing.Process(
                 target=self._run_process,
-                args=(config, self._pipe_child, self._stop_event, self._is_processing, self._processing_lock),
+                args=(self._config, self._pipe_child, self._stop_event, self._is_processing, self._processing_lock),
             )
             self._process.start()
 
