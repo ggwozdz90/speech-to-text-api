@@ -2,7 +2,7 @@ from typing import Annotated, List
 
 from fastapi import Depends
 
-from config.logger_config import Logger
+from core.logger.logger import Logger
 from domain.models.sentence_model import SentenceModel
 from domain.models.subtitle_segment_model import SubtitleSegmentModel
 

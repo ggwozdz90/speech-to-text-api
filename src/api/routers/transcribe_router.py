@@ -12,7 +12,7 @@ from application.usecases.transcribe_file_to_srt_usecase import (
 from application.usecases.transcribe_file_to_text_usecase import (
     TranscribeFileToTextUseCase,
 )
-from config.logger_config import Logger
+from core.logger.logger import Logger
 
 
 class TranscribeRouter:
@@ -52,7 +52,7 @@ class TranscribeRouter:
             logger.error(f"Validation error: {e.errors()}")
             raise HTTPException(
                 status_code=422,
-                detail=e.errors(),
+                detail=[{"loc": err["loc"], "msg": err["msg"], "type": err["type"]} for err in e.errors()],
             )
         except Exception as e:
             logger.error(f"Unexpected error: {str(e)}")
@@ -89,7 +89,7 @@ class TranscribeRouter:
             logger.error(f"Validation error: {e.errors()}")
             raise HTTPException(
                 status_code=422,
-                detail=e.errors(),
+                detail=[{"loc": err["loc"], "msg": err["msg"], "type": err["type"]} for err in e.errors()],
             )
         except Exception as e:
             logger.error(f"Unexpected error: {str(e)}")

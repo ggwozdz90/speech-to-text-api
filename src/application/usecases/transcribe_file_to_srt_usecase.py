@@ -2,7 +2,7 @@ from typing import Annotated, Optional
 
 from fastapi import Depends, UploadFile
 
-from config.app_config import AppConfig
+from core.config.app_config import AppConfig
 from domain.models.subtitle_segment_model import SubtitleSegmentModel
 from domain.services.sentence_service import SentenceService
 from domain.services.subtitle_service import SubtitleService

@@ -3,7 +3,7 @@ from unittest.mock import Mock, patch
 import pytest
 
 from api.server import APIServer
-from config.app_config import AppConfig
+from core.config.app_config import AppConfig
 from src.main import main
 
 

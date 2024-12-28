@@ -2,38 +2,50 @@ from typing import Annotated
 
 from fastapi import Depends, UploadFile
 
-from config.app_config import AppConfig
-from config.logger_config import Logger
+from core.config.app_config import AppConfig
+from core.logger.logger import Logger
 from data.repositories.file_repository_impl import FileRepositoryImpl
-from data.repositories.whisper_repository_impl import WhisperRepositoryImpl
+from data.repositories.speach_to_text_repository_impl import SpeachToTextRepositoryImpl
 from domain.models.transcription_result_model import TranscriptionResultModel
 from domain.repositories.file_repository import FileRepository
-from domain.repositories.whisper_repository import WhisperRepository
+from domain.repositories.speach_to_text_repository import SpeachToTextRepository
+from domain.services.language_mapping_service import LanguageMappingService
 
 
 class TranscriptionService:
     def __init__(
         self,
         config: Annotated[AppConfig, Depends()],
-        whisper_repository: Annotated[WhisperRepository, Depends(WhisperRepositoryImpl)],
+        speach_to_text_repository: Annotated[SpeachToTextRepository, Depends(SpeachToTextRepositoryImpl)],
         file_repository: Annotated[FileRepository, Depends(FileRepositoryImpl)],
         logger: Annotated[Logger, Depends()],
+        language_mapping_service: Annotated[LanguageMappingService, Depends()],
     ) -> None:
         self.config = config
-        self.whisper_repository = whisper_repository
+        self.speach_to_text_repository = speach_to_text_repository
         self.file_repository = file_repository
         self.logger = logger
+        self.language_mapping_service = language_mapping_service
 
     async def transcribe(
         self,
         file: UploadFile,
         language: str,
     ) -> TranscriptionResultModel:
-        self.logger.info(f"Starting transcription for file: {file.filename}")
         file_path = await self.file_repository.save_file(file)
         self.logger.info(f"File saved at: {file_path}")
 
-        result = self.whisper_repository.transcribe(file_path, language=language)
+        language_mapped = self.language_mapping_service.map_language(
+            language,
+            self.config.speach_to_text_model_name,
+        )
+
+        self.logger.info(f"Starting transcription for file: {file.filename} with language: {language_mapped}")
+
+        result = self.speach_to_text_repository.transcribe(
+            file_path,
+            language=language_mapped,
+        )
         self.logger.info("Transcription completed")
 
         if self.config.delete_files_after_transcription:

@@ -101,6 +101,30 @@ def test_transcribe_missing_source_language(client: TestClient) -> None:
     assert response.status_code == 422  # Unprocessable Entity
 
 
+def test_transcribe_invalid_language(client: TestClient) -> None:
+    # When
+    response = client.post(
+        "/transcribe",
+        params={
+            "source_language": "en_US",
+            "target_language": "invalid_language",
+        },
+        files={"file": ("test_file.txt", b"file content")},
+    )
+
+    # Then
+    assert response.status_code == 422  # Unprocessable Entity
+    assert response.json() == {
+        "detail": [
+            {
+                "loc": ["language"],
+                "msg": "Value error, Invalid language format. Expected format is xx_XX",
+                "type": "value_error",
+            }
+        ]
+    }
+
+
 def test_transcribe_srt_success(
     client: TestClient,
     mock_transcribe_file_to_srt_usecase: TranscribeFileToSrtUseCase,
@@ -163,3 +187,27 @@ def test_transcribe_srt_missing_source_language(client: TestClient) -> None:
 
     # Then
     assert response.status_code == 422  # Unprocessable Entity
+
+
+def test_transcribe_srt_invalid_language(client: TestClient) -> None:
+    # When
+    response = client.post(
+        "/transcribe/srt",
+        params={
+            "source_language": "en_US",
+            "target_language": "invalid_language",
+        },
+        files={"file": ("test_file.txt", b"file content")},
+    )
+
+    # Then
+    assert response.status_code == 422  # Unprocessable Entity
+    assert response.json() == {
+        "detail": [
+            {
+                "loc": ["language"],
+                "msg": "Value error, Invalid language format. Expected format is xx_XX",
+                "type": "value_error",
+            }
+        ]
+    }

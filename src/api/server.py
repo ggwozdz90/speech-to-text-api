@@ -3,7 +3,7 @@ from fastapi import FastAPI
 
 from api.middlewares.process_time_middleware import ProcessTimeMiddleware
 from api.routers.transcribe_router import TranscribeRouter
-from config.app_config import AppConfig
+from core.config.app_config import AppConfig
 
 
 class APIServer:

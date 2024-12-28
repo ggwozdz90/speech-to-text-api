@@ -5,16 +5,19 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
+      - DEVICE=cpu
       - FILE_UPLOAD_PATH=uploaded_files
       - DELETE_FILES_AFTER_TRANSCRIPTION=true
       - FASTAPI_HOST=0.0.0.0
       - FASTAPI_PORT=8000
-      - WHISPER_MODEL_NAME=turbo
-      - WHISPER_MODEL_DOWNLOAD_PATH=downloaded_whisper_models
+      - MODEL_IDLE_TIMEOUT=60
+      - SPEACH_TO_TEXT_MODEL_NAME=openai/whisper
+      - SPEACH_TO_TEXT_MODEL_TYPE=turbo
+      - SPEACH_TO_TEXT_MODEL_DOWNLOAD_PATH=downloaded_speach_to_text_models
       - TRANSLATION_MODEL_NAME=facebook/mbart-large-50-many-to-many-mmt
       - TRANSLATION_MODEL_DOWNLOAD_PATH=downloaded_translation_models
     ports:
       - "8000:8000"
     volumes:
-      - ./volume/downloaded_whisper_models:/app/downloaded_whisper_models
+      - ./volume/downloaded_speach_to_text_models:/app/downloaded_speach_to_text_models
       - ./volume/uploaded_files:/app/uploaded_files

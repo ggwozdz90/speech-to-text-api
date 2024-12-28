@@ -3,7 +3,7 @@ from typing import Annotated
 
 from fastapi import Depends, UploadFile
 
-from config.app_config import AppConfig
+from core.config.app_config import AppConfig
 from data.repositories.directory_repository_impl import DirectoryRepositoryImpl
 from domain.repositories.directory_repository import DirectoryRepository
 from domain.repositories.file_repository import FileRepository

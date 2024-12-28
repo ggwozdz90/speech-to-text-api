@@ -1,5 +1,5 @@
 from api.server import APIServer
-from config.app_config import AppConfig
+from core.config.app_config import AppConfig
 
 
 def main(

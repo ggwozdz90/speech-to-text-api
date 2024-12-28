@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock, Mock, mock_open, patch
 import pytest
 from fastapi import UploadFile
 
-from config.app_config import AppConfig
+from core.config.app_config import AppConfig
 from data.repositories.file_repository_impl import FileRepositoryImpl
 from domain.repositories.directory_repository import DirectoryRepository
 
