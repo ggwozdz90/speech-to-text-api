@@ -1,6 +1,8 @@
 import json
+from unittest.mock import mock_open, patch
+
 import pytest
-from unittest.mock import patch, mock_open
+
 from src.domain.services.language_mapping_service import LanguageMappingService
 
 

@@ -3,8 +3,8 @@ from unittest.mock import Mock
 import pytest
 
 from core.config.app_config import AppConfig
-from data.workers.mbart_worker import MBartWorker
-from data.workers.seamless_worker import SeamlessWorker
+from data.workers.mbart_translation_worker import MBartTranslationWorker
+from data.workers.seamless_translation_worker import SeamlessTranslationWorker
 from src.data.factories.translation_worker_factory import TranslationWorkerFactory
 
 
@@ -25,7 +25,7 @@ def test_create_mbart(mock_config: AppConfig) -> None:
     worker = factory.create()
 
     # Then
-    assert isinstance(worker, MBartWorker)
+    assert isinstance(worker, MBartTranslationWorker)
     assert worker._config.device == "cpu"
     assert worker._config.model_name == "facebook/mbart-large-50-many-to-many-mmt"
     assert worker._config.model_download_path == "/path/to/mbart"
@@ -43,7 +43,7 @@ def test_create_seamless(mock_config: AppConfig) -> None:
     worker = factory.create()
 
     # Then
-    assert isinstance(worker, SeamlessWorker)
+    assert isinstance(worker, SeamlessTranslationWorker)
     assert worker._config.device == "cpu"
     assert worker._config.model_name == "facebook/seamless-m4t-v2-large"
     assert worker._config.model_download_path == "/path/to/seamless"

@@ -12,17 +12,17 @@ from data.workers.base_worker import BaseWorker
 
 
 @dataclass
-class MBartConfig:
+class MBartTranslationConfig:
     device: str
     model_name: str
     model_download_path: str
 
 
-class MBartWorker(
+class MBartTranslationWorker(
     BaseWorker[  # type: ignore
         Tuple[str, str, str],
         str,
-        MBartConfig,
+        MBartTranslationConfig,
         Tuple[AutoModelForSeq2SeqLM, AutoTokenizer],
     ]
 ):
@@ -45,7 +45,7 @@ class MBartWorker(
 
     def initialize_shared_object(
         self,
-        config: MBartConfig,
+        config: MBartTranslationConfig,
     ) -> Tuple[AutoModelForSeq2SeqLM, AutoTokenizer]:
         model = AutoModelForSeq2SeqLM.from_pretrained(
             config.model_name,
@@ -62,7 +62,7 @@ class MBartWorker(
         command: str,
         args: Tuple[str, str, str],
         shared_object: Tuple[AutoModelForSeq2SeqLM, AutoTokenizer],
-        config: MBartConfig,
+        config: MBartTranslationConfig,
         pipe: multiprocessing.connection.Connection,
         is_processing: Synchronized,  # type: ignore
         processing_lock: multiprocessing.synchronize.Lock,

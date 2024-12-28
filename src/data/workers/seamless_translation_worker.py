@@ -11,17 +11,17 @@ from data.workers.base_worker import BaseWorker
 
 
 @dataclass
-class SeamlessConfig:
+class SeamlessTranslationConfig:
     device: str
     model_name: str
     model_download_path: str
 
 
-class SeamlessWorker(
+class SeamlessTranslationWorker(
     BaseWorker[  # type: ignore
         Tuple[str, str, str],
         str,
-        SeamlessConfig,
+        SeamlessTranslationConfig,
         Tuple[SeamlessM4Tv2ForTextToText, AutoProcessor],
     ]
 ):
@@ -44,7 +44,7 @@ class SeamlessWorker(
 
     def initialize_shared_object(
         self,
-        config: SeamlessConfig,
+        config: SeamlessTranslationConfig,
     ) -> Tuple[SeamlessM4Tv2ForTextToText, AutoProcessor]:
         model = SeamlessM4Tv2ForTextToText.from_pretrained(
             config.model_name,
@@ -61,7 +61,7 @@ class SeamlessWorker(
         command: str,
         args: Tuple[str, str, str],
         shared_object: Tuple[SeamlessM4Tv2ForTextToText, AutoProcessor],
-        config: SeamlessConfig,
+        config: SeamlessTranslationConfig,
         pipe: multiprocessing.connection.Connection,
         is_processing: Synchronized,  # type: ignore
         processing_lock: multiprocessing.synchronize.Lock,

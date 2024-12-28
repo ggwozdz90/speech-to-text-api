@@ -5,7 +5,10 @@ from unittest.mock import Mock, patch
 import pytest
 import torch
 
-from data.workers.mbart_worker import MBartConfig, MBartWorker
+from data.workers.mbart_translation_worker import (
+    MBartTranslationConfig,
+    MBartTranslationWorker,
+)
 
 
 @pytest.fixture
@@ -14,13 +17,13 @@ def mock_tensor() -> Mock:
 
 
 @pytest.fixture
-def mbart_config() -> MBartConfig:
-    return MBartConfig(device="cuda", model_name="facebook/mbart-large-50", model_download_path="/tmp")
+def mbart_config() -> MBartTranslationConfig:
+    return MBartTranslationConfig(device="cuda", model_name="facebook/mbart-large-50", model_download_path="/tmp")
 
 
 @pytest.fixture
-def mbart_worker(mbart_config: MBartConfig) -> Generator[MBartWorker, None, None]:
-    worker = MBartWorker(mbart_config)
+def mbart_worker(mbart_config: MBartTranslationConfig) -> Generator[MBartTranslationWorker, None, None]:
+    worker = MBartTranslationWorker(mbart_config)
     yield worker
     worker.stop()
 
@@ -30,10 +33,12 @@ class MockTensor:
         return self
 
 
-def test_translate_sends_correct_command(mbart_worker: MBartWorker) -> None:
+def test_translate_sends_correct_command(mbart_worker: MBartTranslationWorker) -> None:
     with patch("multiprocessing.Process") as MockProcess, patch(
-        "data.workers.mbart_worker.AutoModelForSeq2SeqLM.from_pretrained"
-    ) as mock_load_model, patch("data.workers.mbart_worker.AutoTokenizer.from_pretrained") as mock_load_tokenizer:
+        "data.workers.mbart_translation_worker.AutoModelForSeq2SeqLM.from_pretrained"
+    ) as mock_load_model, patch(
+        "data.workers.mbart_translation_worker.AutoTokenizer.from_pretrained"
+    ) as mock_load_tokenizer:
         mock_process = Mock()
         MockProcess.return_value = mock_process
         mock_model = Mock()
@@ -57,7 +62,7 @@ def test_translate_sends_correct_command(mbart_worker: MBartWorker) -> None:
             mock_send.assert_called_once_with(("translate", (text, source_language, target_language)))
 
 
-def test_translate_raises_error_if_worker_not_running(mbart_worker: MBartWorker) -> None:
+def test_translate_raises_error_if_worker_not_running(mbart_worker: MBartTranslationWorker) -> None:
     # Given
     text = "Hello, world!"
     source_language = "en"
@@ -68,10 +73,10 @@ def test_translate_raises_error_if_worker_not_running(mbart_worker: MBartWorker)
         mbart_worker.translate(text, source_language, target_language)
 
 
-def test_initialize_shared_object(mbart_config: MBartConfig) -> None:
-    worker = MBartWorker(mbart_config)
-    with patch("data.workers.mbart_worker.AutoModelForSeq2SeqLM.from_pretrained") as mock_load_model, patch(
-        "data.workers.mbart_worker.AutoTokenizer.from_pretrained"
+def test_initialize_shared_object(mbart_config: MBartTranslationConfig) -> None:
+    worker = MBartTranslationWorker(mbart_config)
+    with patch("data.workers.mbart_translation_worker.AutoModelForSeq2SeqLM.from_pretrained") as mock_load_model, patch(
+        "data.workers.mbart_translation_worker.AutoTokenizer.from_pretrained"
     ) as mock_load_tokenizer:
         mock_model = Mock()
         mock_tokenizer = Mock()
@@ -95,9 +100,9 @@ def test_initialize_shared_object(mbart_config: MBartConfig) -> None:
         assert tokenizer == mock_tokenizer
 
 
-def test_handle_command_translate(mbart_worker: MBartWorker, mbart_config: MBartConfig) -> None:
-    with patch("data.workers.mbart_worker.AutoModelForSeq2SeqLM.from_pretrained") as mock_load_model, patch(
-        "data.workers.mbart_worker.AutoTokenizer.from_pretrained"
+def test_handle_command_translate(mbart_worker: MBartTranslationWorker, mbart_config: MBartTranslationConfig) -> None:
+    with patch("data.workers.mbart_translation_worker.AutoModelForSeq2SeqLM.from_pretrained") as mock_load_model, patch(
+        "data.workers.mbart_translation_worker.AutoTokenizer.from_pretrained"
     ) as mock_load_tokenizer, patch("torch.no_grad"):
         mock_model = Mock()
         mock_tokenizer = Mock()
@@ -133,9 +138,11 @@ def test_handle_command_translate(mbart_worker: MBartWorker, mbart_config: MBart
         pipe.send.assert_called_once_with("Bonjour, le monde!")
 
 
-def test_handle_command_translate_error(mbart_worker: MBartWorker, mbart_config: MBartConfig) -> None:
-    with patch("data.workers.mbart_worker.AutoModelForSeq2SeqLM.from_pretrained") as mock_load_model, patch(
-        "data.workers.mbart_worker.AutoTokenizer.from_pretrained"
+def test_handle_command_translate_error(
+    mbart_worker: MBartTranslationWorker, mbart_config: MBartTranslationConfig
+) -> None:
+    with patch("data.workers.mbart_translation_worker.AutoModelForSeq2SeqLM.from_pretrained") as mock_load_model, patch(
+        "data.workers.mbart_translation_worker.AutoTokenizer.from_pretrained"
     ) as mock_load_tokenizer, patch("torch.no_grad"):
         mock_model = Mock()
         mock_tokenizer = Mock()

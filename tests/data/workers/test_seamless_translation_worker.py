@@ -4,24 +4,27 @@ from unittest.mock import MagicMock, Mock, patch
 import pytest
 from transformers import AutoProcessor, SeamlessM4Tv2ForTextToText
 
-from src.data.workers.seamless_worker import SeamlessConfig, SeamlessWorker
+from data.workers.seamless_translation_worker import (
+    SeamlessTranslationConfig,
+    SeamlessTranslationWorker,
+)
 
 
 @pytest.fixture
-def mock_config() -> SeamlessConfig:
-    return SeamlessConfig(
+def mock_config() -> SeamlessTranslationConfig:
+    return SeamlessTranslationConfig(
         device="cpu", model_name="facebook/seamless-m4t-v2-large", model_download_path="/path/to/model"
     )
 
 
 @pytest.fixture
-def mock_worker(mock_config: SeamlessConfig) -> SeamlessWorker:
-    worker = SeamlessWorker(config=mock_config)
+def mock_worker(mock_config: SeamlessTranslationConfig) -> SeamlessTranslationWorker:
+    worker = SeamlessTranslationWorker(config=mock_config)
     worker._pipe_parent = Mock()
     return worker
 
 
-def test_translate_success(mock_worker: SeamlessWorker) -> None:
+def test_translate_success(mock_worker: SeamlessTranslationWorker) -> None:
     # Given
     mock_worker.is_alive = Mock(return_value=True)
     mock_worker._pipe_parent.recv = Mock(return_value="translated text")
@@ -34,7 +37,7 @@ def test_translate_success(mock_worker: SeamlessWorker) -> None:
     mock_worker._pipe_parent.send.assert_called_once_with(("translate", ("hello", "en", "fr")))
 
 
-def test_translate_worker_not_running(mock_worker: SeamlessWorker) -> None:
+def test_translate_worker_not_running(mock_worker: SeamlessTranslationWorker) -> None:
     # Given
     mock_worker.is_alive = Mock(return_value=False)
 
@@ -43,7 +46,7 @@ def test_translate_worker_not_running(mock_worker: SeamlessWorker) -> None:
         mock_worker.translate("hello", "en", "fr")
 
 
-def test_translate_exception(mock_worker: SeamlessWorker) -> None:
+def test_translate_exception(mock_worker: SeamlessTranslationWorker) -> None:
     # Given
     mock_worker.is_alive = Mock(return_value=True)
     mock_worker._pipe_parent.recv = Mock(return_value=Exception("Translation error"))
@@ -53,7 +56,7 @@ def test_translate_exception(mock_worker: SeamlessWorker) -> None:
         mock_worker.translate("hello", "en", "fr")
 
 
-def test_initialize_shared_object(mock_config: SeamlessConfig) -> None:
+def test_initialize_shared_object(mock_config: SeamlessTranslationConfig) -> None:
     # Given
     with patch.object(SeamlessM4Tv2ForTextToText, "from_pretrained") as mock_model, patch.object(
         AutoProcessor, "from_pretrained"
@@ -61,7 +64,7 @@ def test_initialize_shared_object(mock_config: SeamlessConfig) -> None:
         mock_model.return_value = MagicMock()
         mock_processor.return_value = MagicMock()
 
-        worker = SeamlessWorker(config=mock_config)
+        worker = SeamlessTranslationWorker(config=mock_config)
 
         # When
         model, processor = worker.initialize_shared_object(mock_config)
@@ -73,7 +76,9 @@ def test_initialize_shared_object(mock_config: SeamlessConfig) -> None:
         assert processor is not None
 
 
-def test_handle_command_translate_success(mock_worker: SeamlessWorker, mock_config: SeamlessConfig) -> None:
+def test_handle_command_translate_success(
+    mock_worker: SeamlessTranslationWorker, mock_config: SeamlessTranslationConfig
+) -> None:
     # Given
     mock_pipe = Mock()
     is_processing = multiprocessing.Value("b", False)
@@ -97,7 +102,9 @@ def test_handle_command_translate_success(mock_worker: SeamlessWorker, mock_conf
     mock_pipe.send.assert_called_once_with("translated text")
 
 
-def test_handle_command_translate_exception(mock_worker: SeamlessWorker, mock_config: SeamlessConfig) -> None:
+def test_handle_command_translate_exception(
+    mock_worker: SeamlessTranslationWorker, mock_config: SeamlessTranslationConfig
+) -> None:
     # Given
     mock_pipe = Mock()
     is_processing = multiprocessing.Value("b", False)

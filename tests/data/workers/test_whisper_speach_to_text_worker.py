@@ -4,24 +4,27 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from data.workers.whisper_worker import WhisperConfig, WhisperWorker
+from data.workers.whisper_speach_to_text_worker import (
+    WhisperSpeachToTextConfig,
+    WhisperSpeachToTextWorker,
+)
 
 
 @pytest.fixture
-def whisper_config() -> WhisperConfig:
-    return WhisperConfig(device="cuda", model_type="base", model_download_path="/tmp")
+def whisper_config() -> WhisperSpeachToTextConfig:
+    return WhisperSpeachToTextConfig(device="cuda", model_type="base", model_download_path="/tmp")
 
 
 @pytest.fixture
-def whisper_worker(whisper_config: WhisperConfig) -> Generator[WhisperWorker, None, None]:
-    worker = WhisperWorker(whisper_config)
+def whisper_worker(whisper_config: WhisperSpeachToTextConfig) -> Generator[WhisperSpeachToTextWorker, None, None]:
+    worker = WhisperSpeachToTextWorker(whisper_config)
     yield worker
     worker.stop()
 
 
-def test_transcribe_sends_correct_command(whisper_worker: WhisperWorker) -> None:
+def test_transcribe_sends_correct_command(whisper_worker: WhisperSpeachToTextWorker) -> None:
     with patch("multiprocessing.Process") as MockProcess, patch(
-        "data.workers.whisper_worker.whisper.load_model"
+        "data.workers.whisper_speach_to_text_worker.whisper.load_model"
     ) as mock_load_model:
         mock_process = Mock()
         MockProcess.return_value = mock_process
@@ -43,7 +46,7 @@ def test_transcribe_sends_correct_command(whisper_worker: WhisperWorker) -> None
             mock_send.assert_called_once_with(("transcribe", (file_path, language)))
 
 
-def test_transcribe_raises_error_if_worker_not_running(whisper_worker: WhisperWorker) -> None:
+def test_transcribe_raises_error_if_worker_not_running(whisper_worker: WhisperSpeachToTextWorker) -> None:
     # Given
     file_path = "test.wav"
     language = "en"
@@ -53,9 +56,9 @@ def test_transcribe_raises_error_if_worker_not_running(whisper_worker: WhisperWo
         whisper_worker.transcribe(file_path, language)
 
 
-def test_initialize_shared_object(whisper_config: WhisperConfig) -> None:
-    worker = WhisperWorker(whisper_config)
-    with patch("data.workers.whisper_worker.whisper.load_model") as mock_load_model:
+def test_initialize_shared_object(whisper_config: WhisperSpeachToTextConfig) -> None:
+    worker = WhisperSpeachToTextWorker(whisper_config)
+    with patch("data.workers.whisper_speach_to_text_worker.whisper.load_model") as mock_load_model:
         mock_model = Mock()
         mock_load_model.return_value = mock_model
         mock_model.to.return_value = mock_model
@@ -71,8 +74,8 @@ def test_initialize_shared_object(whisper_config: WhisperConfig) -> None:
         assert model == mock_model
 
 
-def test_handle_command_transcribe(whisper_config: WhisperConfig) -> None:
-    worker = WhisperWorker(whisper_config)
+def test_handle_command_transcribe(whisper_config: WhisperSpeachToTextConfig) -> None:
+    worker = WhisperSpeachToTextWorker(whisper_config)
     model = Mock()
     pipe = Mock()
     is_processing = multiprocessing.Value("b", False)
@@ -92,8 +95,8 @@ def test_handle_command_transcribe(whisper_config: WhisperConfig) -> None:
         pipe.send.assert_called_once_with({"text": "transcribed text"})
 
 
-def test_handle_command_transcribe_error(whisper_config: WhisperConfig) -> None:
-    worker = WhisperWorker(whisper_config)
+def test_handle_command_transcribe_error(whisper_config: WhisperSpeachToTextConfig) -> None:
+    worker = WhisperSpeachToTextWorker(whisper_config)
     model = Mock()
     pipe = Mock()
     is_processing = multiprocessing.Value("b", False)

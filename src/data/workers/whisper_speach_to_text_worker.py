@@ -11,17 +11,17 @@ from data.workers.base_worker import BaseWorker
 
 
 @dataclass
-class WhisperConfig:
+class WhisperSpeachToTextConfig:
     device: str
     model_type: str
     model_download_path: str
 
 
-class WhisperWorker(
+class WhisperSpeachToTextWorker(
     BaseWorker[  # type: ignore
         Tuple[str, str],
         dict[str, str],
-        WhisperConfig,
+        WhisperSpeachToTextConfig,
         whisper.Whisper,
     ]
 ):
@@ -43,7 +43,7 @@ class WhisperWorker(
 
     def initialize_shared_object(
         self,
-        config: WhisperConfig,
+        config: WhisperSpeachToTextConfig,
     ) -> whisper.Whisper:
         return whisper.load_model(
             config.model_type,
@@ -55,7 +55,7 @@ class WhisperWorker(
         command: str,
         args: Tuple[str, str],
         model: whisper.Whisper,
-        config: WhisperConfig,
+        config: WhisperSpeachToTextConfig,
         pipe: multiprocessing.connection.Connection,
         is_processing: Synchronized,  # type: ignore
         processing_lock: multiprocessing.synchronize.Lock,

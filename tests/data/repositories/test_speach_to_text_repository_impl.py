@@ -7,7 +7,7 @@ from core.logger.logger import Logger
 from core.timer.timer import Timer, TimerFactory
 from data.factories.speach_to_text_worker_factory import SpeachToTextWorkerFactory
 from data.repositories.speach_to_text_repository_impl import SpeachToTextRepositoryImpl
-from data.workers.whisper_worker import WhisperWorker
+from data.workers.whisper_speach_to_text_worker import WhisperSpeachToTextWorker
 from domain.repositories.directory_repository import DirectoryRepository
 
 
@@ -46,7 +46,7 @@ def mock_logger() -> Mock:
 
 @pytest.fixture
 def mock_worker() -> Mock:
-    return Mock(spec=WhisperWorker)
+    return Mock(spec=WhisperSpeachToTextWorker)
 
 
 @pytest.fixture

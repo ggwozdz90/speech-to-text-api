@@ -3,8 +3,14 @@ from typing import Annotated, Union
 from fastapi import Depends
 
 from core.config.app_config import AppConfig
-from data.workers.mbart_worker import MBartConfig, MBartWorker
-from data.workers.seamless_worker import SeamlessConfig, SeamlessWorker
+from data.workers.mbart_translation_worker import (
+    MBartTranslationConfig,
+    MBartTranslationWorker,
+)
+from data.workers.seamless_translation_worker import (
+    SeamlessTranslationConfig,
+    SeamlessTranslationWorker,
+)
 
 
 class TranslationWorkerFactory:
@@ -14,18 +20,18 @@ class TranslationWorkerFactory:
     ):
         self.config = config
 
-    def create(self) -> Union[MBartWorker, SeamlessWorker]:
+    def create(self) -> Union[MBartTranslationWorker, SeamlessTranslationWorker]:
         if self.config.translation_model_name == "facebook/mbart-large-50-many-to-many-mmt":
-            return MBartWorker(
-                MBartConfig(
+            return MBartTranslationWorker(
+                MBartTranslationConfig(
                     device=self.config.device,
                     model_name=self.config.translation_model_name,
                     model_download_path=self.config.translation_model_download_path,
                 )
             )
         elif self.config.translation_model_name == "facebook/seamless-m4t-v2-large":
-            return SeamlessWorker(
-                SeamlessConfig(
+            return SeamlessTranslationWorker(
+                SeamlessTranslationConfig(
                     device=self.config.device,
                     model_name=self.config.translation_model_name,
                     model_download_path=self.config.translation_model_download_path,

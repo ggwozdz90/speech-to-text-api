@@ -3,7 +3,7 @@ from unittest.mock import Mock
 import pytest
 
 from core.config.app_config import AppConfig
-from data.workers.whisper_worker import WhisperWorker
+from data.workers.whisper_speach_to_text_worker import WhisperSpeachToTextWorker
 from src.data.factories.speach_to_text_worker_factory import SpeachToTextWorkerFactory
 
 
@@ -25,7 +25,7 @@ def test_create_worker_whisper(mock_config: AppConfig) -> None:
     worker = factory.create()
 
     # Then
-    assert isinstance(worker, WhisperWorker)
+    assert isinstance(worker, WhisperSpeachToTextWorker)
     assert worker._config.device == "cpu"
     assert worker._config.model_type == "base"
     assert worker._config.model_download_path == "/path/to/whisper"
