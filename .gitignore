@@ -171,7 +171,7 @@ poetry.toml
 pyrightconfig.json
 
 # Project related artifacts
-downloaded_whisper_models/
+downloaded_speach_to_text_models/
 downloaded_translation_models/
 uploaded_files/
 volume/

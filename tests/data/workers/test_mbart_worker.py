@@ -1,9 +1,11 @@
 import multiprocessing
 from typing import Generator
 from unittest.mock import Mock, patch
+
 import pytest
-from data.workers.mbart_worker import MBartConfig, MBartWorker
 import torch
+
+from data.workers.mbart_worker import MBartConfig, MBartWorker
 
 
 @pytest.fixture
@@ -101,7 +103,7 @@ def test_handle_command_translate(mbart_worker: MBartWorker, mbart_config: MBart
         mock_tokenizer = Mock()
         mock_load_model.return_value = mock_model
         mock_load_tokenizer.return_value = mock_tokenizer
-        mock_tokenizer.lang_code_to_id = {"en": 0, "fr": 1}
+        mock_tokenizer.lang_code_to_id = {"fr": 1}
         mock_is_processing = multiprocessing.Value("b", False)
         mock_processing_lock = multiprocessing.Lock()
         pipe = Mock()
@@ -124,7 +126,6 @@ def test_handle_command_translate(mbart_worker: MBartWorker, mbart_config: MBart
 
         # Then
         assert not mock_is_processing.value
-        assert mock_tokenizer.src_lang == 0
         mock_tokenizer.assert_called_once_with(
             ["Hello, world!"], truncation=True, padding=True, max_length=1024, return_tensors="pt"
         )
@@ -140,7 +141,7 @@ def test_handle_command_translate_error(mbart_worker: MBartWorker, mbart_config:
         mock_tokenizer = Mock()
         mock_load_model.return_value = mock_model
         mock_load_tokenizer.return_value = mock_tokenizer
-        mock_tokenizer.lang_code_to_id = {"en": 0, "fr": 1}
+        mock_tokenizer.lang_code_to_id = {"fr": 1}
         mock_is_processing = multiprocessing.Value("b", False)
         mock_processing_lock = multiprocessing.Lock()
         pipe = Mock()

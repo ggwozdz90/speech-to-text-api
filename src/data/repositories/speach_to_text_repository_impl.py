@@ -10,11 +10,11 @@ from core.timer.timer import TimerFactory
 from data.repositories.directory_repository_impl import DirectoryRepositoryImpl
 from data.workers.whisper_worker import WhisperConfig, WhisperWorker
 from domain.repositories.directory_repository import DirectoryRepository
-from domain.repositories.whisper_repository import WhisperRepository
+from domain.repositories.speach_to_text_repository import SpeachToTextRepository
 
 
-class WhisperRepositoryImpl(WhisperRepository):  # type: ignore
-    _instance: Optional["WhisperRepositoryImpl"] = None
+class SpeachToTextRepositoryImpl(SpeachToTextRepository):  # type: ignore
+    _instance: Optional["SpeachToTextRepositoryImpl"] = None
     _lock = threading.Lock()
 
     def __new__(
@@ -24,11 +24,11 @@ class WhisperRepositoryImpl(WhisperRepository):  # type: ignore
         timer_factory: Annotated[TimerFactory, Depends()],
         logger: Annotated[Logger, Depends()],
         worker: Annotated[WhisperWorker, Depends()],
-    ) -> "WhisperRepositoryImpl":
+    ) -> "SpeachToTextRepositoryImpl":
         if cls._instance is None:
             with cls._lock:
                 if cls._instance is None:
-                    cls._instance = super(WhisperRepositoryImpl, cls).__new__(cls)
+                    cls._instance = super(SpeachToTextRepositoryImpl, cls).__new__(cls)
                     cls._instance._initialize(config, directory_repository, timer_factory, logger, worker)
         return cls._instance
 
@@ -40,7 +40,7 @@ class WhisperRepositoryImpl(WhisperRepository):  # type: ignore
         logger: Logger,
         worker: WhisperWorker,
     ) -> None:
-        directory_repository.create_directory(config.whisper_model_download_path)
+        directory_repository.create_directory(config.speach_to_text_model_download_path)
         self.config = config
         self.timer = timer_factory.create()
         self.logger = logger
@@ -57,8 +57,8 @@ class WhisperRepositoryImpl(WhisperRepository):  # type: ignore
                 self.worker.start(
                     WhisperConfig(
                         device=self.config.device,
-                        model_name=self.config.whisper_model_name,
-                        model_download_path=self.config.whisper_model_download_path,
+                        model_type=self.config.speach_to_text_model_type,
+                        model_download_path=self.config.speach_to_text_model_download_path,
                     )
                 )
 
@@ -77,10 +77,10 @@ class WhisperRepositoryImpl(WhisperRepository):  # type: ignore
         return result
 
     def _check_idle_timeout(self) -> None:
-        self.logger.info("Checking whisper model idle timeout")
+        self.logger.info("Checking speach to text model idle timeout")
 
         if self.worker.is_alive() and not self.worker.is_processing():
             with self._lock:
                 self.worker.stop()
                 self.timer.cancel()
-                self.logger.info("Whisper model stopped due to idle timeout")
+                self.logger.info("Speach to text model stopped due to idle timeout")

@@ -75,7 +75,7 @@ class MBartWorker(
                 text, source_language, target_language = args
                 model, tokenizer = shared_object
 
-                tokenizer.src_lang = tokenizer.lang_code_to_id[source_language]
+                tokenizer.src_lang = source_language
                 inputs = tokenizer([text], truncation=True, padding=True, max_length=1024, return_tensors="pt")
 
                 for key in inputs:

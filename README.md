@@ -1,17 +1,17 @@
 # Speech to Text API
 
-This project integrates OpenAI's Whisper model in Python and runs within a Docker container. It provides FastAPI endpoints for processing uploaded audio files to extract text and generate subtitles in SRT format. The detected text can also be translated using the mBART model.
+This project integrates various speech-to-text models, including OpenAI's Whisper, in Python and runs within a Docker container. It provides FastAPI endpoints for processing uploaded audio files to extract text and generate subtitles in SRT format. The detected text can also be translated using the mBART model.
 
 ## Features
 
-- **OpenAI Whisper Integration**: Utilizes Whisper for advanced speech-to-text capabilities.
-- **mBART Translation**: Translates detected text using the mBART model.
+- **Speech-to-Text Model Integration**: Utilizes advanced speech-to-text models like Whisper for transcription.
+- **Translation Model Integration**: Translates detected text using translation models like the mBART model.
 - **Dockerized**: The application runs in a Docker container for easy deployment.
 - **FastAPI**: Exposes RESTful API endpoints for file uploads, text extraction, and subtitle generation.
 - **Configurable**: The repository includes a `.env` file that defines configurable environment variables.
 - **Clean Architecture**: The project structure follows the principles of Clean Architecture, ensuring separation of concerns and maintainability.
 - **Pre-commit Hooks**: Ensures code quality and formatting with checks for JSON, TOML, YAML, mixed line endings, trailing whitespace, Black, Flake8, isort, mypy, Bandit, and Vulture.
-- **Logging**: Detailed logging of operations for better traceability and debugging.
+- **Logging**: Provides detailed logging of operations for better traceability and debugging.
 
 ## Docker Image
 
@@ -125,8 +125,9 @@ The application uses a `.env` file or Docker Compose to define configurable envi
 - `DELETE_FILES_AFTER_TRANSCRIPTION`: Whether to delete files after transcription. Set to `true` or `false`. Default is `true`.
 - `FASTAPI_HOST`: Host for the FastAPI server. Default is `127.0.0.1`.
 - `FASTAPI_PORT`: Port for the FastAPI server. Default is `8000`.
-- `WHISPER_MODEL_NAME`: Name of the Whisper model to use. Supported models are `tiny`, `tiny.en`, `base`, `base.en`, `small`, `small.en`, `medium`, `medium.en`, `large`, and `turbo`. Default is `turbo`.
-- `WHISPER_MODEL_DOWNLOAD_PATH`: Path where Whisper models are downloaded. Default is `downloaded_whisper_models`.
+- `SPEACH_TO_TEXT_MODEL_NAME`: Name of the speech-to-text model to use. Supported models are `openai/whisper`. Default is `openai/whisper`.
+- `SPEACH_TO_TEXT_MODEL_TYPE`: Type of the speech-to-text model to use. Example types are `tiny`, `tiny.en`, `base`, `base.en`, `small`, `small.en`, `medium`, `medium.en`, `large`, and `turbo`. Default is `turbo`.
+- `SPEACH_TO_TEXT_MODEL_DOWNLOAD_PATH`: Path where speech-to-text models are downloaded. Default is `downloaded_speach_to_text_models`.
 - `TRANSLATION_MODEL_NAME`: Name of the translation model to use. Default is `facebook/mbart-large-50-many-to-many-mmt`.
 - `TRANSLATION_MODEL_DOWNLOAD_PATH`: Path where translation models are downloaded. Default is `downloaded_translation_models`.
 - `MODEL_IDLE_TIMEOUT`: Time in seconds after which the model will be unloaded if not used. Default is `120`.

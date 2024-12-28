@@ -9,7 +9,7 @@ from data.workers.whisper_worker import WhisperConfig, WhisperWorker
 
 @pytest.fixture
 def whisper_config() -> WhisperConfig:
-    return WhisperConfig(device="cuda", model_name="tiny", model_download_path="/tmp")
+    return WhisperConfig(device="cuda", model_type="base", model_download_path="/tmp")
 
 
 @pytest.fixture
@@ -65,7 +65,7 @@ def test_initialize_shared_object(whisper_config: WhisperConfig) -> None:
 
         # Then
         mock_load_model.assert_called_once_with(
-            whisper_config.model_name,
+            whisper_config.model_type,
             download_root=whisper_config.model_download_path,
         )
         assert model == mock_model

@@ -13,7 +13,7 @@ from data.workers.base_worker import BaseWorker
 @dataclass
 class WhisperConfig:
     device: str
-    model_name: str
+    model_type: str
     model_download_path: str
 
 
@@ -46,7 +46,7 @@ class WhisperWorker(
         config: WhisperConfig,
     ) -> whisper.Whisper:
         return whisper.load_model(
-            config.model_name,
+            config.model_type,
             download_root=config.model_download_path,
         ).to(config.device)
 

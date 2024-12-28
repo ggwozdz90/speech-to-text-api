@@ -19,7 +19,7 @@ RUN poetry install --without dev --no-root \
     && rm -rf "$POETRY_CACHE_DIR"
 
 
-# Stage 2: Dockerfile for running the API Whisper image
+# Stage 2: Dockerfile for running the API speach-to-text-api image
 FROM python:3.12-slim-bookworm AS runtime
 
 # Set environment variables for the virtual environment

@@ -49,7 +49,7 @@ jobs:
         push: true
         labels: |
           org.opencontainers.image.title="Speech to Text API"
-          org.opencontainers.image.description="API for converting speech to text using Whisper model"
+          org.opencontainers.image.description="API for converting speech to text"
           org.opencontainers.image.source="https://github.com/ggwozdz90/speach-to-text-api"
           org.opencontainers.image.documentation="https://github.com/ggwozdz90/speach-to-text-api/blob/main/README.md"
         tags: | 
