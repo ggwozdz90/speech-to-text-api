@@ -28,35 +28,63 @@ The Docker image for this project is available on Docker Hub: [ggwozdz/speach-to
 - Poetry
 - ffmpeg
 
-### Installation
+### Running the Project
 
-1. Clone the repository:
+You have four options for running the project:
 
-    ```sh
-    git clone https://github.com/ggwozdz90/speach-to-text-api
-    ```
+1. **Using Docker Compose**:
+    - Build and run the Docker container using Docker Compose with the `docker-compose.yaml` file in the root directory:
 
-2. You have two options for installing dependencies:
+        ```sh
+        docker-compose up --build
+        ```
 
-    - **Using Docker**:
-        - Build and run the Docker container, which will handle the installation of dependencies:
+2. **Using Docker**:
+    - Run the Docker container directly from Docker Hub:
 
-            ```sh
-            docker-compose up --build
-            ```
+        ```sh
+        docker run -d -p 8000:8000 \
+            -e DEVICE=cpu \
+            -e FILE_UPLOAD_PATH=uploaded_files \
+            -e DELETE_FILES_AFTER_TRANSCRIPTION=true \
+            -e FASTAPI_HOST=0.0.0.0 \
+            -e FASTAPI_PORT=8000 \
+            -e MODEL_IDLE_TIMEOUT=60 \
+            -e SPEACH_TO_TEXT_MODEL_NAME=openai/whisper \
+            -e SPEACH_TO_TEXT_MODEL_TYPE=turbo \
+            -e SPEACH_TO_TEXT_MODEL_DOWNLOAD_PATH=downloaded_speach_to_text_models \
+            -e TRANSLATION_MODEL_NAME=facebook/mbart-large-50-many-to-many-mmt \
+            -e TRANSLATION_MODEL_DOWNLOAD_PATH=downloaded_translation_models \
+            ggwozdz/speach-to-text-api
+        ```
 
-    - **Locally using Poetry**:
-        - Install dependencies locally using Poetry:
+3. **Locally using Poetry**:
+    - Clone the repository:
 
-            ```sh
-            poetry install
-            ```
+        ```sh
+        git clone https://github.com/ggwozdz90/speach-to-text-api
+        cd speach-to-text-api
+        ```
 
-        - Run the application
+    - Install dependencies locally using Poetry:
 
-            ```sh
-            poetry run start
-            ```
+        ```sh
+        poetry install
+        ```
+
+    - Run the application
+
+        ```sh
+        poetry run start
+        ```
+
+4. **Using Executable File**:
+    - Download the executable file from the [GitHub Releases](https://github.com/ggwozdz90/speach-to-text-api/releases) page.
+    - Run the executable file:
+
+        ```sh
+        ./speach-to-text-api.exe
+        ```
 
 ### Usage
 
@@ -148,7 +176,7 @@ The supported languages for each model can be found in the following files:
   - [Docker Image](#docker-image)
   - [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
-    - [Installation](#installation)
+    - [Running the Project](#running-the-project)
     - [Usage](#usage)
       - [Transcribe Audio to Text](#transcribe-audio-to-text)
       - [Generate Subtitles in SRT Format](#generate-subtitles-in-srt-format)

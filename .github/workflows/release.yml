@@ -68,7 +68,12 @@ jobs:
         git merge --no-ff main -m "chore(release): merge main into develop"
         git push origin develop
 
-    - name: Trigger deploy workflow
+    - name: Trigger deploy source code and windows exe workflow
       env:
         GITHUB_TOKEN: ${{ secrets.REPOSITORY_TOKEN }}
-      run: gh workflow run deploy.yml --ref v$RELEASE_VERSION
+      run: gh workflow run deploy-github-release.yml --ref v$RELEASE_VERSION
+
+    - name: Trigger deploy docker image workflow
+      env:
+        GITHUB_TOKEN: ${{ secrets.REPOSITORY_TOKEN }}
+      run: gh workflow run deploy-docker-image.yml --ref v$RELEASE_VERSION
