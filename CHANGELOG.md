@@ -1,3 +1,9 @@
+## 0.7.0 (2024-12-30)
+
+### Feat
+
+- add option to generate executable and include in GitHub release artifacts
+
 ## 0.6.0 (2024-12-28)
 
 ### Feat

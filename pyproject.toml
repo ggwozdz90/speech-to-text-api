@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "speach-to-text-api"
-version = "0.6.0"
+version = "0.7.0"
 description = "A FastAPI project integrating speach to text and translation services."
 authors = ["Grzegorz Gwóźdź"]
 packages = [{ include = "*", from = "src" }]
