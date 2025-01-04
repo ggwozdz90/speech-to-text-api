@@ -4,6 +4,7 @@ from unittest.mock import MagicMock, Mock, patch
 import pytest
 from transformers import AutoProcessor, SeamlessM4Tv2ForTextToText
 
+from core.logger.logger import Logger
 from data.workers.seamless_translation_worker import (
     SeamlessTranslationConfig,
     SeamlessTranslationWorker,
@@ -13,13 +14,21 @@ from data.workers.seamless_translation_worker import (
 @pytest.fixture
 def mock_config() -> SeamlessTranslationConfig:
     return SeamlessTranslationConfig(
-        device="cpu", model_name="facebook/seamless-m4t-v2-large", model_download_path="/path/to/model"
+        device="cpu",
+        model_name="facebook/seamless-m4t-v2-large",
+        model_download_path="/path/to/model",
+        log_level="INFO",
     )
 
 
 @pytest.fixture
-def mock_worker(mock_config: SeamlessTranslationConfig) -> SeamlessTranslationWorker:
-    worker = SeamlessTranslationWorker(config=mock_config)
+def mock_logger() -> Logger:
+    return Mock(Logger)
+
+
+@pytest.fixture
+def mock_worker(mock_config: SeamlessTranslationConfig, mock_logger: Logger) -> SeamlessTranslationWorker:
+    worker = SeamlessTranslationWorker(config=mock_config, logger=mock_logger)
     worker._pipe_parent = Mock()
     return worker
 
@@ -56,7 +65,7 @@ def test_translate_exception(mock_worker: SeamlessTranslationWorker) -> None:
         mock_worker.translate("hello", "en", "fr")
 
 
-def test_initialize_shared_object(mock_config: SeamlessTranslationConfig) -> None:
+def test_initialize_shared_object(mock_config: SeamlessTranslationConfig, mock_logger: Logger) -> None:
     # Given
     with patch.object(SeamlessM4Tv2ForTextToText, "from_pretrained") as mock_model, patch.object(
         AutoProcessor, "from_pretrained"
@@ -64,7 +73,7 @@ def test_initialize_shared_object(mock_config: SeamlessTranslationConfig) -> Non
         mock_model.return_value = MagicMock()
         mock_processor.return_value = MagicMock()
 
-        worker = SeamlessTranslationWorker(config=mock_config)
+        worker = SeamlessTranslationWorker(config=mock_config, logger=mock_logger)
 
         # When
         model, processor = worker.initialize_shared_object(mock_config)

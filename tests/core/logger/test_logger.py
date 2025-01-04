@@ -87,29 +87,13 @@ def test_logger_initialization() -> None:
     assert isinstance(logger_instance.logger.handlers[0], logging.StreamHandler)
 
 
-@pytest.mark.parametrize(
-    "log_level, expected_level",
-    [
-        ("DEBUG", logging.DEBUG),
-        ("INFO", logging.INFO),
-        ("WARNING", logging.WARNING),
-        ("ERROR", logging.ERROR),
-        ("CRITICAL", logging.CRITICAL),
-    ],
-)
-def test_set_log_level_various_levels(logger_instance: Logger, log_level: str, expected_level: int) -> None:
+def test_set_level(logger_instance: Logger) -> None:
     # Given
+    log_level = "DEBUG"
+
     with patch.object(logger_instance.logger, "setLevel") as mock_set_level:
         # When
         logger_instance.set_level(log_level)
+
         # Then
-        mock_set_level.assert_called_once_with(expected_level)
-
-
-def test_set_log_level_invalid_level(logger_instance: Logger) -> None:
-    # Given
-    log_level = "INVALID"
-    # Then
-    with pytest.raises(ValueError, match=f"Unknown log level: {log_level}"):
-        # When
-        logger_instance.set_level(log_level)
+        mock_set_level.assert_called_once_with(log_level)

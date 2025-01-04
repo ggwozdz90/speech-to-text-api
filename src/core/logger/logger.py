@@ -35,21 +35,6 @@ class Logger:
             uvicorn_logger.addHandler(handler)
             uvicorn_access_logger.addHandler(handler)
 
-    def _get_log_level(self, level_name: str) -> int:
-        level_name = level_name.upper()
-        if level_name == "DEBUG":
-            return logging.DEBUG
-        elif level_name == "INFO":
-            return logging.INFO
-        elif level_name == "WARNING":
-            return logging.WARNING
-        elif level_name == "ERROR":
-            return logging.ERROR
-        elif level_name == "CRITICAL":
-            return logging.CRITICAL
-        else:
-            raise ValueError(f"Unknown log level: {level_name}")
-
     def _log(self, level: int, message: str) -> None:
         caller = inspect.stack()[2]
         module = inspect.getmodule(caller[0])
@@ -72,12 +57,10 @@ class Logger:
     def set_level(self, log_level: str) -> None:
         self.info(f"Setting log level to {log_level}")
 
-        level = self._get_log_level(log_level)
-
-        self.logger.setLevel(level)
+        self.logger.setLevel(log_level)
 
         for handler in self.logger.handlers:
-            handler.setLevel(level)
+            handler.setLevel(log_level)
 
         self._configure_uvicorn_loggers()
 

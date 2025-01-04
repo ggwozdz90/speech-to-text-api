@@ -15,6 +15,7 @@ class WhisperSpeachToTextConfig:
     device: str
     model_type: str
     model_download_path: str
+    log_level: str
 
 
 class WhisperSpeachToTextWorker(
@@ -80,3 +81,6 @@ class WhisperSpeachToTextWorker(
             finally:
                 with processing_lock:
                     is_processing.value = False
+
+    def get_worker_name(self) -> str:
+        return type(self).__name__

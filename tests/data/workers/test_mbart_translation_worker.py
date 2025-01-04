@@ -5,6 +5,7 @@ from unittest.mock import Mock, patch
 import pytest
 import torch
 
+from core.logger.logger import Logger
 from data.workers.mbart_translation_worker import (
     MBartTranslationConfig,
     MBartTranslationWorker,
@@ -18,12 +19,24 @@ def mock_tensor() -> Mock:
 
 @pytest.fixture
 def mbart_config() -> MBartTranslationConfig:
-    return MBartTranslationConfig(device="cuda", model_name="facebook/mbart-large-50", model_download_path="/tmp")
+    return MBartTranslationConfig(
+        device="cuda",
+        model_name="facebook/mbart-large-50",
+        model_download_path="/tmp",
+        log_level="INFO",
+    )
 
 
 @pytest.fixture
-def mbart_worker(mbart_config: MBartTranslationConfig) -> Generator[MBartTranslationWorker, None, None]:
-    worker = MBartTranslationWorker(mbart_config)
+def mock_logger() -> Logger:
+    return Mock(Logger)
+
+
+@pytest.fixture
+def mbart_worker(
+    mbart_config: MBartTranslationConfig, mock_logger: Logger
+) -> Generator[MBartTranslationWorker, None, None]:
+    worker = MBartTranslationWorker(mbart_config, mock_logger)
     yield worker
     worker.stop()
 
@@ -73,8 +86,8 @@ def test_translate_raises_error_if_worker_not_running(mbart_worker: MBartTransla
         mbart_worker.translate(text, source_language, target_language)
 
 
-def test_initialize_shared_object(mbart_config: MBartTranslationConfig) -> None:
-    worker = MBartTranslationWorker(mbart_config)
+def test_initialize_shared_object(mbart_config: MBartTranslationConfig, mock_logger: Logger) -> None:
+    worker = MBartTranslationWorker(mbart_config, mock_logger)
     with patch("data.workers.mbart_translation_worker.AutoModelForSeq2SeqLM.from_pretrained") as mock_load_model, patch(
         "data.workers.mbart_translation_worker.AutoTokenizer.from_pretrained"
     ) as mock_load_tokenizer:

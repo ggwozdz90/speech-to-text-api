@@ -16,6 +16,7 @@ class MBartTranslationConfig:
     device: str
     model_name: str
     model_download_path: str
+    log_level: str
 
 
 class MBartTranslationWorker(
@@ -97,3 +98,6 @@ class MBartTranslationWorker(
             finally:
                 with processing_lock:
                     is_processing.value = False
+
+    def get_worker_name(self) -> str:
+        return type(self).__name__
