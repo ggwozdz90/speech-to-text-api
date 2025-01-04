@@ -26,4 +26,5 @@ class APIServer:
             host=self.config.fastapi_host,
             port=self.config.fastapi_port,
             server_header=False,
+            log_config=None,
         )
