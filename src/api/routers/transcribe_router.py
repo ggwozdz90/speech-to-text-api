@@ -1,9 +1,9 @@
-from typing import Annotated, Optional
+from typing import Annotated
 
-from fastapi import APIRouter, Depends, File, Query, UploadFile
+from fastapi import APIRouter, Depends
 from fastapi.responses import PlainTextResponse
 
-from api.dtos.language_dto import LanguageDTO
+from api.dtos.transcribe_dto import TranscribeDTO
 from api.dtos.transcribe_text_result_dto import TranscribeTextResultDTO
 from application.usecases.transcribe_file_to_srt_usecase import (
     TranscribeFileToSrtUseCase,
@@ -22,38 +22,28 @@ class TranscribeRouter:
     async def transcribe(
         self,
         transcribe_file_to_text_usecase: Annotated[TranscribeFileToTextUseCase, Depends()],
-        file: UploadFile = File(...),
-        source_language: str = Query(...),
-        target_language: Optional[str] = Query(None),
+        transcribe_dto: TranscribeDTO = Depends(),
     ) -> TranscribeTextResultDTO:
-        source_language_dto = LanguageDTO(language=source_language)
-        target_language_dto = LanguageDTO(language=target_language) if target_language else None
-
         result = await transcribe_file_to_text_usecase.execute(
-            file,
-            source_language_dto.language,
-            target_language_dto.language if target_language_dto else None,
+            transcribe_dto.file,
+            transcribe_dto.source_language,
+            transcribe_dto.target_language,
         )
 
         return TranscribeTextResultDTO(
-            filename=file.filename or "unknown",
+            filename=transcribe_dto.file.filename or "unknown",
             content=result,
         )
 
     async def transcribe_srt(
         self,
         transcribe_file_to_srt_usecase: Annotated[TranscribeFileToSrtUseCase, Depends()],
-        file: UploadFile = File(...),
-        source_language: str = Query(...),
-        target_language: Optional[str] = Query(None),
+        transcribe_dto: TranscribeDTO = Depends(),
     ) -> PlainTextResponse:
-        source_language_dto = LanguageDTO(language=source_language)
-        target_language_dto = LanguageDTO(language=target_language) if target_language else None
-
         result = await transcribe_file_to_srt_usecase.execute(
-            file,
-            source_language_dto.language,
-            target_language_dto.language if target_language_dto else None,
+            transcribe_dto.file,
+            transcribe_dto.source_language,
+            transcribe_dto.target_language,
         )
 
         return PlainTextResponse(content=result)
