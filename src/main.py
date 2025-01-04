@@ -6,11 +6,11 @@ from core.logger.logger import Logger
 
 
 def main(
+    logger: Logger,
     config: AppConfig,
     server: APIServer,
 ) -> None:
-    config.load_config()
-    config.print_config()
+    config.initialize(logger)
     server.start()
 
 
@@ -19,4 +19,4 @@ if __name__ == "__main__":
     logger = Logger()
     config = AppConfig()
     server = APIServer(config, logger)
-    main(config, server)
+    main(logger, config, server)

@@ -1,9 +1,15 @@
 import os
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 import pytest
 
 from core.config.app_config import AppConfig
+from core.logger.logger import Logger
+
+
+@pytest.fixture
+def mock_logger() -> Logger:
+    return Mock(Logger)
 
 
 @pytest.fixture
@@ -11,7 +17,7 @@ def app_config() -> AppConfig:
     return AppConfig()
 
 
-def test_load_config(app_config: AppConfig) -> None:
+def test_initialize(app_config: AppConfig, mock_logger: Logger) -> None:
     # Given
     with patch.dict(
         os.environ,
@@ -29,7 +35,7 @@ def test_load_config(app_config: AppConfig) -> None:
         },
     ):
         # When
-        app_config.load_config()
+        app_config.initialize(mock_logger)
 
         # Then
         assert app_config.file_upload_path == "test_path"
@@ -44,46 +50,11 @@ def test_load_config(app_config: AppConfig) -> None:
         assert app_config.model_idle_timeout == 150
 
 
-def test_print_config(
-    app_config: AppConfig,
-    capsys: pytest.CaptureFixture[str],
-) -> None:
-    # Given
-    app_config.file_upload_path = "test_path"
-    app_config.delete_files_after_transcription = True
-    app_config.fastapi_host = "localhost"
-    app_config.fastapi_port = 8000
-    app_config.speach_to_text_model_name = "openai/whisper"
-    app_config.speach_to_text_model_type = "base"
-    app_config.speach_to_text_model_download_path = "model_path"
-    app_config.translation_model_name = "test_translation_model"
-    app_config.translation_model_download_path = "translation_model_path"
-    app_config.model_idle_timeout = 150
-
-    # When
-    app_config.print_config()
-    captured = capsys.readouterr()
-
-    # Then
-    assert "### APP CONFIG START ###" in captured.out
-    assert "FILE_UPLOAD_PATH: test_path" in captured.out
-    assert "DELETE_FILES_AFTER_TRANSCRIPTION: True" in captured.out
-    assert "FASTAPI_HOST: localhost" in captured.out
-    assert "FASTAPI_PORT: 8000" in captured.out
-    assert "SPEACH_TO_TEXT_MODEL_NAME: openai/whisper" in captured.out
-    assert "SPEACH_TO_TEXT_MODEL_TYPE: base" in captured.out
-    assert "SPEACH_TO_TEXT_MODEL_DOWNLOAD_PATH: model_path" in captured.out
-    assert "TRANSLATION_MODEL_NAME: test_translation_model" in captured.out
-    assert "TRANSLATION_MODEL_DOWNLOAD_PATH: translation_model_path" in captured.out
-    assert "MODEL_IDLE_TIMEOUT: 150" in captured.out
-    assert "### APP CONFIG END ###" in captured.out
-
-
-def test_load_config_missing_env_vars(app_config: AppConfig) -> None:
+def test_initialize_missing_env_vars(app_config: AppConfig, mock_logger: Logger) -> None:
     # Given
     with patch.dict(os.environ, {}, clear=True):
         # When
-        app_config.load_config()
+        app_config.initialize(mock_logger)
 
         # Then
         assert app_config.file_upload_path == "uploaded_files"
@@ -98,11 +69,34 @@ def test_load_config_missing_env_vars(app_config: AppConfig) -> None:
         assert app_config.model_idle_timeout == 60
 
 
-def test_load_config_invalid_port(app_config: AppConfig) -> None:
+def test_initialize_invalid_port(app_config: AppConfig, mock_logger: Logger) -> None:
     # Given
     with patch.dict(os.environ, {"FASTAPI_PORT": "invalid_port"}):
         # When
-        app_config.load_config()
+        app_config.initialize(mock_logger)
 
         # Then
         assert app_config.fastapi_port == 8000  # Default value
+
+
+def test_initialize_log_parameters(app_config: AppConfig, mock_logger: Logger) -> None:
+    # When
+    app_config.initialize(mock_logger)
+
+    # Then
+    mock_logger.info.assert_called()
+    assert mock_logger.info.call_count == 3
+    assert mock_logger.info.call_args_list[0][0][0] == "Loading configuration..."
+    assert mock_logger.info.call_args_list[1][0][0].startswith("Configuration:")
+    assert "DEVICE" in mock_logger.info.call_args_list[1][0][0]
+    assert "FILE_UPLOAD_PATH" in mock_logger.info.call_args_list[1][0][0]
+    assert "DELETE_FILES_AFTER_TRANSCRIPTION" in mock_logger.info.call_args_list[1][0][0]
+    assert "FASTAPI_HOST" in mock_logger.info.call_args_list[1][0][0]
+    assert "FASTAPI_PORT" in mock_logger.info.call_args_list[1][0][0]
+    assert "SPEACH_TO_TEXT_MODEL_NAME" in mock_logger.info.call_args_list[1][0][0]
+    assert "SPEACH_TO_TEXT_MODEL_TYPE" in mock_logger.info.call_args_list[1][0][0]
+    assert "SPEACH_TO_TEXT_MODEL_DOWNLOAD_PATH" in mock_logger.info.call_args_list[1][0][0]
+    assert "TRANSLATION_MODEL_NAME" in mock_logger.info.call_args_list[1][0][0]
+    assert "TRANSLATION_MODEL_DOWNLOAD_PATH" in mock_logger.info.call_args_list[1][0][0]
+    assert "MODEL_IDLE_TIMEOUT" in mock_logger.info.call_args_list[1][0][0]
+    assert mock_logger.info.call_args_list[2][0][0] == "Configuration loaded successfully."

@@ -14,16 +14,33 @@ class GlobalExceptionHandler:
         self.register_handlers()
 
     def register_handlers(self) -> None:
+        @self.app.exception_handler(ValueError)
+        async def handle_value_error(request: Request, exc: ValueError) -> JSONResponse:
+            self.logger.error(f"Value error: {str(exc)}")
+            content = ErrorResponseDto(
+                status_code=422,
+                message="Value error",
+                details={"error_type": exc.__class__.__name__, "error_message": str(exc)},
+                trace=traceback.format_exception(exc),
+            ).model_dump(exclude_none=True)
+
+            self.logger.error(f"ValueError: {str(content)}")
+
+            return JSONResponse(
+                status_code=422,
+                content=content,
+            )
+
         @self.app.exception_handler(Exception)
         async def handle_exception(request: Request, exc: Exception) -> JSONResponse:
             content = ErrorResponseDto(
                 status_code=500,
                 message=str(exc),
-                details={"error_type": exc.__class__.__name__},
-                trace=traceback.format_exc(),
+                details={"error_type": exc.__class__.__name__, "error_message": str(exc)},
+                trace=traceback.format_exception(exc),
             ).model_dump(exclude_none=True)
 
-            self.logger.error(f"ErrorResponseDto: {str(content)}")
+            self.logger.error(f"Exception: {str(content)}")
 
             return JSONResponse(
                 status_code=500,

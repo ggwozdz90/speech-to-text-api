@@ -7,4 +7,4 @@ class ErrorResponseDto(BaseModel):
     status_code: int
     message: str
     details: Optional[Dict[str, Any]] = None
-    trace: Optional[str] = None
+    trace: Optional[list[str]] = None
