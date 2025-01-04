@@ -1,13 +1,19 @@
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 import pytest
 
+from core.logger.logger import Logger
 from src.data.repositories.directory_repository_impl import DirectoryRepositoryImpl
 
 
 @pytest.fixture
-def directory_repository() -> DirectoryRepositoryImpl:
-    return DirectoryRepositoryImpl()
+def mock_logger() -> Logger:
+    return Mock(Logger)
+
+
+@pytest.fixture
+def directory_repository(mock_logger: Logger) -> DirectoryRepositoryImpl:
+    return DirectoryRepositoryImpl(logger=mock_logger)
 
 
 def test_create_directory_success(directory_repository: DirectoryRepositoryImpl) -> None:

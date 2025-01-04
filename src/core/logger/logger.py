@@ -1,3 +1,4 @@
+import inspect
 import logging
 from typing import Optional
 
@@ -34,8 +35,50 @@ class Logger:
             uvicorn_logger.addHandler(handler)
             uvicorn_access_logger.addHandler(handler)
 
+    def _get_log_level(self, level_name: str) -> int:
+        level_name = level_name.upper()
+        if level_name == "DEBUG":
+            return logging.DEBUG
+        elif level_name == "INFO":
+            return logging.INFO
+        elif level_name == "WARNING":
+            return logging.WARNING
+        elif level_name == "ERROR":
+            return logging.ERROR
+        elif level_name == "CRITICAL":
+            return logging.CRITICAL
+        else:
+            raise ValueError(f"Unknown log level: {level_name}")
+
+    def _log(self, level: int, message: str) -> None:
+        caller = inspect.stack()[2]
+        module = inspect.getmodule(caller[0])
+        module_name = module.__name__ if module else "unknown_module"
+        log_message = f"{module_name}.{caller.function} - {message}"
+        self.logger.log(level, log_message)
+
     def info(self, message: str) -> None:
-        self.logger.info(message)
+        self._log(logging.INFO, message)
 
     def error(self, message: str) -> None:
-        self.logger.error(message)
+        self._log(logging.ERROR, message)
+
+    def debug(self, message: str) -> None:
+        self._log(logging.DEBUG, message)
+
+    def warning(self, message: str) -> None:
+        self._log(logging.WARNING, message)
+
+    def set_level(self, log_level: str) -> None:
+        self.info(f"Setting log level to {log_level}")
+
+        level = self._get_log_level(log_level)
+
+        self.logger.setLevel(level)
+
+        for handler in self.logger.handlers:
+            handler.setLevel(level)
+
+        self._configure_uvicorn_loggers()
+
+        self.info("Log level set successfully.")

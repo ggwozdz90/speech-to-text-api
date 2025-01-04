@@ -9,6 +9,7 @@ from core.logger.logger import Logger
 class AppConfig:
     _instance: Optional["AppConfig"] = None
 
+    log_level: Optional[str]
     device: Optional[str]
     file_upload_path: Optional[str]
     delete_files_after_transcription: Optional[bool]
@@ -30,11 +31,12 @@ class AppConfig:
         self,
         logger: Logger,
     ) -> None:
-        logger.info("Loading configuration...")
+        logger.info("Initializing configuration...")
         load_dotenv()
         self._load_env_variables()
         config_message = (
-            f"Configuration:\n"
+            f"Configuration loaded:\n"
+            f"LOG_LEVEL: {self.log_level}\n"
             f"DEVICE: {self.device}\n"
             f"FILE_UPLOAD_PATH: {self.file_upload_path}\n"
             f"DELETE_FILES_AFTER_TRANSCRIPTION: {self.delete_files_after_transcription}\n"
@@ -48,9 +50,10 @@ class AppConfig:
             f"MODEL_IDLE_TIMEOUT: {self.model_idle_timeout}"
         )
         logger.info(config_message)
-        logger.info("Configuration loaded successfully.")
+        logger.info("Configuration initialized successfully.")
 
     def _load_env_variables(self) -> None:
+        self.log_level = os.getenv("LOG_LEVEL", "INFO")
         self.device = os.getenv("DEVICE", "cpu")
         self.file_upload_path = os.getenv("FILE_UPLOAD_PATH", "uploaded_files")
         self.delete_files_after_transcription = self._str_to_bool(os.getenv("DELETE_FILES_AFTER_TRANSCRIPTION", "true"))

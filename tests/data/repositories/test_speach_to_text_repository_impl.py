@@ -14,6 +14,7 @@ from domain.repositories.directory_repository import DirectoryRepository
 @pytest.fixture
 def mock_config() -> AppConfig:
     config = Mock(AppConfig)
+    config.log_level = "INFO"
     config.speach_to_text_model_download_path = "/models"
     config.device = "cpu"
     config.speach_to_text_model_name = "openai/whisper"
@@ -104,5 +105,5 @@ def test_check_idle_timeout_stops_worker(
     # Then
     mock_worker.stop.assert_called_once()
     mock_timer.cancel.assert_called_once()
-    mock_logger.info.assert_any_call("Checking speach to text model idle timeout")
+    mock_logger.debug.assert_any_call("Checking speach to text model idle timeout")
     mock_logger.info.assert_any_call("Speach to text model stopped due to idle timeout")

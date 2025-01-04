@@ -108,5 +108,5 @@ def test_check_idle_timeout_stops_worker(
     # Then
     mock_worker.stop.assert_called_once()
     mock_timer.cancel.assert_called_once()
-    mock_logger.info.assert_any_call("Checking translation model idle timeout")
+    mock_logger.debug.assert_any_call("Checking translation model idle timeout")
     mock_logger.info.assert_any_call("Translation model stopped due to idle timeout")

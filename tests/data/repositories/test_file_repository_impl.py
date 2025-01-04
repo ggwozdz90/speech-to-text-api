@@ -5,8 +5,14 @@ import pytest
 from fastapi import UploadFile
 
 from core.config.app_config import AppConfig
+from core.logger.logger import Logger
 from data.repositories.file_repository_impl import FileRepositoryImpl
 from domain.repositories.directory_repository import DirectoryRepository
+
+
+@pytest.fixture
+def mock_logger() -> Logger:
+    return Mock(Logger)
 
 
 @pytest.fixture
@@ -20,8 +26,16 @@ def mock_directory_repository() -> DirectoryRepository:
 
 
 @pytest.fixture
-def file_repository(mock_config: AppConfig, mock_directory_repository: DirectoryRepository) -> FileRepositoryImpl:
-    return FileRepositoryImpl(config=mock_config, directory_repository=mock_directory_repository)
+def file_repository(
+    mock_config: AppConfig,
+    mock_logger: Logger,
+    mock_directory_repository: DirectoryRepository,
+) -> FileRepositoryImpl:
+    return FileRepositoryImpl(
+        config=mock_config,
+        logger=mock_logger,
+        directory_repository=mock_directory_repository,
+    )
 
 
 @pytest.mark.asyncio

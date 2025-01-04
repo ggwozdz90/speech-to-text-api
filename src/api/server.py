@@ -15,12 +15,14 @@ class APIServer:
         logger: Logger,
     ) -> None:
         self.config = config
+        self.logger = logger
         self.app = FastAPI()
         self.exception_handler = GlobalExceptionHandler(self.app, logger)
         self.app.add_middleware(ProcessTimeMiddleware, logger=logger)
         self.app.include_router(TranscribeRouter().router)
 
     def start(self) -> None:
+        self.logger.info("Starting FastAPI server...")
         uvicorn.run(
             self.app,
             host=self.config.fastapi_host,

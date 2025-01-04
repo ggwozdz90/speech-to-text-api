@@ -15,24 +15,56 @@ def test_info_logs_message(logger_instance: Logger) -> None:
     # Given
     message = "Test info message"
 
-    with patch.object(logger_instance.logger, "info") as mock_info:
+    with patch.object(logger_instance.logger, "log") as mock_info:
         # When
         logger_instance.info(message)
 
         # Then
-        mock_info.assert_called_once_with(message)
+        mock_info.assert_called_once_with(
+            logging.INFO, f"tests.core.logger.test_logger.test_info_logs_message - {message}"
+        )
 
 
 def test_error_logs_message(logger_instance: Logger) -> None:
     # Given
     message = "Test error message"
 
-    with patch.object(logger_instance.logger, "error") as mock_error:
+    with patch.object(logger_instance.logger, "log") as mock_error:
         # When
         logger_instance.error(message)
 
         # Then
-        mock_error.assert_called_once_with(message)
+        mock_error.assert_called_once_with(
+            logging.ERROR, f"tests.core.logger.test_logger.test_error_logs_message - {message}"
+        )
+
+
+def test_warning_logs_message(logger_instance: Logger) -> None:
+    # Given
+    message = "Test warning message"
+
+    with patch.object(logger_instance.logger, "log") as mock_warning:
+        # When
+        logger_instance.warning(message)
+
+        # Then
+        mock_warning.assert_called_once_with(
+            logging.WARNING, f"tests.core.logger.test_logger.test_warning_logs_message - {message}"
+        )
+
+
+def test_debug_logs_message(logger_instance: Logger) -> None:
+    # Given
+    message = "Test debug message"
+
+    with patch.object(logger_instance.logger, "log") as mock_debug:
+        # When
+        logger_instance.debug(message)
+
+        # Then
+        mock_debug.assert_called_once_with(
+            logging.DEBUG, f"tests.core.logger.test_logger.test_debug_logs_message - {message}"
+        )
 
 
 def test_logger_is_singleton() -> None:
@@ -53,3 +85,31 @@ def test_logger_initialization() -> None:
     assert logger_instance.logger.level == logging.INFO
     assert len(logger_instance.logger.handlers) > 0
     assert isinstance(logger_instance.logger.handlers[0], logging.StreamHandler)
+
+
+@pytest.mark.parametrize(
+    "log_level, expected_level",
+    [
+        ("DEBUG", logging.DEBUG),
+        ("INFO", logging.INFO),
+        ("WARNING", logging.WARNING),
+        ("ERROR", logging.ERROR),
+        ("CRITICAL", logging.CRITICAL),
+    ],
+)
+def test_set_log_level_various_levels(logger_instance: Logger, log_level: str, expected_level: int) -> None:
+    # Given
+    with patch.object(logger_instance.logger, "setLevel") as mock_set_level:
+        # When
+        logger_instance.set_level(log_level)
+        # Then
+        mock_set_level.assert_called_once_with(expected_level)
+
+
+def test_set_log_level_invalid_level(logger_instance: Logger) -> None:
+    # Given
+    log_level = "INVALID"
+    # Then
+    with pytest.raises(ValueError, match=f"Unknown log level: {log_level}"):
+        # When
+        logger_instance.set_level(log_level)

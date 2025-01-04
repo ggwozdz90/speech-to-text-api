@@ -18,7 +18,7 @@ class SubtitleService:
         self,
         transcription_result: TranscriptionResultModel,
     ) -> List[SubtitleSegmentModel]:
-        self.logger.info("Converting transcription result to subtitle segments")
+        self.logger.debug("Starting conversion of transcription result to subtitle segments")
 
         srt_segments = []
 
@@ -34,20 +34,21 @@ class SubtitleService:
                 )
             )
 
-        self.logger.info("Conversion to subtitle segments completed")
+        self.logger.debug("Completed conversion to subtitle segments")
+
         return srt_segments
 
     def generate_srt_result(
         self,
         srt_segments: List[SubtitleSegmentModel],
     ) -> str:
-        self.logger.info("Generating SRT result from subtitle segments")
+        self.logger.debug("Starting generation of SRT result from subtitle segments")
 
         srt_result = "\n".join(
             [f"{segment.counter}\n{segment.time_range}\n{segment.text.strip()}\n" for segment in srt_segments]
         )
 
-        self.logger.info("SRT result generation completed")
+        self.logger.debug("Completed generation of SRT result")
 
         return srt_result
 

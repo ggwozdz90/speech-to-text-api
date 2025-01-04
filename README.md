@@ -149,6 +149,7 @@ This is a subtitle.
 
 The application uses a `.env` file or Docker Compose to define configurable environment variables. Below are the available configuration options:
 
+- `LOG_LEVEL`: The logging level for the application. Supported levels are `DEBUG`, `INFO`, `WARNING`, `ERROR`, and `CRITICAL`. The same log level will be applied to `uvicorn` and `uvicorn.access` loggers. Default is `INFO`.
 - `DEVICE`: Device to run the models on (`cpu` or `cuda`). Default is `cpu`.
 - `FILE_UPLOAD_PATH`: Path where uploaded files will be stored. Default is `uploaded_files`.
 - `DELETE_FILES_AFTER_TRANSCRIPTION`: Whether to delete files after transcription. Set to `true` or `false`. Default is `true`.

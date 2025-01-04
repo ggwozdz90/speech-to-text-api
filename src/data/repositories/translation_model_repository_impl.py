@@ -55,7 +55,12 @@ class TranslationModelRepositoryImpl(TranslationModelRepository):  # type: ignor
     ) -> str:
         with self._lock:
             if not self.worker.is_alive():
+                self.logger.info("Starting translation worker")
                 self.worker.start()
+
+        self.logger.debug(
+            f"Translating started from source_language: {source_language}, target_language: {target_language}"
+        )
 
         result: str = self.worker.translate(
             text,
@@ -70,10 +75,14 @@ class TranslationModelRepositoryImpl(TranslationModelRepository):  # type: ignor
 
         self.last_access_time = time.time()
 
+        self.logger.debug(
+            f"Translating completed from source_language: {source_language}, target_language: {target_language}"
+        )
+
         return result
 
     def _check_idle_timeout(self) -> None:
-        self.logger.info("Checking translation model idle timeout")
+        self.logger.debug("Checking translation model idle timeout")
 
         if self.worker.is_alive() and not self.worker.is_processing():
             with self._lock:

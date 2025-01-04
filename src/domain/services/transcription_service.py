@@ -33,24 +33,22 @@ class TranscriptionService:
         language: str,
     ) -> TranscriptionResultModel:
         file_path = await self.file_repository.save_file(file)
-        self.logger.info(f"File saved at: {file_path}")
 
         language_mapped = self.language_mapping_service.map_language(
             language,
             self.config.speach_to_text_model_name,
         )
 
-        self.logger.info(f"Starting transcription for file: {file.filename} with language: {language_mapped}")
+        self.logger.debug(f"Starting transcription for file '{file.filename}' with language '{language_mapped}'")
 
         result = self.speach_to_text_repository.transcribe(
             file_path,
             language=language_mapped,
         )
-        self.logger.info("Transcription completed")
+        self.logger.debug(f"Completed transcription for file '{file.filename}'")
 
         if self.config.delete_files_after_transcription:
             self.file_repository.delete_file(file_path)
-            self.logger.info(f"File deleted: {file_path}")
 
         transcription_result = TranscriptionResultModel(**result)
 

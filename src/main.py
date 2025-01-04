@@ -10,7 +10,9 @@ def main(
     config: AppConfig,
     server: APIServer,
 ) -> None:
+    logger.info("Starting the Speech-to-Text API server...")
     config.initialize(logger)
+    logger.set_level(config.log_level)
     server.start()
 
 

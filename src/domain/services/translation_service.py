@@ -31,7 +31,9 @@ class TranslationService:
         source_language: str,
         target_language: str,
     ) -> None:
-        self.logger.info(f"Translating sentences from {source_language} to {target_language}")
+        self.logger.debug(
+            f"Starting translation of {len(sentences)} sentences from '{source_language}' to '{target_language}'"
+        )
 
         source_language_mapped = self.language_mapping_service.map_language(
             source_language,
@@ -43,7 +45,7 @@ class TranslationService:
         )
 
         for i, sentence in enumerate(sentences):
-            self.logger.info(f"Translating sentence {i + 1} of {len(sentences)}")
+            self.logger.debug(f"Translating sentence {i + 1}/{len(sentences)}")
 
             sentence.text = self.translation_model_repository.translate(
                 sentence.text,
@@ -51,7 +53,7 @@ class TranslationService:
                 target_language_mapped,
             )
 
-        self.logger.info("Translation of sentences completed")
+        self.logger.debug("Completed translation of sentences")
 
     def translate_text(
         self,
@@ -59,6 +61,8 @@ class TranslationService:
         source_language: str,
         target_language: str,
     ) -> str:
+        self.logger.debug(f"Starting translation of text from '{source_language}' to '{target_language}'")
+
         source_language_mapped = self.language_mapping_service.map_language(
             source_language,
             self.config.translation_model_name,
@@ -68,13 +72,12 @@ class TranslationService:
             self.config.translation_model_name,
         )
 
-        self.logger.info(f"Translating text from {source_language_mapped} to {target_language_mapped}")
-
         translated_text: str = self.translation_model_repository.translate(
             text,
             source_language_mapped,
             target_language_mapped,
         )
 
-        self.logger.info("Translation of text completed")
+        self.logger.debug("Completed translation of text")
+
         return translated_text

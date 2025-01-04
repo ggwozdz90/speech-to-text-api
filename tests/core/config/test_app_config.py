@@ -86,8 +86,9 @@ def test_initialize_log_parameters(app_config: AppConfig, mock_logger: Logger) -
     # Then
     mock_logger.info.assert_called()
     assert mock_logger.info.call_count == 3
-    assert mock_logger.info.call_args_list[0][0][0] == "Loading configuration..."
-    assert mock_logger.info.call_args_list[1][0][0].startswith("Configuration:")
+    assert mock_logger.info.call_args_list[0][0][0] == "Initializing configuration..."
+    assert mock_logger.info.call_args_list[1][0][0].startswith("Configuration loaded:")
+    assert "LOG_LEVEL" in mock_logger.info.call_args_list[1][0][0]
     assert "DEVICE" in mock_logger.info.call_args_list[1][0][0]
     assert "FILE_UPLOAD_PATH" in mock_logger.info.call_args_list[1][0][0]
     assert "DELETE_FILES_AFTER_TRANSCRIPTION" in mock_logger.info.call_args_list[1][0][0]
@@ -99,4 +100,4 @@ def test_initialize_log_parameters(app_config: AppConfig, mock_logger: Logger) -
     assert "TRANSLATION_MODEL_NAME" in mock_logger.info.call_args_list[1][0][0]
     assert "TRANSLATION_MODEL_DOWNLOAD_PATH" in mock_logger.info.call_args_list[1][0][0]
     assert "MODEL_IDLE_TIMEOUT" in mock_logger.info.call_args_list[1][0][0]
-    assert mock_logger.info.call_args_list[2][0][0] == "Configuration loaded successfully."
+    assert mock_logger.info.call_args_list[2][0][0] == "Configuration initialized successfully."

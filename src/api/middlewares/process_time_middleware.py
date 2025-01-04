@@ -1,4 +1,5 @@
 import time
+import uuid
 from typing import Any, Awaitable, Callable
 
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -22,9 +23,13 @@ class ProcessTimeMiddleware(BaseHTTPMiddleware):
         request: Request,
         call_next: Callable[[Request], Awaitable[Response]],
     ) -> Response:
+        request_id = str(uuid.uuid4())
+        self.logger.info(f"Request {request_id} started: {request.method} {request.url}")
         start_time = time.time()
         response = await call_next(request)
         process_time = time.time() - start_time
         response.headers["X-Process-Time"] = str(process_time)
-        self.logger.info(f"Process time: {process_time}")
+        self.logger.info(
+            f"Request {request_id} completed: {request.method} {request.url} processed in {process_time:.4f} seconds."
+        )
         return response

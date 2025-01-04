@@ -54,7 +54,10 @@ class SpeachToTextRepositoryImpl(SpeachToTextRepository):  # type: ignore
     ) -> dict[str, str]:
         with self._lock:
             if not self.worker.is_alive():
+                self.logger.info("Starting speach to text worker")
                 self.worker.start()
+
+        self.logger.debug(f"Transcribing file: {file_path}, language: {language}")
 
         result: dict[str, str] = self.worker.transcribe(
             file_path,
@@ -68,10 +71,12 @@ class SpeachToTextRepositoryImpl(SpeachToTextRepository):  # type: ignore
 
         self.last_access_time = time.time()
 
+        self.logger.debug(f"Transcription completed for file: {file_path}, language: {language}")
+
         return result
 
     def _check_idle_timeout(self) -> None:
-        self.logger.info("Checking speach to text model idle timeout")
+        self.logger.debug("Checking speach to text model idle timeout")
 
         if self.worker.is_alive() and not self.worker.is_processing():
             with self._lock:
