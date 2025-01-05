@@ -8,22 +8,24 @@ from typing import Any, Tuple
 import whisper
 
 from data.workers.base_worker import BaseWorker
+from domain.exceptions.worker_not_running_error import WorkerNotRunningError
 
 
 @dataclass
-class WhisperSpeachToTextConfig:
+class WhisperSpeechToTextConfig:
     device: str
     model_type: str
     model_download_path: str
+    log_level: str
 
 
-class WhisperSpeachToTextWorker(
+class WhisperSpeechToTextWorker(
     BaseWorker[  # type: ignore
         Tuple[str, str],
         dict[str, str],
-        WhisperSpeachToTextConfig,
+        WhisperSpeechToTextConfig,
         whisper.Whisper,
-    ]
+    ],
 ):
     def transcribe(
         self,
@@ -31,7 +33,7 @@ class WhisperSpeachToTextWorker(
         language: str,
     ) -> dict[str, str]:
         if not self.is_alive():
-            raise RuntimeError("Worker process is not running")
+            raise WorkerNotRunningError()
 
         self._pipe_parent.send(("transcribe", (file_path, language)))
         result = self._pipe_parent.recv()
@@ -43,7 +45,7 @@ class WhisperSpeachToTextWorker(
 
     def initialize_shared_object(
         self,
-        config: WhisperSpeachToTextConfig,
+        config: WhisperSpeechToTextConfig,
     ) -> whisper.Whisper:
         return whisper.load_model(
             config.model_type,
@@ -55,7 +57,7 @@ class WhisperSpeachToTextWorker(
         command: str,
         args: Tuple[str, str],
         model: whisper.Whisper,
-        config: WhisperSpeachToTextConfig,
+        config: WhisperSpeechToTextConfig,
         pipe: multiprocessing.connection.Connection,
         is_processing: Synchronized,  # type: ignore
         processing_lock: multiprocessing.synchronize.Lock,
@@ -80,3 +82,6 @@ class WhisperSpeachToTextWorker(
             finally:
                 with processing_lock:
                     is_processing.value = False
+
+    def get_worker_name(self) -> str:
+        return type(self).__name__

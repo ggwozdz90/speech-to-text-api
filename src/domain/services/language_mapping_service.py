@@ -3,6 +3,9 @@ import os
 import threading
 from typing import Optional
 
+from domain.exceptions.language_mapping_error import LanguageMappingError
+from domain.exceptions.language_not_found_error import LanguageNotFoundError
+
 
 class LanguageMappingService:
     _instance: Optional["LanguageMappingService"] = None
@@ -14,6 +17,7 @@ class LanguageMappingService:
                 if cls._instance is None:
                     cls._instance = super(LanguageMappingService, cls).__new__(cls)
                     cls._instance._initialize()
+
         return cls._instance
 
     def _initialize(self) -> None:
@@ -35,6 +39,6 @@ class LanguageMappingService:
             elif model_type == "facebook/seamless-m4t-v2-large":
                 return self.seamless_mapping[language]
             else:
-                raise ValueError(f"Unknown model type: {model_type}")
-        except KeyError:
-            raise ValueError(f"Language '{language}' not found for model type '{model_type}'")
+                raise LanguageMappingError(model_type)
+        except KeyError as e:
+            raise LanguageNotFoundError(language, model_type) from e

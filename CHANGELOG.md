@@ -1,3 +1,20 @@
+## 0.8.0 (2025-01-05)
+
+### Feat
+
+- add custom exception classes for error handling
+- replace LanguageDTO with TranscribeDTO for language validation
+- add log_level configuration to workers
+- Introduced LOG_LEVEL environment variable for configurable logging levels
+- enhance error handling and logging in application
+- configure Uvicorn loggers for improved logging management
+- implement global exception handler with structured error responses
+- add logging to process time middleware
+
+### Fix
+
+- correct spelling errors in environment variable names
+
 ## 0.7.0 (2024-12-30)
 
 ### Feat
@@ -16,7 +33,7 @@
 ### Refactor
 
 - rename and restructure translation and speech-to-text worker classes
-- rename Whisper references to SpeachToText for consistency
+- rename Whisper references to SpeechToText for consistency
 - restructure WhisperWorker and introduce BaseWorker for improved extensibility
 
 ## 0.5.0 (2024-12-21)
@@ -41,7 +58,7 @@
 
 ### Feat
 
-- add speach-to-text API project using Whisper model
+- add speech-to-text API project using Whisper model
 
 ### Fix
 

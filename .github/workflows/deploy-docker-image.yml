@@ -25,10 +25,10 @@ jobs:
       with:
         push: true
         labels: |
-          org.opencontainers.image.title="Speach to Text API"
-          org.opencontainers.image.description="A FastAPI project integrating speach to text and translation services."
-          org.opencontainers.image.source="https://github.com/ggwozdz90/speach-to-text-api"
-          org.opencontainers.image.documentation="https://github.com/ggwozdz90/speach-to-text-api/blob/main/README.md"
+          org.opencontainers.image.title="Speech to Text API"
+          org.opencontainers.image.description="A FastAPI project integrating speech to text and translation services."
+          org.opencontainers.image.source="https://github.com/ggwozdz90/speech-to-text-api"
+          org.opencontainers.image.documentation="https://github.com/ggwozdz90/speech-to-text-api/blob/main/README.md"
         tags: | 
-          ggwozdz/speach-to-text-api:${{ github.ref_name }}
-          ggwozdz/speach-to-text-api:latest
+          ggwozdz/speech-to-text-api:${{ github.ref_name }}
+          ggwozdz/speech-to-text-api:latest

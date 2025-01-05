@@ -30,6 +30,7 @@ class TranslationModelRepositoryImpl(TranslationModelRepository):  # type: ignor
                 if cls._instance is None:
                     cls._instance = super(TranslationModelRepositoryImpl, cls).__new__(cls)
                     cls._instance._initialize(config, directory_repository, timer_factory, logger, worker_factory)
+
         return cls._instance
 
     def _initialize(
@@ -47,6 +48,15 @@ class TranslationModelRepositoryImpl(TranslationModelRepository):  # type: ignor
         self.worker = worker_factory.create()
         self.last_access_time = 0.0
 
+    def _check_idle_timeout(self) -> None:
+        self.logger.debug("Checking translation model idle timeout")
+
+        if self.worker.is_alive() and not self.worker.is_processing():
+            with self._lock:
+                self.worker.stop()
+                self.timer.cancel()
+                self.logger.info("Translation model stopped due to idle timeout")
+
     def translate(
         self,
         text: str,
@@ -55,7 +65,12 @@ class TranslationModelRepositoryImpl(TranslationModelRepository):  # type: ignor
     ) -> str:
         with self._lock:
             if not self.worker.is_alive():
+                self.logger.info("Starting translation worker")
                 self.worker.start()
+
+        self.logger.debug(
+            f"Translating started from source_language: {source_language}, target_language: {target_language}",
+        )
 
         result: str = self.worker.translate(
             text,
@@ -70,13 +85,8 @@ class TranslationModelRepositoryImpl(TranslationModelRepository):  # type: ignor
 
         self.last_access_time = time.time()
 
+        self.logger.debug(
+            f"Translating completed from source_language: {source_language}, target_language: {target_language}",
+        )
+
         return result
-
-    def _check_idle_timeout(self) -> None:
-        self.logger.info("Checking translation model idle timeout")
-
-        if self.worker.is_alive() and not self.worker.is_processing():
-            with self._lock:
-                self.worker.stop()
-                self.timer.cancel()
-                self.logger.info("Translation model stopped due to idle timeout")

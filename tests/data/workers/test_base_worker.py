@@ -5,6 +5,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
+from core.logger.logger import Logger
 from data.workers.base_worker import BaseWorker
 
 
@@ -37,12 +38,20 @@ class MockBaseWorker(BaseWorker[str, str, dict, None]):  # type: ignore
     ) -> None:
         pass
 
+    def get_worker_name(self) -> str:
+        return "MockBaseWorker"
+
 
 @pytest.fixture
-def base_worker(base_config: str) -> Generator[MockBaseWorker, None, None]:
-    worker = MockBaseWorker(base_config)
+def base_worker(base_config: str, mock_logger: Logger) -> Generator[MockBaseWorker, None, None]:
+    worker = MockBaseWorker(base_config, mock_logger)
     yield worker
     worker.stop()
+
+
+@pytest.fixture
+def mock_logger() -> Logger:
+    return Mock(Logger)
 
 
 @pytest.fixture

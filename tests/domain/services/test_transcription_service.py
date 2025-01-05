@@ -6,7 +6,7 @@ from fastapi import UploadFile
 from core.config.app_config import AppConfig
 from core.logger.logger import Logger
 from domain.repositories.file_repository import FileRepository
-from domain.repositories.speach_to_text_repository import SpeachToTextRepository
+from domain.repositories.speech_to_text_repository import SpeechToTextRepository
 from domain.services.language_mapping_service import LanguageMappingService
 from domain.services.transcription_service import TranscriptionService
 
@@ -20,13 +20,13 @@ def mock_logger() -> Logger:
 def mock_config() -> AppConfig:
     config = Mock(AppConfig)
     config.delete_files_after_transcription = True
-    config.speach_to_text_model_name = "test_model"
+    config.speech_to_text_model_name = "test_model"
     return config
 
 
 @pytest.fixture
-def mock_speach_to_text_repository() -> SpeachToTextRepository:
-    return Mock(SpeachToTextRepository)
+def mock_speech_to_text_repository() -> SpeechToTextRepository:
+    return Mock(SpeechToTextRepository)
 
 
 @pytest.fixture
@@ -43,14 +43,14 @@ def mock_language_mapping_service() -> LanguageMappingService:
 def transcription_service(
     mock_logger: Logger,
     mock_config: AppConfig,
-    mock_speach_to_text_repository: SpeachToTextRepository,
+    mock_speech_to_text_repository: SpeechToTextRepository,
     mock_file_repository: FileRepository,
     mock_language_mapping_service: LanguageMappingService,
 ) -> TranscriptionService:
     return TranscriptionService(
         logger=mock_logger,
         config=mock_config,
-        speach_to_text_repository=mock_speach_to_text_repository,
+        speech_to_text_repository=mock_speech_to_text_repository,
         file_repository=mock_file_repository,
         language_mapping_service=mock_language_mapping_service,
     )
@@ -60,14 +60,14 @@ def transcription_service(
 async def test_transcribe_success(
     transcription_service: TranscriptionService,
     mock_file_repository: FileRepository,
-    mock_speach_to_text_repository: SpeachToTextRepository,
+    mock_speech_to_text_repository: SpeechToTextRepository,
     mock_language_mapping_service: LanguageMappingService,
 ) -> None:
     # Given
     mock_file = Mock(UploadFile)
     mock_file.filename = "test_file"
     mock_file_repository.save_file.return_value = "test_path"
-    mock_speach_to_text_repository.transcribe.return_value = {"text": "transcribed text", "segments": []}
+    mock_speech_to_text_repository.transcribe.return_value = {"text": "transcribed text", "segments": []}
     mock_language_mapping_service.map_language.return_value = "en"
 
     # When
@@ -76,7 +76,7 @@ async def test_transcribe_success(
     # Then
     assert result.text == "transcribed text"
     mock_file_repository.save_file.assert_awaited_once_with(mock_file)
-    mock_speach_to_text_repository.transcribe.assert_called_once_with("test_path", language="en")
+    mock_speech_to_text_repository.transcribe.assert_called_once_with("test_path", language="en")
     mock_file_repository.delete_file.assert_called_once_with("test_path")
 
 
@@ -84,7 +84,7 @@ async def test_transcribe_success(
 async def test_transcribe_with_file_deletion_disabled(
     transcription_service: TranscriptionService,
     mock_file_repository: FileRepository,
-    mock_speach_to_text_repository: SpeachToTextRepository,
+    mock_speech_to_text_repository: SpeechToTextRepository,
     mock_config: AppConfig,
     mock_language_mapping_service: LanguageMappingService,
 ) -> None:
@@ -93,7 +93,7 @@ async def test_transcribe_with_file_deletion_disabled(
     mock_file = Mock(UploadFile)
     mock_file.filename = "test_file"
     mock_file_repository.save_file.return_value = "test_path"
-    mock_speach_to_text_repository.transcribe.return_value = {"text": "transcribed text", "segments": []}
+    mock_speech_to_text_repository.transcribe.return_value = {"text": "transcribed text", "segments": []}
     mock_language_mapping_service.map_language.return_value = "en"
 
     # When
@@ -102,7 +102,7 @@ async def test_transcribe_with_file_deletion_disabled(
     # Then
     assert result.text == "transcribed text"
     mock_file_repository.save_file.assert_awaited_once_with(mock_file)
-    mock_speach_to_text_repository.transcribe.assert_called_once_with("test_path", language="en")
+    mock_speech_to_text_repository.transcribe.assert_called_once_with("test_path", language="en")
     mock_file_repository.delete_file.assert_not_called()
 
 
@@ -110,7 +110,7 @@ async def test_transcribe_with_file_deletion_disabled(
 async def test_transcribe_failure(
     transcription_service: TranscriptionService,
     mock_file_repository: FileRepository,
-    mock_speach_to_text_repository: SpeachToTextRepository,
+    mock_speech_to_text_repository: SpeechToTextRepository,
 ) -> None:
     # Given
     mock_file = Mock(UploadFile)
@@ -120,6 +120,7 @@ async def test_transcribe_failure(
     # When / Then
     with pytest.raises(Exception, match="Save failed"):
         await transcription_service.transcribe(mock_file, "en")
+
     mock_file_repository.save_file.assert_awaited_once_with(mock_file)
-    mock_speach_to_text_repository.transcribe.assert_not_called()
+    mock_speech_to_text_repository.transcribe.assert_not_called()
     mock_file_repository.delete_file.assert_not_called()

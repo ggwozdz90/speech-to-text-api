@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "speach-to-text-api"
-version = "0.7.0"
-description = "A FastAPI project integrating speach to text and translation services."
+name = "speech-to-text-api"
+version = "0.8.0"
+description = "A FastAPI project integrating speech to text and translation services."
 authors = ["Grzegorz Gwóźdź"]
 packages = [{ include = "*", from = "src" }]
 
@@ -29,6 +29,12 @@ pytest-cov = "^6.0.0"
 coverage = "^7.6.9"
 commitizen = "^4.1.0"
 pyinstaller = "^6.11.1"
+flake8-clean-block = "^0.1.2"
+flake8-simplify = "^0.21.0"
+tryceratops = "^2.4.1"
+flake8-fastapi = "^0.7.0"
+ssort = "^0.14.0"
+codespell = "^2.3.0"
 
 [tool.commitizen]
 name = "cz_conventional_commits"
@@ -73,3 +79,6 @@ branch = true
 command_line = "-m pytest"
 source = ["src"]
 relative_files = true
+
+[tool.codespell]
+skip = 'src/assets/*,script/*'

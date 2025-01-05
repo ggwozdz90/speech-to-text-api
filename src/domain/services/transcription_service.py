@@ -5,10 +5,10 @@ from fastapi import Depends, UploadFile
 from core.config.app_config import AppConfig
 from core.logger.logger import Logger
 from data.repositories.file_repository_impl import FileRepositoryImpl
-from data.repositories.speach_to_text_repository_impl import SpeachToTextRepositoryImpl
+from data.repositories.speech_to_text_repository_impl import SpeechToTextRepositoryImpl
 from domain.models.transcription_result_model import TranscriptionResultModel
 from domain.repositories.file_repository import FileRepository
-from domain.repositories.speach_to_text_repository import SpeachToTextRepository
+from domain.repositories.speech_to_text_repository import SpeechToTextRepository
 from domain.services.language_mapping_service import LanguageMappingService
 
 
@@ -16,13 +16,13 @@ class TranscriptionService:
     def __init__(
         self,
         config: Annotated[AppConfig, Depends()],
-        speach_to_text_repository: Annotated[SpeachToTextRepository, Depends(SpeachToTextRepositoryImpl)],
+        speech_to_text_repository: Annotated[SpeechToTextRepository, Depends(SpeechToTextRepositoryImpl)],
         file_repository: Annotated[FileRepository, Depends(FileRepositoryImpl)],
         logger: Annotated[Logger, Depends()],
         language_mapping_service: Annotated[LanguageMappingService, Depends()],
     ) -> None:
         self.config = config
-        self.speach_to_text_repository = speach_to_text_repository
+        self.speech_to_text_repository = speech_to_text_repository
         self.file_repository = file_repository
         self.logger = logger
         self.language_mapping_service = language_mapping_service
@@ -33,24 +33,22 @@ class TranscriptionService:
         language: str,
     ) -> TranscriptionResultModel:
         file_path = await self.file_repository.save_file(file)
-        self.logger.info(f"File saved at: {file_path}")
 
         language_mapped = self.language_mapping_service.map_language(
             language,
-            self.config.speach_to_text_model_name,
+            self.config.speech_to_text_model_name,
         )
 
-        self.logger.info(f"Starting transcription for file: {file.filename} with language: {language_mapped}")
+        self.logger.debug(f"Starting transcription for file '{file.filename}' with language '{language_mapped}'")
 
-        result = self.speach_to_text_repository.transcribe(
+        result = self.speech_to_text_repository.transcribe(
             file_path,
             language=language_mapped,
         )
-        self.logger.info("Transcription completed")
+        self.logger.debug(f"Completed transcription for file '{file.filename}'")
 
         if self.config.delete_files_after_transcription:
             self.file_repository.delete_file(file_path)
-            self.logger.info(f"File deleted: {file_path}")
 
         transcription_result = TranscriptionResultModel(**result)
 

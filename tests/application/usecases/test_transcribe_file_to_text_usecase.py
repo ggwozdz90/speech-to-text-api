@@ -7,10 +7,16 @@ from application.usecases.transcribe_file_to_text_usecase import (
     TranscribeFileToTextUseCase,
 )
 from core.config.app_config import AppConfig
+from core.logger.logger import Logger
 from domain.models.transcription_result_model import TranscriptionResultModel
 from domain.repositories.file_repository import FileRepository
 from domain.services.transcription_service import TranscriptionService
 from domain.services.translation_service import TranslationService
+
+
+@pytest.fixture
+def mock_logger() -> Logger:
+    return Mock(Logger)
 
 
 @pytest.fixture
@@ -36,11 +42,13 @@ def mock_translation_service() -> TranslationService:
 @pytest.fixture
 def use_case(
     mock_config: AppConfig,
+    mock_logger: Logger,
     mock_transcription_service: TranscriptionService,
     mock_translation_service: TranslationService,
 ) -> TranscribeFileToTextUseCase:
     return TranscribeFileToTextUseCase(
         config=mock_config,
+        logger=mock_logger,
         transcription_service=mock_transcription_service,
         translation_service=mock_translation_service,
     )
@@ -54,8 +62,9 @@ async def test_execute_success_no_translation(
 ) -> None:
     # Given
     mock_file = Mock(UploadFile)
+    mock_file.filename = "test_file.txt"
     mock_transcription_service.transcribe = AsyncMock(
-        return_value=TranscriptionResultModel(text="transcription_result", segments=[])
+        return_value=TranscriptionResultModel(text="transcription_result", segments=[]),
     )
 
     # When
@@ -75,8 +84,9 @@ async def test_execute_success_with_translation(
 ) -> None:
     # Given
     mock_file = Mock(UploadFile)
+    mock_file.filename = "test_file.txt"
     mock_transcription_service.transcribe = AsyncMock(
-        return_value=TranscriptionResultModel(text="transcription_result", segments=[])
+        return_value=TranscriptionResultModel(text="transcription_result", segments=[]),
     )
     mock_translation_service.translate_text = Mock(return_value="translated_result")
 
@@ -97,6 +107,7 @@ async def test_execute_failure(
 ) -> None:
     # Given
     mock_file = Mock(UploadFile)
+    mock_file.filename = "test_file.txt"
     mock_transcription_service.transcribe = AsyncMock(side_effect=Exception("Transcription error"))
 
     # When

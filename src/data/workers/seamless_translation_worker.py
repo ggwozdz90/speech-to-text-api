@@ -8,6 +8,7 @@ from typing import Tuple
 from transformers import AutoProcessor, SeamlessM4Tv2ForTextToText
 
 from data.workers.base_worker import BaseWorker
+from domain.exceptions.worker_not_running_error import WorkerNotRunningError
 
 
 @dataclass
@@ -15,6 +16,7 @@ class SeamlessTranslationConfig:
     device: str
     model_name: str
     model_download_path: str
+    log_level: str
 
 
 class SeamlessTranslationWorker(
@@ -23,7 +25,7 @@ class SeamlessTranslationWorker(
         str,
         SeamlessTranslationConfig,
         Tuple[SeamlessM4Tv2ForTextToText, AutoProcessor],
-    ]
+    ],
 ):
     def translate(
         self,
@@ -32,7 +34,7 @@ class SeamlessTranslationWorker(
         target_language: str,
     ) -> str:
         if not self.is_alive():
-            raise RuntimeError("Worker process is not running")
+            raise WorkerNotRunningError()
 
         self._pipe_parent.send(("translate", (text, source_language, target_language)))
         result = self._pipe_parent.recv()
@@ -89,3 +91,6 @@ class SeamlessTranslationWorker(
             finally:
                 with processing_lock:
                     is_processing.value = False
+
+    def get_worker_name(self) -> str:
+        return type(self).__name__

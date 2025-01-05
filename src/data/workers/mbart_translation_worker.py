@@ -9,6 +9,7 @@ import torch
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
 from data.workers.base_worker import BaseWorker
+from domain.exceptions.worker_not_running_error import WorkerNotRunningError
 
 
 @dataclass
@@ -16,6 +17,7 @@ class MBartTranslationConfig:
     device: str
     model_name: str
     model_download_path: str
+    log_level: str
 
 
 class MBartTranslationWorker(
@@ -24,7 +26,7 @@ class MBartTranslationWorker(
         str,
         MBartTranslationConfig,
         Tuple[AutoModelForSeq2SeqLM, AutoTokenizer],
-    ]
+    ],
 ):
     def translate(
         self,
@@ -33,7 +35,7 @@ class MBartTranslationWorker(
         target_language: str,
     ) -> str:
         if not self.is_alive():
-            raise RuntimeError("Worker process is not running")
+            raise WorkerNotRunningError()
 
         self._pipe_parent.send(("translate", (text, source_language, target_language)))
         result = self._pipe_parent.recv()
@@ -82,8 +84,7 @@ class MBartTranslationWorker(
                     inputs[key] = inputs[key].to(config.device)
 
                 with torch.no_grad():
-                    kwargs = {}
-                    kwargs["forced_bos_token_id"] = tokenizer.lang_code_to_id[target_language]
+                    kwargs = {"forced_bos_token_id": tokenizer.lang_code_to_id[target_language]}
 
                     translated = model.generate(**inputs, num_beams=5, **kwargs)
 
@@ -97,3 +98,6 @@ class MBartTranslationWorker(
             finally:
                 with processing_lock:
                     is_processing.value = False
+
+    def get_worker_name(self) -> str:
+        return type(self).__name__

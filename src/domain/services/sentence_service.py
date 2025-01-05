@@ -18,7 +18,7 @@ class SentenceService:
         self,
         segments: List["SubtitleSegmentModel"],
     ) -> List[SentenceModel]:
-        self.logger.info("Creating sentence models from subtitle segments")
+        self.logger.debug("Starting creation of sentence models from subtitle segments")
 
         words_with_counters: List[tuple[str, str]] = []
 
@@ -46,7 +46,8 @@ class SentenceService:
                 current_sentence = []
                 counter_word_counts = {}
 
-        self.logger.info("Sentence models creation completed")
+        self.logger.debug("Completed creation of sentence models")
+
         return sentences
 
     def apply_translated_sentences(
@@ -54,7 +55,7 @@ class SentenceService:
         segments: List[SubtitleSegmentModel],
         translated_sentences: List[SentenceModel],
     ) -> None:
-        self.logger.info("Applying translated sentences to subtitle segments")
+        self.logger.debug("Starting application of translated sentences to subtitle segments")
 
         sentences_words = {i: sentence.text.split() for i, sentence in enumerate(translated_sentences)}
 
@@ -76,4 +77,4 @@ class SentenceService:
 
             segment.text = " ".join(segment_text)
 
-        self.logger.info("Application of translated sentences completed")
+        self.logger.debug("Completed application of translated sentences")

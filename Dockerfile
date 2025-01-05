@@ -1,4 +1,4 @@
-# Stage 1: Dockerfile for building the speach-to-text-api image
+# Stage 1: Dockerfile for building the speech-to-text-api image
 FROM python:3.12-slim-bookworm AS builder
 
 # Setup Poetry
@@ -19,7 +19,7 @@ RUN poetry install --without dev --no-root \
     && rm -rf "$POETRY_CACHE_DIR"
 
 
-# Stage 2: Dockerfile for running the API speach-to-text-api image
+# Stage 2: Dockerfile for running the API speech-to-text-api image
 FROM python:3.12-slim-bookworm AS runtime
 
 # Set environment variables for the virtual environment

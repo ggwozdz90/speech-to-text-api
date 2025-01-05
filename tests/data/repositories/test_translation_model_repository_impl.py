@@ -76,7 +76,9 @@ def translation_model_repository_impl(
 
 
 def test_translate_success(
-    translation_model_repository_impl: TranslationModelRepositoryImpl, mock_worker: Mock, mock_timer: Mock
+    translation_model_repository_impl: TranslationModelRepositoryImpl,
+    mock_worker: Mock,
+    mock_timer: Mock,
 ) -> None:
     # Given
     mock_worker.is_alive.return_value = False
@@ -108,5 +110,5 @@ def test_check_idle_timeout_stops_worker(
     # Then
     mock_worker.stop.assert_called_once()
     mock_timer.cancel.assert_called_once()
-    mock_logger.info.assert_any_call("Checking translation model idle timeout")
+    mock_logger.debug.assert_any_call("Checking translation model idle timeout")
     mock_logger.info.assert_any_call("Translation model stopped due to idle timeout")

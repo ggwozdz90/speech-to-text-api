@@ -1,10 +1,9 @@
-from typing import Annotated, Optional
+from typing import Annotated
 
-from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
+from fastapi import APIRouter, Depends
 from fastapi.responses import PlainTextResponse
-from pydantic import ValidationError
 
-from api.dtos.language_dto import LanguageDTO
+from api.dtos.transcribe_dto import TranscribeDTO
 from api.dtos.transcribe_text_result_dto import TranscribeTextResultDTO
 from application.usecases.transcribe_file_to_srt_usecase import (
     TranscribeFileToSrtUseCase,
@@ -12,7 +11,6 @@ from application.usecases.transcribe_file_to_srt_usecase import (
 from application.usecases.transcribe_file_to_text_usecase import (
     TranscribeFileToTextUseCase,
 )
-from core.logger.logger import Logger
 
 
 class TranscribeRouter:
@@ -24,76 +22,28 @@ class TranscribeRouter:
     async def transcribe(
         self,
         transcribe_file_to_text_usecase: Annotated[TranscribeFileToTextUseCase, Depends()],
-        logger: Annotated[Logger, Depends()],
-        file: UploadFile = File(...),
-        source_language: str = Query(...),
-        target_language: Optional[str] = Query(None),
+        transcribe_dto: TranscribeDTO = Depends(),
     ) -> TranscribeTextResultDTO:
-        try:
-            logger.info(
-                f"Received request to transcribe file: {file.filename} "
-                f"with source language {source_language} and target language {target_language or 'none'}"
-            )
-            source_language_dto = LanguageDTO(language=source_language)
-            target_language_dto = LanguageDTO(language=target_language) if target_language else None
+        result = await transcribe_file_to_text_usecase.execute(
+            transcribe_dto.file,
+            transcribe_dto.source_language,
+            transcribe_dto.target_language,
+        )
 
-            result = await transcribe_file_to_text_usecase.execute(
-                file,
-                source_language_dto.language,
-                target_language_dto.language if target_language_dto else None,
-            )
-
-            logger.info(f"Transcription request for file {file.filename} completed")
-            return TranscribeTextResultDTO(
-                filename=file.filename or "unknown",
-                content=result,
-            )
-        except ValidationError as e:
-            logger.error(f"Validation error: {e.errors()}")
-            raise HTTPException(
-                status_code=422,
-                detail=[{"loc": err["loc"], "msg": err["msg"], "type": err["type"]} for err in e.errors()],
-            )
-        except Exception as e:
-            logger.error(f"Unexpected error: {str(e)}")
-            raise HTTPException(
-                status_code=500,
-                detail=str(e),
-            )
+        return TranscribeTextResultDTO(
+            filename=transcribe_dto.file.filename or "unknown",
+            content=result,
+        )
 
     async def transcribe_srt(
         self,
         transcribe_file_to_srt_usecase: Annotated[TranscribeFileToSrtUseCase, Depends()],
-        logger: Annotated[Logger, Depends()],
-        file: UploadFile = File(...),
-        source_language: str = Query(...),
-        target_language: Optional[str] = Query(None),
+        transcribe_dto: TranscribeDTO = Depends(),
     ) -> PlainTextResponse:
-        try:
-            logger.info(
-                f"Received request to transcribe file to SRT: {file.filename} "
-                f"with source language {source_language} and target language {target_language or 'none'}"
-            )
-            source_language_dto = LanguageDTO(language=source_language)
-            target_language_dto = LanguageDTO(language=target_language) if target_language else None
+        result = await transcribe_file_to_srt_usecase.execute(
+            transcribe_dto.file,
+            transcribe_dto.source_language,
+            transcribe_dto.target_language,
+        )
 
-            result = await transcribe_file_to_srt_usecase.execute(
-                file,
-                source_language_dto.language,
-                target_language_dto.language if target_language_dto else None,
-            )
-
-            logger.info(f"Transcription to SRT request for file {file.filename} completed")
-            return PlainTextResponse(content=result)
-        except ValidationError as e:
-            logger.error(f"Validation error: {e.errors()}")
-            raise HTTPException(
-                status_code=422,
-                detail=[{"loc": err["loc"], "msg": err["msg"], "type": err["type"]} for err in e.errors()],
-            )
-        except Exception as e:
-            logger.error(f"Unexpected error: {str(e)}")
-            raise HTTPException(
-                status_code=500,
-                detail=str(e),
-            )
+        return PlainTextResponse(content=result)

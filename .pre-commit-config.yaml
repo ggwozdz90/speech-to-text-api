@@ -11,6 +11,16 @@ repos:
       - id: trailing-whitespace
         types: [file, python]
 
+  - repo: https://github.com/asottile/add-trailing-comma
+    rev: v3.1.0
+    hooks:
+      - id: add-trailing-comma
+
+  - repo: https://github.com/guilatrova/tryceratops
+    rev: v2.4.1
+    hooks:
+      - id: tryceratops
+
   - repo: https://github.com/psf/black
     rev: 24.10.0
     hooks:
@@ -20,7 +30,17 @@ repos:
     rev: 7.1.1
     hooks:
       - id: flake8
-        additional_dependencies: [Flake8-pyproject]
+        additional_dependencies: 
+          - Flake8-pyproject
+          - flake8-clean-block
+          - tryceratops
+          - flake8-simplify
+          - flake8-fastapi
+
+  - repo: https://github.com/bwhmather/ssort
+    rev: 0.14.0
+    hooks:
+    - id: ssort
 
   - repo: https://github.com/PyCQA/isort
     rev: 5.13.2
@@ -53,3 +73,10 @@ repos:
     rev: v4.1.0
     hooks:
       - id: commitizen
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.2.4
+    hooks:
+    - id: codespell
+      additional_dependencies:
+        - tomli

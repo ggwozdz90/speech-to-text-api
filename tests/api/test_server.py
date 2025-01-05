@@ -6,6 +6,12 @@ from fastapi import FastAPI
 
 from api.server import APIServer
 from core.config.app_config import AppConfig
+from core.logger.logger import Logger
+
+
+@pytest.fixture
+def mock_logger() -> Logger:
+    return Mock(Logger)
 
 
 @pytest.fixture
@@ -14,8 +20,8 @@ def mock_config() -> AppConfig:
 
 
 @pytest.fixture
-def api_server(mock_config: AppConfig) -> APIServer:
-    return APIServer(config=mock_config)
+def api_server(mock_config: AppConfig, mock_logger: Logger) -> APIServer:
+    return APIServer(config=mock_config, logger=mock_logger)
 
 
 def test_api_server_initialization(
@@ -49,4 +55,5 @@ def test_api_server_start(
             host=mock_config.fastapi_host,
             port=mock_config.fastapi_port,
             server_header=False,
+            log_config=None,
         )

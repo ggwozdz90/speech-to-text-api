@@ -3,6 +3,8 @@ from unittest.mock import mock_open, patch
 
 import pytest
 
+from domain.exceptions.language_mapping_error import LanguageMappingError
+from domain.exceptions.language_not_found_error import LanguageNotFoundError
 from src.domain.services.language_mapping_service import LanguageMappingService
 
 
@@ -17,9 +19,12 @@ def mock_mappings() -> dict[str, dict[str, str]]:
 
 @pytest.fixture
 def language_mapping_service(mock_mappings: dict[str, dict[str, str]]) -> LanguageMappingService:
-    with patch("builtins.open", mock_open(read_data=json.dumps(mock_mappings["whisper_mapping.json"]))):
-        with patch("os.path.join", return_value="whisper_mapping.json"):
-            service = LanguageMappingService()
+    with patch("builtins.open", mock_open(read_data=json.dumps(mock_mappings["whisper_mapping.json"]))), patch(
+        "os.path.join",
+        return_value="whisper_mapping.json",
+    ):
+        service = LanguageMappingService()
+
     return service
 
 
@@ -65,7 +70,7 @@ def test_map_language_unknown_model(language_mapping_service: LanguageMappingSer
     model_type = "unknown_model"
 
     # When / Then
-    with pytest.raises(ValueError, match="Unknown model type: unknown_model"):
+    with pytest.raises(LanguageMappingError, match="Error loading language mappings for model type: unknown_model"):
         language_mapping_service.map_language(language, model_type)
 
 
@@ -75,5 +80,5 @@ def test_map_language_unknown_language(language_mapping_service: LanguageMapping
     model_type = "openai/whisper"
 
     # When / Then
-    with pytest.raises(ValueError, match="Language 'fr' not found for model type 'openai/whisper'"):
+    with pytest.raises(LanguageNotFoundError, match="Language 'fr' not found for model type 'openai/whisper'"):
         language_mapping_service.map_language(language, model_type)
