@@ -9,6 +9,7 @@ import torch
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
 from data.workers.base_worker import BaseWorker
+from domain.exceptions.worker_not_running_error import WorkerNotRunningError
 
 
 @dataclass
@@ -34,7 +35,7 @@ class MBartTranslationWorker(
         target_language: str,
     ) -> str:
         if not self.is_alive():
-            raise RuntimeError("Worker process is not running")
+            raise WorkerNotRunningError()
 
         self._pipe_parent.send(("translate", (text, source_language, target_language)))
         result = self._pipe_parent.recv()

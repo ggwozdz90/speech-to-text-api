@@ -12,6 +12,9 @@ from data.workers.seamless_translation_worker import (
     SeamlessTranslationConfig,
     SeamlessTranslationWorker,
 )
+from domain.exceptions.unsupported_model_configuration_error import (
+    UnsupportedModelConfigurationError,
+)
 
 
 class TranslationWorkerFactory:
@@ -45,4 +48,4 @@ class TranslationWorkerFactory:
                 logger=self.logger,
             )
         else:
-            raise ValueError(f"Unsupported translation model name: {self.config.translation_model_name}")
+            raise UnsupportedModelConfigurationError(self.config.translation_model_name)

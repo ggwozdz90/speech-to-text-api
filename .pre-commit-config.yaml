@@ -16,6 +16,11 @@ repos:
     hooks:
       - id: add-trailing-comma
 
+  - repo: https://github.com/guilatrova/tryceratops
+    rev: v2.4.1
+    hooks:
+      - id: tryceratops
+
   - repo: https://github.com/psf/black
     rev: 24.10.0
     hooks:

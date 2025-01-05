@@ -6,6 +6,8 @@ from fastapi import Depends, UploadFile
 from core.config.app_config import AppConfig
 from core.logger.logger import Logger
 from data.repositories.directory_repository_impl import DirectoryRepositoryImpl
+from domain.exceptions.invalid_file_name_error import InvalidFileNameError
+from domain.exceptions.invalid_file_path_error import InvalidFilePathError
 from domain.repositories.directory_repository import DirectoryRepository
 from domain.repositories.file_repository import FileRepository
 
@@ -35,7 +37,7 @@ class FileRepositoryImpl(FileRepository):  # type: ignore
 
         if not normalized_file_path.startswith(normalized_file_upload_path):
             self.logger.error("Invalid file name")
-            raise Exception("Invalid file name")
+            raise InvalidFileNameError()
 
         with open(absolute_path, "wb") as f:
             while content := await file.read(1024 * 1024):  # 1MB chunks
@@ -57,7 +59,7 @@ class FileRepositoryImpl(FileRepository):  # type: ignore
 
         if normalized_file_upload_path not in absolute_path:
             self.logger.error("Invalid file path")
-            raise Exception("Invalid file path")
+            raise InvalidFilePathError()
 
         os.remove(absolute_path)
         self.logger.debug(f"File deleted: {absolute_path}")

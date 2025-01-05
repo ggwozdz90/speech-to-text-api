@@ -4,6 +4,8 @@ from typing import Optional
 from fastapi import UploadFile
 from pydantic import BaseModel, field_validator
 
+from domain.exceptions.invalid_language_format_error import InvalidLanguageFormatError
+
 
 class TranscribeDTO(BaseModel):
     source_language: str
@@ -13,7 +15,7 @@ class TranscribeDTO(BaseModel):
     @staticmethod
     def validate_language_format(v: str) -> str:
         if not re.match(r"^[a-z]{2}_[A-Z]{2}$", v):
-            raise ValueError("Invalid language format. Expected format is xx_XX")
+            raise InvalidLanguageFormatError()
 
         return v
 

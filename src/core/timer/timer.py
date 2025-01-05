@@ -1,6 +1,8 @@
 import threading
 from typing import Callable, Optional
 
+from domain.exceptions.invalid_interval_error import InvalidIntervalError
+
 
 class TimerFactory:
     def create(self) -> "Timer":
@@ -20,7 +22,7 @@ class Timer:
         function: Callable,  # type: ignore
     ) -> None:
         if interval <= 0:
-            raise ValueError("Interval must be greater than 0")
+            raise InvalidIntervalError()
 
         self.interval = interval
         self.function = function

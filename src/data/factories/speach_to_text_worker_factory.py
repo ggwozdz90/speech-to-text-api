@@ -8,6 +8,9 @@ from data.workers.whisper_speach_to_text_worker import (
     WhisperSpeachToTextConfig,
     WhisperSpeachToTextWorker,
 )
+from domain.exceptions.unsupported_model_configuration_error import (
+    UnsupportedModelConfigurationError,
+)
 
 
 class SpeachToTextWorkerFactory:
@@ -31,4 +34,4 @@ class SpeachToTextWorkerFactory:
                 logger=self.logger,
             )
         else:
-            raise ValueError(f"Unsupported speach to text model name: {self.config.speach_to_text_model_name}")
+            raise UnsupportedModelConfigurationError(self.config.speach_to_text_model_name)
