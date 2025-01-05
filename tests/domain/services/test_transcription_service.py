@@ -120,6 +120,7 @@ async def test_transcribe_failure(
     # When / Then
     with pytest.raises(Exception, match="Save failed"):
         await transcription_service.transcribe(mock_file, "en")
+
     mock_file_repository.save_file.assert_awaited_once_with(mock_file)
     mock_speach_to_text_repository.transcribe.assert_not_called()
     mock_file_repository.delete_file.assert_not_called()

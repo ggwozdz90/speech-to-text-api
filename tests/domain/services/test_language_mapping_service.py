@@ -20,6 +20,7 @@ def language_mapping_service(mock_mappings: dict[str, dict[str, str]]) -> Langua
     with patch("builtins.open", mock_open(read_data=json.dumps(mock_mappings["whisper_mapping.json"]))):
         with patch("os.path.join", return_value="whisper_mapping.json"):
             service = LanguageMappingService()
+
     return service
 
 

@@ -25,7 +25,9 @@ repos:
     rev: 7.1.1
     hooks:
       - id: flake8
-        additional_dependencies: [Flake8-pyproject]
+        additional_dependencies: 
+          - Flake8-pyproject
+          - flake8-clean-block
 
   - repo: https://github.com/PyCQA/isort
     rev: 5.13.2

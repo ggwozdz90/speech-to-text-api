@@ -524,6 +524,20 @@ pycodestyle = ">=2.12.0,<2.13.0"
 pyflakes = ">=3.2.0,<3.3.0"
 
 [[package]]
+name = "flake8-clean-block"
+version = "0.1.2"
+description = "A flake8 plugin that enforces a blank line after if/for/while/with/try blocks"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "flake8_clean_block-0.1.2-py2.py3-none-any.whl", hash = "sha256:9684c26a6b087e25f73966fe8f4a38f6abb3e9737a9f781140115e0e2c14a93c"},
+    {file = "flake8_clean_block-0.1.2.tar.gz", hash = "sha256:0a1f8a58be210a013715810a78dda029a65660373f585b7e14e36c3b85c7791d"},
+]
+
+[package.dependencies]
+flake8 = ">=4"
+
+[[package]]
 name = "flake8-pyproject"
 version = "1.2.3"
 description = "Flake8 plug-in loading the configuration from pyproject.toml"
@@ -3061,4 +3075,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.14"
-content-hash = "b4fc9e2d1af1a027cb65aeba80a9b654636bf28a41b902b802da6a7b72b14266"
+content-hash = "8ac1e7ef1a51d28f25a474131e0755acd6eea7ca8fc2176be8175e930678f227"

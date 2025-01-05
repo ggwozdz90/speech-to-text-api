@@ -30,6 +30,7 @@ class SpeachToTextRepositoryImpl(SpeachToTextRepository):  # type: ignore
                 if cls._instance is None:
                     cls._instance = super(SpeachToTextRepositoryImpl, cls).__new__(cls)
                     cls._instance._initialize(config, directory_repository, timer_factory, logger, worker_factory)
+
         return cls._instance
 
     def _initialize(

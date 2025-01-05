@@ -54,6 +54,7 @@ def test_main_load_config_exception(
         # When / Then
         with pytest.raises(Exception, match="Initialize error"):
             main(mock_logger, mock_config, mock_server)
+
         mock_start.assert_not_called()
 
 
@@ -73,4 +74,5 @@ def test_main_start_exception(
         # When / Then
         with pytest.raises(Exception, match="Start error"):
             main(mock_logger, mock_config, mock_server)
+
         mock_load_config.assert_called_once()

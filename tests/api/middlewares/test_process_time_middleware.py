@@ -44,4 +44,5 @@ async def test_process_time_middleware_exception(mock_call_next: AsyncMock, mock
         # When / Then
         with pytest.raises(Exception, match="test exception"):
             await middleware.dispatch(request, mock_call_next)
+
         mock_call_next.assert_awaited_once_with(request)

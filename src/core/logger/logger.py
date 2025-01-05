@@ -10,6 +10,7 @@ class Logger:
         if cls._instance is None:
             cls._instance = super(Logger, cls).__new__(cls)
             cls._instance._initialize()
+
         return cls._instance
 
     def _initialize(self) -> None:

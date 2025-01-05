@@ -30,6 +30,7 @@ class Timer:
     def _reset_timer(self) -> None:
         if self._timer:
             self._timer.cancel()
+
         if not self._cancelled:
             self._timer = threading.Timer(self.interval, self._execute)
             self._timer.start()

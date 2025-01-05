@@ -37,6 +37,7 @@ def test_transcribe_dto_invalid_source_language(mock_upload_file: UploadFile) ->
     # When / Then
     with pytest.raises(ValidationError) as exc_info:
         TranscribeDTO(source_language=invalid_source_language, target_language="es_ES", file=mock_upload_file)
+
     assert "Invalid language format. Expected format is xx_XX" in str(exc_info.value)
 
 
@@ -47,6 +48,7 @@ def test_transcribe_dto_invalid_target_language(mock_upload_file: UploadFile) ->
     # When / Then
     with pytest.raises(ValidationError) as exc_info:
         TranscribeDTO(source_language="en_US", target_language=invalid_target_language, file=mock_upload_file)
+
     assert "Invalid language format. Expected format is xx_XX" in str(exc_info.value)
 
 
