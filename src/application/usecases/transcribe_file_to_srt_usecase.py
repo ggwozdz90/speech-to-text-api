@@ -28,6 +28,23 @@ class TranscribeFileToSrtUseCase:
         self.sentence_service = sentence_service
         self.translation_service = translation_service
 
+    def _generate_srt(
+        self,
+        subtitle_segments: list[SubtitleSegmentModel],
+    ) -> str:
+        srt_result: str = self.subtitle_service.generate_srt_result(subtitle_segments)
+        return srt_result
+
+    def _translate_subtitles(
+        self,
+        subtitle_segments: list[SubtitleSegmentModel],
+        source_language: str,
+        target_language: str,
+    ) -> None:
+        sentences = self.sentence_service.create_sentence_models(subtitle_segments)
+        self.translation_service.translate_sentences(sentences, source_language, target_language)
+        self.sentence_service.apply_translated_sentences(subtitle_segments, sentences)
+
     async def execute(
         self,
         file: UploadFile,
@@ -52,20 +69,3 @@ class TranscribeFileToSrtUseCase:
         self.logger.info(f"Returning translated SRT result for file '{file.filename}'")
 
         return self._generate_srt(subtitle_segments)
-
-    def _generate_srt(
-        self,
-        subtitle_segments: list[SubtitleSegmentModel],
-    ) -> str:
-        srt_result: str = self.subtitle_service.generate_srt_result(subtitle_segments)
-        return srt_result
-
-    def _translate_subtitles(
-        self,
-        subtitle_segments: list[SubtitleSegmentModel],
-        source_language: str,
-        target_language: str,
-    ) -> None:
-        sentences = self.sentence_service.create_sentence_models(subtitle_segments)
-        self.translation_service.translate_sentences(sentences, source_language, target_language)
-        self.sentence_service.apply_translated_sentences(subtitle_segments, sentences)

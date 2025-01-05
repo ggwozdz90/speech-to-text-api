@@ -59,6 +59,31 @@ class BaseWorker(
     def get_worker_name(self) -> str:
         pass
 
+    def _run_process(
+        self,
+        config: ConfigType,
+        pipe: multiprocessing.connection.Connection,
+        stop_event: multiprocessing.synchronize.Event,
+        is_processing: Synchronized,  # type: ignore
+        processing_lock: multiprocessing.synchronize.Lock,
+    ) -> None:
+        try:
+            self._logger.set_level(config.log_level)  # type: ignore
+            self._logger.info(f"{self.get_worker_name()} started with PID: {multiprocessing.current_process().pid}")
+            shared_object = self.initialize_shared_object(config)
+
+            while not stop_event.is_set():
+                if pipe.poll(timeout=1):
+                    command, args = pipe.recv()
+                    self._logger.debug(f"{self.get_worker_name()} received command: {command} with args: {args}")
+                    self.handle_command(command, args, shared_object, config, pipe, is_processing, processing_lock)
+                    self._logger.debug(f"{self.get_worker_name()} command: {command} processed")
+
+        finally:
+            del shared_object
+            pipe.close()
+            self._logger.info(f"{self.get_worker_name()} stopped with PID: {multiprocessing.current_process().pid}")
+
     def start(self) -> None:
         if self._process is None or not self._process.is_alive():
             self._stop_event.clear()
@@ -89,28 +114,3 @@ class BaseWorker(
 
     def is_processing(self) -> bool:
         return bool(self._is_processing.value)
-
-    def _run_process(
-        self,
-        config: ConfigType,
-        pipe: multiprocessing.connection.Connection,
-        stop_event: multiprocessing.synchronize.Event,
-        is_processing: Synchronized,  # type: ignore
-        processing_lock: multiprocessing.synchronize.Lock,
-    ) -> None:
-        try:
-            self._logger.set_level(config.log_level)  # type: ignore
-            self._logger.info(f"{self.get_worker_name()} started with PID: {multiprocessing.current_process().pid}")
-            shared_object = self.initialize_shared_object(config)
-
-            while not stop_event.is_set():
-                if pipe.poll(timeout=1):
-                    command, args = pipe.recv()
-                    self._logger.debug(f"{self.get_worker_name()} received command: {command} with args: {args}")
-                    self.handle_command(command, args, shared_object, config, pipe, is_processing, processing_lock)
-                    self._logger.debug(f"{self.get_worker_name()} command: {command} processed")
-
-        finally:
-            del shared_object
-            pipe.close()
-            self._logger.info(f"{self.get_worker_name()} stopped with PID: {multiprocessing.current_process().pid}")

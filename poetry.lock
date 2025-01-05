@@ -2398,6 +2398,20 @@ files = [
 ]
 
 [[package]]
+name = "ssort"
+version = "0.14.0"
+description = "The python statement sorter"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "ssort-0.14.0-py3-none-any.whl", hash = "sha256:31864909eb7b4a02b14fb52d1918315b5fb8a8124b5d721b0adebe9c0d293219"},
+    {file = "ssort-0.14.0.tar.gz", hash = "sha256:4ab15d04d94012158f2eac43478f61e08befb53809c78324921dcf872d7172ef"},
+]
+
+[package.dependencies]
+pathspec = ">=0.9.0"
+
+[[package]]
 name = "starlette"
 version = "0.41.3"
 description = "The little ASGI library that shines."
@@ -3142,4 +3156,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12,<3.14"
-content-hash = "12ebd3b7d2566fc90dcc7290a8c40761ce39bfc5cdfa72278ab44b4f1c5e05e6"
+content-hash = "02218133e1be29e8f03f1e007b457415ea59bdf47da49b403238013a23c2426d"

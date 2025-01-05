@@ -37,6 +37,11 @@ repos:
           - flake8-simplify
           - flake8-fastapi
 
+  - repo: https://github.com/bwhmather/ssort
+    rev: master
+    hooks:
+    - id: ssort
+
   - repo: https://github.com/PyCQA/isort
     rev: 5.13.2
     hooks:

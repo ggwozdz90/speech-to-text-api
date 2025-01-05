@@ -13,14 +13,6 @@ class Logger:
 
         return cls._instance
 
-    def _initialize(self) -> None:
-        self.logger = logging.getLogger("speach_to_text_api")
-        self.logger.setLevel(logging.INFO)
-        handler = logging.StreamHandler()
-        handler.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
-        self.logger.addHandler(handler)
-        self._configure_uvicorn_loggers()
-
     def _configure_uvicorn_loggers(self) -> None:
         uvicorn_logger = logging.getLogger("uvicorn")
         uvicorn_logger.handlers = []
@@ -35,6 +27,14 @@ class Logger:
         for handler in self.logger.handlers:
             uvicorn_logger.addHandler(handler)
             uvicorn_access_logger.addHandler(handler)
+
+    def _initialize(self) -> None:
+        self.logger = logging.getLogger("speach_to_text_api")
+        self.logger.setLevel(logging.INFO)
+        handler = logging.StreamHandler()
+        handler.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
+        self.logger.addHandler(handler)
+        self._configure_uvicorn_loggers()
 
     def _log(self, level: int, message: str) -> None:
         caller = inspect.stack()[2]

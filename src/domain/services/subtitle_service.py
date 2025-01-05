@@ -14,6 +14,17 @@ class SubtitleService:
     ) -> None:
         self.logger = logger
 
+    def _format_time(
+        self,
+        seconds: float,
+    ) -> str:
+        hours = int(seconds // 3600)
+        minutes = int((seconds % 3600) // 60)
+        seconds = seconds % 60
+        milliseconds = round((seconds - int(seconds)) * 1000)
+
+        return f"{hours:02}:{minutes:02}:{int(seconds):02},{milliseconds:03}"
+
     def convert_to_subtitle_segments(
         self,
         transcription_result: TranscriptionResultModel,
@@ -51,14 +62,3 @@ class SubtitleService:
         self.logger.debug("Completed generation of SRT result")
 
         return srt_result
-
-    def _format_time(
-        self,
-        seconds: float,
-    ) -> str:
-        hours = int(seconds // 3600)
-        minutes = int((seconds % 3600) // 60)
-        seconds = seconds % 60
-        milliseconds = round((seconds - int(seconds)) * 1000)
-
-        return f"{hours:02}:{minutes:02}:{int(seconds):02},{milliseconds:03}"

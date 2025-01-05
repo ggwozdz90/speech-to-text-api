@@ -48,6 +48,15 @@ class TranslationModelRepositoryImpl(TranslationModelRepository):  # type: ignor
         self.worker = worker_factory.create()
         self.last_access_time = 0.0
 
+    def _check_idle_timeout(self) -> None:
+        self.logger.debug("Checking translation model idle timeout")
+
+        if self.worker.is_alive() and not self.worker.is_processing():
+            with self._lock:
+                self.worker.stop()
+                self.timer.cancel()
+                self.logger.info("Translation model stopped due to idle timeout")
+
     def translate(
         self,
         text: str,
@@ -81,12 +90,3 @@ class TranslationModelRepositoryImpl(TranslationModelRepository):  # type: ignor
         )
 
         return result
-
-    def _check_idle_timeout(self) -> None:
-        self.logger.debug("Checking translation model idle timeout")
-
-        if self.worker.is_alive() and not self.worker.is_processing():
-            with self._lock:
-                self.worker.stop()
-                self.timer.cancel()
-                self.logger.info("Translation model stopped due to idle timeout")

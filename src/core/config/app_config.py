@@ -28,30 +28,8 @@ class AppConfig:
 
         return cls._instance
 
-    def initialize(
-        self,
-        logger: Logger,
-    ) -> None:
-        logger.info("Initializing configuration...")
-        load_dotenv()
-        self._load_env_variables()
-        config_message = (
-            f"Configuration loaded:\n"
-            f"LOG_LEVEL: {self.log_level}\n"
-            f"DEVICE: {self.device}\n"
-            f"FILE_UPLOAD_PATH: {self.file_upload_path}\n"
-            f"DELETE_FILES_AFTER_TRANSCRIPTION: {self.delete_files_after_transcription}\n"
-            f"FASTAPI_HOST: {self.fastapi_host}\n"
-            f"FASTAPI_PORT: {self.fastapi_port}\n"
-            f"SPEACH_TO_TEXT_MODEL_NAME: {self.speach_to_text_model_name}\n"
-            f"SPEACH_TO_TEXT_MODEL_TYPE: {self.speach_to_text_model_type}\n"
-            f"SPEACH_TO_TEXT_MODEL_DOWNLOAD_PATH: {self.speach_to_text_model_download_path}\n"
-            f"TRANSLATION_MODEL_NAME: {self.translation_model_name}\n"
-            f"TRANSLATION_MODEL_DOWNLOAD_PATH: {self.translation_model_download_path}\n"
-            f"MODEL_IDLE_TIMEOUT: {self.model_idle_timeout}"
-        )
-        logger.info(config_message)
-        logger.info("Configuration initialized successfully.")
+    def _str_to_bool(self, value: str) -> bool:
+        return value.lower() in ("true", "1", "yes")
 
     def _load_env_variables(self) -> None:
         self.log_level = os.getenv("LOG_LEVEL", "INFO")
@@ -76,5 +54,27 @@ class AppConfig:
         except ValueError:
             self.fastapi_port = 8000
 
-    def _str_to_bool(self, value: str) -> bool:
-        return value.lower() in ("true", "1", "yes")
+    def initialize(
+        self,
+        logger: Logger,
+    ) -> None:
+        logger.info("Initializing configuration...")
+        load_dotenv()
+        self._load_env_variables()
+        config_message = (
+            f"Configuration loaded:\n"
+            f"LOG_LEVEL: {self.log_level}\n"
+            f"DEVICE: {self.device}\n"
+            f"FILE_UPLOAD_PATH: {self.file_upload_path}\n"
+            f"DELETE_FILES_AFTER_TRANSCRIPTION: {self.delete_files_after_transcription}\n"
+            f"FASTAPI_HOST: {self.fastapi_host}\n"
+            f"FASTAPI_PORT: {self.fastapi_port}\n"
+            f"SPEACH_TO_TEXT_MODEL_NAME: {self.speach_to_text_model_name}\n"
+            f"SPEACH_TO_TEXT_MODEL_TYPE: {self.speach_to_text_model_type}\n"
+            f"SPEACH_TO_TEXT_MODEL_DOWNLOAD_PATH: {self.speach_to_text_model_download_path}\n"
+            f"TRANSLATION_MODEL_NAME: {self.translation_model_name}\n"
+            f"TRANSLATION_MODEL_DOWNLOAD_PATH: {self.translation_model_download_path}\n"
+            f"MODEL_IDLE_TIMEOUT: {self.model_idle_timeout}"
+        )
+        logger.info(config_message)
+        logger.info("Configuration initialized successfully.")
