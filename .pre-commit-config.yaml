@@ -35,6 +35,7 @@ repos:
           - flake8-clean-block
           - tryceratops
           - flake8-simplify
+          - flake8-fastapi
 
   - repo: https://github.com/PyCQA/isort
     rev: 5.13.2

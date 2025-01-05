@@ -31,6 +31,8 @@ commitizen = "^4.1.0"
 pyinstaller = "^6.11.1"
 flake8-clean-block = "^0.1.2"
 flake8-simplify = "^0.21.0"
+tryceratops = "^2.4.1"
+flake8-fastapi = "^0.7.0"
 
 [tool.commitizen]
 name = "cz_conventional_commits"
