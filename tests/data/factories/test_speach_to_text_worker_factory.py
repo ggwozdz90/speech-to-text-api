@@ -5,6 +5,9 @@ import pytest
 from core.config.app_config import AppConfig
 from core.logger.logger import Logger
 from data.workers.whisper_speach_to_text_worker import WhisperSpeachToTextWorker
+from domain.exceptions.unsupported_model_configuration_error import (
+    UnsupportedModelConfigurationError,
+)
 from src.data.factories.speach_to_text_worker_factory import SpeachToTextWorkerFactory
 
 
@@ -36,6 +39,7 @@ def test_create_worker_whisper(mock_config: AppConfig, mock_logger: Logger) -> N
     assert worker._config.device == "cpu"
     assert worker._config.model_type == "base"
     assert worker._config.model_download_path == "/path/to/whisper"
+    assert worker._config.log_level == "INFO"
 
 
 def test_create_worker_unsupported_model(mock_config: AppConfig, mock_logger: Logger) -> None:
@@ -44,5 +48,5 @@ def test_create_worker_unsupported_model(mock_config: AppConfig, mock_logger: Lo
     factory = SpeachToTextWorkerFactory(config=mock_config, logger=mock_logger)
 
     # When / Then
-    with pytest.raises(ValueError, match="Unsupported speach to text model name: unsupported-model"):
+    with pytest.raises(UnsupportedModelConfigurationError, match="Unsupported model name: unsupported-model"):
         factory.create()

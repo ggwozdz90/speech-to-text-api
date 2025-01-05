@@ -33,6 +33,8 @@ repos:
         additional_dependencies: 
           - Flake8-pyproject
           - flake8-clean-block
+          - tryceratops
+          - flake8-simplify
 
   - repo: https://github.com/PyCQA/isort
     rev: 5.13.2

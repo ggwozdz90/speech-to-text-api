@@ -6,6 +6,9 @@ from core.config.app_config import AppConfig
 from core.logger.logger import Logger
 from data.workers.mbart_translation_worker import MBartTranslationWorker
 from data.workers.seamless_translation_worker import SeamlessTranslationWorker
+from domain.exceptions.unsupported_model_configuration_error import (
+    UnsupportedModelConfigurationError,
+)
 from src.data.factories.translation_worker_factory import TranslationWorkerFactory
 
 
@@ -36,6 +39,7 @@ def test_create_mbart(mock_config: AppConfig, mock_logger: Logger) -> None:
     assert worker._config.device == "cpu"
     assert worker._config.model_name == "facebook/mbart-large-50-many-to-many-mmt"
     assert worker._config.model_download_path == "/path/to/mbart"
+    assert worker._config.log_level == "INFO"
 
 
 def test_create_seamless(mock_config: AppConfig, mock_logger: Logger) -> None:
@@ -55,6 +59,7 @@ def test_create_seamless(mock_config: AppConfig, mock_logger: Logger) -> None:
     assert worker._config.device == "cpu"
     assert worker._config.model_name == "facebook/seamless-m4t-v2-large"
     assert worker._config.model_download_path == "/path/to/seamless"
+    assert worker._config.log_level == "INFO"
 
 
 def test_create_unsupported_model(mock_config: AppConfig, mock_logger: Logger) -> None:
@@ -63,5 +68,5 @@ def test_create_unsupported_model(mock_config: AppConfig, mock_logger: Logger) -
     factory = TranslationWorkerFactory(config=mock_config, logger=mock_logger)
 
     # When / Then
-    with pytest.raises(ValueError, match="Unsupported translation model name: unsupported-model"):
+    with pytest.raises(UnsupportedModelConfigurationError, match="Unsupported model name: unsupported-model"):
         factory.create()

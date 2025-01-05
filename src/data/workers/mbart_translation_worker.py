@@ -84,8 +84,7 @@ class MBartTranslationWorker(
                     inputs[key] = inputs[key].to(config.device)
 
                 with torch.no_grad():
-                    kwargs = {}
-                    kwargs["forced_bos_token_id"] = tokenizer.lang_code_to_id[target_language]
+                    kwargs = {"forced_bos_token_id": tokenizer.lang_code_to_id[target_language]}
 
                     translated = model.generate(**inputs, num_beams=5, **kwargs)
 
