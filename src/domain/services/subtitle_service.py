@@ -31,7 +31,7 @@ class SubtitleService:
                     counter=str(i),
                     time_range=time_range,
                     text=segment.text,
-                )
+                ),
             )
 
         self.logger.debug("Completed conversion to subtitle segments")
@@ -45,7 +45,7 @@ class SubtitleService:
         self.logger.debug("Starting generation of SRT result from subtitle segments")
 
         srt_result = "\n".join(
-            [f"{segment.counter}\n{segment.time_range}\n{segment.text.strip()}\n" for segment in srt_segments]
+            [f"{segment.counter}\n{segment.time_range}\n{segment.text.strip()}\n" for segment in srt_segments],
         )
 
         self.logger.debug("Completed generation of SRT result")

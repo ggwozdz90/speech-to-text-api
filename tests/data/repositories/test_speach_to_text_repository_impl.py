@@ -76,7 +76,9 @@ def speach_to_text_repository_impl(
 
 
 def test_transcribe_success(
-    speach_to_text_repository_impl: SpeachToTextRepositoryImpl, mock_worker: Mock, mock_timer: Mock
+    speach_to_text_repository_impl: SpeachToTextRepositoryImpl,
+    mock_worker: Mock,
+    mock_timer: Mock,
 ) -> None:
     # Given
     mock_worker.is_alive.return_value = False
@@ -93,7 +95,10 @@ def test_transcribe_success(
 
 
 def test_check_idle_timeout_stops_worker(
-    speach_to_text_repository_impl: SpeachToTextRepositoryImpl, mock_worker: Mock, mock_timer: Mock, mock_logger: Mock
+    speach_to_text_repository_impl: SpeachToTextRepositoryImpl,
+    mock_worker: Mock,
+    mock_timer: Mock,
+    mock_logger: Mock,
 ) -> None:
     # Given
     mock_worker.is_alive.return_value = True

@@ -19,7 +19,9 @@ def test_transcribe_dto_valid_languages(mock_upload_file: UploadFile) -> None:
 
     # When
     dto = TranscribeDTO(
-        source_language=valid_source_language, target_language=valid_target_language, file=mock_upload_file
+        source_language=valid_source_language,
+        target_language=valid_target_language,
+        file=mock_upload_file,
     )
 
     # Then

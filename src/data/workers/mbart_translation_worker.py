@@ -25,7 +25,7 @@ class MBartTranslationWorker(
         str,
         MBartTranslationConfig,
         Tuple[AutoModelForSeq2SeqLM, AutoTokenizer],
-    ]
+    ],
 ):
     def translate(
         self,

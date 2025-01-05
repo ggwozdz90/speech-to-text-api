@@ -64,7 +64,7 @@ async def test_execute_success_no_translation(
     mock_file = Mock(UploadFile)
     mock_file.filename = "test_file.txt"
     mock_transcription_service.transcribe = AsyncMock(
-        return_value=TranscriptionResultModel(text="transcription_result", segments=[])
+        return_value=TranscriptionResultModel(text="transcription_result", segments=[]),
     )
 
     # When
@@ -86,7 +86,7 @@ async def test_execute_success_with_translation(
     mock_file = Mock(UploadFile)
     mock_file.filename = "test_file.txt"
     mock_transcription_service.transcribe = AsyncMock(
-        return_value=TranscriptionResultModel(text="transcription_result", segments=[])
+        return_value=TranscriptionResultModel(text="transcription_result", segments=[]),
     )
     mock_translation_service.translate_text = Mock(return_value="translated_result")
 

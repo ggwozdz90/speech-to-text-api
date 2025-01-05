@@ -24,7 +24,7 @@ class WhisperSpeachToTextWorker(
         dict[str, str],
         WhisperSpeachToTextConfig,
         whisper.Whisper,
-    ]
+    ],
 ):
     def transcribe(
         self,

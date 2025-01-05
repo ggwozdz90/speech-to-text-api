@@ -24,7 +24,7 @@ class SeamlessTranslationWorker(
         str,
         SeamlessTranslationConfig,
         Tuple[SeamlessM4Tv2ForTextToText, AutoProcessor],
-    ]
+    ],
 ):
     def translate(
         self,

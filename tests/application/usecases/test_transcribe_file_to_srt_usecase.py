@@ -119,7 +119,8 @@ async def test_execute_success_with_translation(
     mock_sentence_service.create_sentence_models.assert_called_once_with(["segment1", "segment2"])
     mock_translation_service.translate_sentences.assert_called_once_with(["sentence1", "sentence2"], "en", "pl")
     mock_sentence_service.apply_translated_sentences.assert_called_once_with(
-        ["segment1", "segment2"], ["sentence1", "sentence2"]
+        ["segment1", "segment2"],
+        ["sentence1", "sentence2"],
     )
     mock_subtitle_service.generate_srt_result.assert_called_once_with(["segment1", "segment2"])
 

@@ -76,7 +76,9 @@ def translation_model_repository_impl(
 
 
 def test_translate_success(
-    translation_model_repository_impl: TranslationModelRepositoryImpl, mock_worker: Mock, mock_timer: Mock
+    translation_model_repository_impl: TranslationModelRepositoryImpl,
+    mock_worker: Mock,
+    mock_timer: Mock,
 ) -> None:
     # Given
     mock_worker.is_alive.return_value = False

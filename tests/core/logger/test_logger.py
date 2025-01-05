@@ -21,7 +21,8 @@ def test_info_logs_message(logger_instance: Logger) -> None:
 
         # Then
         mock_info.assert_called_once_with(
-            logging.INFO, f"tests.core.logger.test_logger.test_info_logs_message - {message}"
+            logging.INFO,
+            f"tests.core.logger.test_logger.test_info_logs_message - {message}",
         )
 
 
@@ -35,7 +36,8 @@ def test_error_logs_message(logger_instance: Logger) -> None:
 
         # Then
         mock_error.assert_called_once_with(
-            logging.ERROR, f"tests.core.logger.test_logger.test_error_logs_message - {message}"
+            logging.ERROR,
+            f"tests.core.logger.test_logger.test_error_logs_message - {message}",
         )
 
 
@@ -49,7 +51,8 @@ def test_warning_logs_message(logger_instance: Logger) -> None:
 
         # Then
         mock_warning.assert_called_once_with(
-            logging.WARNING, f"tests.core.logger.test_logger.test_warning_logs_message - {message}"
+            logging.WARNING,
+            f"tests.core.logger.test_logger.test_warning_logs_message - {message}",
         )
 
 
@@ -63,7 +66,8 @@ def test_debug_logs_message(logger_instance: Logger) -> None:
 
         # Then
         mock_debug.assert_called_once_with(
-            logging.DEBUG, f"tests.core.logger.test_logger.test_debug_logs_message - {message}"
+            logging.DEBUG,
+            f"tests.core.logger.test_logger.test_debug_logs_message - {message}",
         )
 
 

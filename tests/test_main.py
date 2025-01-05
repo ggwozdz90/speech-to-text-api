@@ -47,7 +47,8 @@ def test_main_load_config_exception(
 ) -> None:
     # Given
     with patch.object(mock_config, "initialize", side_effect=Exception("Initialize error")), patch.object(
-        mock_server, "start"
+        mock_server,
+        "start",
     ) as mock_start:
 
         # When / Then
@@ -64,7 +65,9 @@ def test_main_start_exception(
     # Given
     mock_config.log_level = "INFO"
     with patch.object(mock_config, "initialize") as mock_load_config, patch.object(
-        mock_server, "start", side_effect=Exception("Start error")
+        mock_server,
+        "start",
+        side_effect=Exception("Start error"),
     ):
 
         # When / Then

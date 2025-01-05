@@ -28,7 +28,7 @@ class TranscribeFileToTextUseCase:
         target_language: Optional[str],
     ) -> str:
         self.logger.info(
-            f"Executing transcription for file '{file.filename}' from '{source_language}' to '{target_language}'"
+            f"Executing transcription for file '{file.filename}' from '{source_language}' to '{target_language}'",
         )
 
         transcription_result = await self.transcription_service.transcribe(file, source_language)

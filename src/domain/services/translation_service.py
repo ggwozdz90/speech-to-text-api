@@ -32,7 +32,7 @@ class TranslationService:
         target_language: str,
     ) -> None:
         self.logger.debug(
-            f"Starting translation of {len(sentences)} sentences from '{source_language}' to '{target_language}'"
+            f"Starting translation of {len(sentences)} sentences from '{source_language}' to '{target_language}'",
         )
 
         source_language_mapped = self.language_mapping_service.map_language(

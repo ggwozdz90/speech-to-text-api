@@ -59,7 +59,7 @@ class TranslationModelRepositoryImpl(TranslationModelRepository):  # type: ignor
                 self.worker.start()
 
         self.logger.debug(
-            f"Translating started from source_language: {source_language}, target_language: {target_language}"
+            f"Translating started from source_language: {source_language}, target_language: {target_language}",
         )
 
         result: str = self.worker.translate(
@@ -76,7 +76,7 @@ class TranslationModelRepositoryImpl(TranslationModelRepository):  # type: ignor
         self.last_access_time = time.time()
 
         self.logger.debug(
-            f"Translating completed from source_language: {source_language}, target_language: {target_language}"
+            f"Translating completed from source_language: {source_language}, target_language: {target_language}",
         )
 
         return result

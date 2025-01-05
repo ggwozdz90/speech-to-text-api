@@ -62,11 +62,13 @@ class AppConfig:
         self.speach_to_text_model_name = os.getenv("SPEACH_TO_TEXT_MODEL_NAME", "openai/whisper")
         self.speach_to_text_model_type = os.getenv("SPEACH_TO_TEXT_MODEL_TYPE", "turbo")
         self.speach_to_text_model_download_path = os.getenv(
-            "SPEACH_TO_TEXT_MODEL_DOWNLOAD_PATH", "downloaded_speach_to_text_models"
+            "SPEACH_TO_TEXT_MODEL_DOWNLOAD_PATH",
+            "downloaded_speach_to_text_models",
         )
         self.translation_model_name = os.getenv("TRANSLATION_MODEL_NAME", "facebook/mbart-large-50-many-to-many-mmt")
         self.translation_model_download_path = os.getenv(
-            "TRANSLATION_MODEL_DOWNLOAD_PATH", "downloaded_translation_models"
+            "TRANSLATION_MODEL_DOWNLOAD_PATH",
+            "downloaded_translation_models",
         )
         try:
             self.fastapi_port = int(os.getenv("FASTAPI_PORT", "8000"))

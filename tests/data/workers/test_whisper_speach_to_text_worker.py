@@ -28,7 +28,8 @@ def mock_logger() -> Logger:
 
 @pytest.fixture
 def whisper_worker(
-    whisper_config: WhisperSpeachToTextConfig, mock_logger: Logger
+    whisper_config: WhisperSpeachToTextConfig,
+    mock_logger: Logger,
 ) -> Generator[WhisperSpeachToTextWorker, None, None]:
     worker = WhisperSpeachToTextWorker(whisper_config, mock_logger)
     yield worker
@@ -37,7 +38,7 @@ def whisper_worker(
 
 def test_transcribe_sends_correct_command(whisper_worker: WhisperSpeachToTextWorker) -> None:
     with patch("multiprocessing.Process") as MockProcess, patch(
-        "data.workers.whisper_speach_to_text_worker.whisper.load_model"
+        "data.workers.whisper_speach_to_text_worker.whisper.load_model",
     ) as mock_load_model:
         mock_process = Mock()
         MockProcess.return_value = mock_process
@@ -51,7 +52,9 @@ def test_transcribe_sends_correct_command(whisper_worker: WhisperSpeachToTextWor
 
         # When
         with patch.object(whisper_worker._pipe_parent, "send") as mock_send, patch.object(
-            whisper_worker._pipe_parent, "recv", return_value={}
+            whisper_worker._pipe_parent,
+            "recv",
+            return_value={},
         ):
             whisper_worker.transcribe(file_path, language)
 

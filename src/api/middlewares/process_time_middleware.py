@@ -30,6 +30,6 @@ class ProcessTimeMiddleware(BaseHTTPMiddleware):
         process_time = time.time() - start_time
         response.headers["X-Process-Time"] = str(process_time)
         self.logger.info(
-            f"Request {request_id} completed: {request.method} {request.url} processed in {process_time:.4f} seconds."
+            f"Request {request_id} completed: {request.method} {request.url} processed in {process_time:.4f} seconds.",
         )
         return response
