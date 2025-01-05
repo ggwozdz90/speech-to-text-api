@@ -34,13 +34,13 @@ jobs:
       run: poetry build
 
     - name: Create EXE
-      run: poetry run pyinstaller script/speach-to-text-api.spec --clean --noconfirm
+      run: poetry run pyinstaller script/speech-to-text-api.spec --clean --noconfirm
 
     - name: Zip EXE
       run: | 
-        cp .env dist/speach-to-text-api
-        Compress-Archive -Path dist/speach-to-text-api -DestinationPath dist/speach-to-text-api-exe.zip
-        Remove-Item -Recurse -Force dist/speach-to-text-api
+        cp .env dist/speech-to-text-api
+        Compress-Archive -Path dist/speech-to-text-api -DestinationPath dist/speech-to-text-api-exe.zip
+        Remove-Item -Recurse -Force dist/speech-to-text-api
 
     - name: Deploy GitHub Release
       uses: softprops/action-gh-release@v2

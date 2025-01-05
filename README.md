@@ -1,10 +1,10 @@
-# Speach to Text API
+# Speech to Text API
 
 This project provides an API for transcribing text from uploaded audio/video files using the OpenAI Whisper model. Additionally, it offers text translation using Facebook/Meta's mBART and Seamless models. A key aspect of this project is memory optimization; models are loaded in separate processes and terminated after a configurable idle timeout to conserve RAM. The application can also be run in a Docker container.
 
 ## Features
 
-- **Speach-to-Text Model Integration**: Utilizes advanced speach-to-text models like OpenAI Whisper for transcription.
+- **Speech-to-Text Model Integration**: Utilizes advanced speech-to-text models like OpenAI Whisper for transcription.
 - **Translation Model Integration**: Translates detected text using translation models like Facebook/Meta's mBART and Seamless.
 - **Dockerized**: The application runs in a Docker container for easy deployment.
 - **FastAPI**: Exposes RESTful API endpoints for file uploads, text extraction, and subtitle generation.
@@ -16,7 +16,7 @@ This project provides an API for transcribing text from uploaded audio/video fil
 
 ## Docker Image
 
-The Docker image for this project is available on Docker Hub: [ggwozdz/speach-to-text-api](https://hub.docker.com/r/ggwozdz/speach-to-text-api)
+The Docker image for this project is available on Docker Hub: [ggwozdz/speech-to-text-api](https://hub.docker.com/r/ggwozdz/speech-to-text-api)
 
 ## Getting Started
 
@@ -50,20 +50,20 @@ You have four options for running the project:
             -e FASTAPI_HOST=0.0.0.0 \
             -e FASTAPI_PORT=8000 \
             -e MODEL_IDLE_TIMEOUT=60 \
-            -e SPEACH_TO_TEXT_MODEL_NAME=openai/whisper \
-            -e SPEACH_TO_TEXT_MODEL_TYPE=turbo \
-            -e SPEACH_TO_TEXT_MODEL_DOWNLOAD_PATH=downloaded_speach_to_text_models \
+            -e SPEECH_TO_TEXT_MODEL_NAME=openai/whisper \
+            -e SPEECH_TO_TEXT_MODEL_TYPE=turbo \
+            -e SPEECH_TO_TEXT_MODEL_DOWNLOAD_PATH=downloaded_speech_to_text_models \
             -e TRANSLATION_MODEL_NAME=facebook/mbart-large-50-many-to-many-mmt \
             -e TRANSLATION_MODEL_DOWNLOAD_PATH=downloaded_translation_models \
-            ggwozdz/speach-to-text-api
+            ggwozdz/speech-to-text-api
         ```
 
 3. **Locally using Poetry**:
     - Clone the repository:
 
         ```sh
-        git clone https://github.com/ggwozdz90/speach-to-text-api
-        cd speach-to-text-api
+        git clone https://github.com/ggwozdz90/speech-to-text-api
+        cd speech-to-text-api
         ```
 
     - Install dependencies locally using Poetry:
@@ -79,11 +79,11 @@ You have four options for running the project:
         ```
 
 4. **Using Executable File**:
-    - Download the executable file from the [GitHub Releases](https://github.com/ggwozdz90/speach-to-text-api/releases) page.
+    - Download the executable file from the [GitHub Releases](https://github.com/ggwozdz90/speech-to-text-api/releases) page.
     - Run the executable file:
 
         ```sh
-        ./speach-to-text-api.exe
+        ./speech-to-text-api.exe
         ```
 
 ### Usage
@@ -155,9 +155,9 @@ The application uses a `.env` file or Docker Compose to define configurable envi
 - `DELETE_FILES_AFTER_TRANSCRIPTION`: Whether to delete files after transcription. Set to `true` or `false`. Default is `true`.
 - `FASTAPI_HOST`: Host for the FastAPI server. Default is `127.0.0.1`.
 - `FASTAPI_PORT`: Port for the FastAPI server. Default is `8000`.
-- `SPEACH_TO_TEXT_MODEL_NAME`: Name of the speach-to-text model to use. Supported models are `openai/whisper`. Default is `openai/whisper`.
-- `SPEACH_TO_TEXT_MODEL_TYPE`: Type of the speach-to-text model to use. Example types are `tiny`, `tiny.en`, `base`, `base.en`, `small`, `small.en`, `medium`, `medium.en`, `large`, and `turbo`. Default is `turbo`.
-- `SPEACH_TO_TEXT_MODEL_DOWNLOAD_PATH`: Path where speach-to-text models are downloaded. Default is `downloaded_speach_to_text_models`.
+- `SPEECH_TO_TEXT_MODEL_NAME`: Name of the speech-to-text model to use. Supported models are `openai/whisper`. Default is `openai/whisper`.
+- `SPEECH_TO_TEXT_MODEL_TYPE`: Type of the speech-to-text model to use. Example types are `tiny`, `tiny.en`, `base`, `base.en`, `small`, `small.en`, `medium`, `medium.en`, `large`, and `turbo`. Default is `turbo`.
+- `SPEECH_TO_TEXT_MODEL_DOWNLOAD_PATH`: Path where speech-to-text models are downloaded. Default is `downloaded_speech_to_text_models`.
 - `TRANSLATION_MODEL_NAME`: Name of the translation model to use. Supported models are `facebook/mbart-large-50-many-to-many-mmt` and `facebook/seamless-m4t-v2-large`. Default is `facebook/seamless-m4t-v2-large`.
 - `TRANSLATION_MODEL_DOWNLOAD_PATH`: Path where translation models are downloaded. Default is `downloaded_translation_models`.
 - `MODEL_IDLE_TIMEOUT`: Time in seconds after which the model will be unloaded if not used. Default is `60`.
@@ -172,7 +172,7 @@ The supported languages for each model can be found in the following files:
 
 ## Table of Contents
 
-- [Speach to Text API](#speach-to-text-api)
+- [Speech to Text API](#speech-to-text-api)
   - [Features](#features)
   - [Docker Image](#docker-image)
   - [Getting Started](#getting-started)

@@ -12,18 +12,18 @@ from domain.exceptions.worker_not_running_error import WorkerNotRunningError
 
 
 @dataclass
-class WhisperSpeachToTextConfig:
+class WhisperSpeechToTextConfig:
     device: str
     model_type: str
     model_download_path: str
     log_level: str
 
 
-class WhisperSpeachToTextWorker(
+class WhisperSpeechToTextWorker(
     BaseWorker[  # type: ignore
         Tuple[str, str],
         dict[str, str],
-        WhisperSpeachToTextConfig,
+        WhisperSpeechToTextConfig,
         whisper.Whisper,
     ],
 ):
@@ -45,7 +45,7 @@ class WhisperSpeachToTextWorker(
 
     def initialize_shared_object(
         self,
-        config: WhisperSpeachToTextConfig,
+        config: WhisperSpeechToTextConfig,
     ) -> whisper.Whisper:
         return whisper.load_model(
             config.model_type,
@@ -57,7 +57,7 @@ class WhisperSpeachToTextWorker(
         command: str,
         args: Tuple[str, str],
         model: whisper.Whisper,
-        config: WhisperSpeachToTextConfig,
+        config: WhisperSpeechToTextConfig,
         pipe: multiprocessing.connection.Connection,
         is_processing: Synchronized,  # type: ignore
         processing_lock: multiprocessing.synchronize.Lock,

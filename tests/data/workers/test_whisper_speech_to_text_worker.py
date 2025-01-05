@@ -5,15 +5,15 @@ from unittest.mock import Mock, patch
 import pytest
 
 from core.logger.logger import Logger
-from data.workers.whisper_speach_to_text_worker import (
-    WhisperSpeachToTextConfig,
-    WhisperSpeachToTextWorker,
+from data.workers.whisper_speech_to_text_worker import (
+    WhisperSpeechToTextConfig,
+    WhisperSpeechToTextWorker,
 )
 
 
 @pytest.fixture
-def whisper_config() -> WhisperSpeachToTextConfig:
-    return WhisperSpeachToTextConfig(
+def whisper_config() -> WhisperSpeechToTextConfig:
+    return WhisperSpeechToTextConfig(
         device="cuda",
         model_type="base",
         model_download_path="/tmp",
@@ -28,17 +28,17 @@ def mock_logger() -> Logger:
 
 @pytest.fixture
 def whisper_worker(
-    whisper_config: WhisperSpeachToTextConfig,
+    whisper_config: WhisperSpeechToTextConfig,
     mock_logger: Logger,
-) -> Generator[WhisperSpeachToTextWorker, None, None]:
-    worker = WhisperSpeachToTextWorker(whisper_config, mock_logger)
+) -> Generator[WhisperSpeechToTextWorker, None, None]:
+    worker = WhisperSpeechToTextWorker(whisper_config, mock_logger)
     yield worker
     worker.stop()
 
 
-def test_transcribe_sends_correct_command(whisper_worker: WhisperSpeachToTextWorker) -> None:
+def test_transcribe_sends_correct_command(whisper_worker: WhisperSpeechToTextWorker) -> None:
     with patch("multiprocessing.Process") as MockProcess, patch(
-        "data.workers.whisper_speach_to_text_worker.whisper.load_model",
+        "data.workers.whisper_speech_to_text_worker.whisper.load_model",
     ) as mock_load_model:
         mock_process = Mock()
         MockProcess.return_value = mock_process
@@ -62,7 +62,7 @@ def test_transcribe_sends_correct_command(whisper_worker: WhisperSpeachToTextWor
             mock_send.assert_called_once_with(("transcribe", (file_path, language)))
 
 
-def test_transcribe_raises_error_if_worker_not_running(whisper_worker: WhisperSpeachToTextWorker) -> None:
+def test_transcribe_raises_error_if_worker_not_running(whisper_worker: WhisperSpeechToTextWorker) -> None:
     # Given
     file_path = "test.wav"
     language = "en"
@@ -72,9 +72,9 @@ def test_transcribe_raises_error_if_worker_not_running(whisper_worker: WhisperSp
         whisper_worker.transcribe(file_path, language)
 
 
-def test_initialize_shared_object(whisper_config: WhisperSpeachToTextConfig, mock_logger: Logger) -> None:
-    worker = WhisperSpeachToTextWorker(whisper_config, mock_logger)
-    with patch("data.workers.whisper_speach_to_text_worker.whisper.load_model") as mock_load_model:
+def test_initialize_shared_object(whisper_config: WhisperSpeechToTextConfig, mock_logger: Logger) -> None:
+    worker = WhisperSpeechToTextWorker(whisper_config, mock_logger)
+    with patch("data.workers.whisper_speech_to_text_worker.whisper.load_model") as mock_load_model:
         mock_model = Mock()
         mock_load_model.return_value = mock_model
         mock_model.to.return_value = mock_model
@@ -90,8 +90,8 @@ def test_initialize_shared_object(whisper_config: WhisperSpeachToTextConfig, moc
         assert model == mock_model
 
 
-def test_handle_command_transcribe(whisper_config: WhisperSpeachToTextConfig, mock_logger: Logger) -> None:
-    worker = WhisperSpeachToTextWorker(whisper_config, mock_logger)
+def test_handle_command_transcribe(whisper_config: WhisperSpeechToTextConfig, mock_logger: Logger) -> None:
+    worker = WhisperSpeechToTextWorker(whisper_config, mock_logger)
     model = Mock()
     pipe = Mock()
     is_processing = multiprocessing.Value("b", False)
@@ -111,8 +111,8 @@ def test_handle_command_transcribe(whisper_config: WhisperSpeachToTextConfig, mo
         pipe.send.assert_called_once_with({"text": "transcribed text"})
 
 
-def test_handle_command_transcribe_error(whisper_config: WhisperSpeachToTextConfig, mock_logger: Logger) -> None:
-    worker = WhisperSpeachToTextWorker(whisper_config, mock_logger)
+def test_handle_command_transcribe_error(whisper_config: WhisperSpeechToTextConfig, mock_logger: Logger) -> None:
+    worker = WhisperSpeechToTextWorker(whisper_config, mock_logger)
     model = Mock()
     pipe = Mock()
     is_processing = multiprocessing.Value("b", False)

@@ -26,9 +26,9 @@ def test_initialize(app_config: AppConfig, mock_logger: Logger) -> None:
             "DELETE_FILES_AFTER_TRANSCRIPTION": "true",
             "FASTAPI_HOST": "localhost",
             "FASTAPI_PORT": "8000",
-            "SPEACH_TO_TEXT_MODEL_NAME": "openai/whisper",
-            "SPEACH_TO_TEXT_MODEL_TYPE": "base",
-            "SPEACH_TO_TEXT_MODEL_DOWNLOAD_PATH": "model_path",
+            "SPEECH_TO_TEXT_MODEL_NAME": "openai/whisper",
+            "SPEECH_TO_TEXT_MODEL_TYPE": "base",
+            "SPEECH_TO_TEXT_MODEL_DOWNLOAD_PATH": "model_path",
             "TRANSLATION_MODEL_NAME": "test_translation_model",
             "TRANSLATION_MODEL_DOWNLOAD_PATH": "translation_model_path",
             "MODEL_IDLE_TIMEOUT": "150",
@@ -42,9 +42,9 @@ def test_initialize(app_config: AppConfig, mock_logger: Logger) -> None:
         assert app_config.delete_files_after_transcription is True
         assert app_config.fastapi_host == "localhost"
         assert app_config.fastapi_port == 8000
-        assert app_config.speach_to_text_model_name == "openai/whisper"
-        assert app_config.speach_to_text_model_type == "base"
-        assert app_config.speach_to_text_model_download_path == "model_path"
+        assert app_config.speech_to_text_model_name == "openai/whisper"
+        assert app_config.speech_to_text_model_type == "base"
+        assert app_config.speech_to_text_model_download_path == "model_path"
         assert app_config.translation_model_name == "test_translation_model"
         assert app_config.translation_model_download_path == "translation_model_path"
         assert app_config.model_idle_timeout == 150
@@ -61,9 +61,9 @@ def test_initialize_missing_env_vars(app_config: AppConfig, mock_logger: Logger)
         assert app_config.delete_files_after_transcription is True
         assert app_config.fastapi_host == "127.0.0.1"
         assert app_config.fastapi_port == 8000
-        assert app_config.speach_to_text_model_name == "openai/whisper"
-        assert app_config.speach_to_text_model_type == "turbo"
-        assert app_config.speach_to_text_model_download_path == "downloaded_speach_to_text_models"
+        assert app_config.speech_to_text_model_name == "openai/whisper"
+        assert app_config.speech_to_text_model_type == "turbo"
+        assert app_config.speech_to_text_model_download_path == "downloaded_speech_to_text_models"
         assert app_config.translation_model_name == "facebook/seamless-m4t-v2-large"
         assert app_config.translation_model_download_path == "downloaded_translation_models"
         assert app_config.model_idle_timeout == 60
@@ -94,9 +94,9 @@ def test_initialize_log_parameters(app_config: AppConfig, mock_logger: Logger) -
     assert "DELETE_FILES_AFTER_TRANSCRIPTION" in mock_logger.info.call_args_list[1][0][0]
     assert "FASTAPI_HOST" in mock_logger.info.call_args_list[1][0][0]
     assert "FASTAPI_PORT" in mock_logger.info.call_args_list[1][0][0]
-    assert "SPEACH_TO_TEXT_MODEL_NAME" in mock_logger.info.call_args_list[1][0][0]
-    assert "SPEACH_TO_TEXT_MODEL_TYPE" in mock_logger.info.call_args_list[1][0][0]
-    assert "SPEACH_TO_TEXT_MODEL_DOWNLOAD_PATH" in mock_logger.info.call_args_list[1][0][0]
+    assert "SPEECH_TO_TEXT_MODEL_NAME" in mock_logger.info.call_args_list[1][0][0]
+    assert "SPEECH_TO_TEXT_MODEL_TYPE" in mock_logger.info.call_args_list[1][0][0]
+    assert "SPEECH_TO_TEXT_MODEL_DOWNLOAD_PATH" in mock_logger.info.call_args_list[1][0][0]
     assert "TRANSLATION_MODEL_NAME" in mock_logger.info.call_args_list[1][0][0]
     assert "TRANSLATION_MODEL_DOWNLOAD_PATH" in mock_logger.info.call_args_list[1][0][0]
     assert "MODEL_IDLE_TIMEOUT" in mock_logger.info.call_args_list[1][0][0]

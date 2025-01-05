@@ -15,9 +15,9 @@ class AppConfig:
     delete_files_after_transcription: Optional[bool]
     fastapi_host: Optional[str]
     fastapi_port: Optional[int]
-    speach_to_text_model_name: Optional[str]
-    speach_to_text_model_type: Optional[str]
-    speach_to_text_model_download_path: Optional[str]
+    speech_to_text_model_name: Optional[str]
+    speech_to_text_model_type: Optional[str]
+    speech_to_text_model_download_path: Optional[str]
     translation_model_name: Optional[str]
     translation_model_download_path: Optional[str]
     model_idle_timeout: Optional[int]
@@ -38,11 +38,11 @@ class AppConfig:
         self.delete_files_after_transcription = self._str_to_bool(os.getenv("DELETE_FILES_AFTER_TRANSCRIPTION", "true"))
         self.fastapi_host = os.getenv("FASTAPI_HOST", "127.0.0.1")
         self.model_idle_timeout = int(os.getenv("MODEL_IDLE_TIMEOUT", "60"))
-        self.speach_to_text_model_name = os.getenv("SPEACH_TO_TEXT_MODEL_NAME", "openai/whisper")
-        self.speach_to_text_model_type = os.getenv("SPEACH_TO_TEXT_MODEL_TYPE", "turbo")
-        self.speach_to_text_model_download_path = os.getenv(
-            "SPEACH_TO_TEXT_MODEL_DOWNLOAD_PATH",
-            "downloaded_speach_to_text_models",
+        self.speech_to_text_model_name = os.getenv("SPEECH_TO_TEXT_MODEL_NAME", "openai/whisper")
+        self.speech_to_text_model_type = os.getenv("SPEECH_TO_TEXT_MODEL_TYPE", "turbo")
+        self.speech_to_text_model_download_path = os.getenv(
+            "SPEECH_TO_TEXT_MODEL_DOWNLOAD_PATH",
+            "downloaded_speech_to_text_models",
         )
         self.translation_model_name = os.getenv("TRANSLATION_MODEL_NAME", "facebook/mbart-large-50-many-to-many-mmt")
         self.translation_model_download_path = os.getenv(
@@ -69,9 +69,9 @@ class AppConfig:
             f"DELETE_FILES_AFTER_TRANSCRIPTION: {self.delete_files_after_transcription}\n"
             f"FASTAPI_HOST: {self.fastapi_host}\n"
             f"FASTAPI_PORT: {self.fastapi_port}\n"
-            f"SPEACH_TO_TEXT_MODEL_NAME: {self.speach_to_text_model_name}\n"
-            f"SPEACH_TO_TEXT_MODEL_TYPE: {self.speach_to_text_model_type}\n"
-            f"SPEACH_TO_TEXT_MODEL_DOWNLOAD_PATH: {self.speach_to_text_model_download_path}\n"
+            f"SPEECH_TO_TEXT_MODEL_NAME: {self.speech_to_text_model_name}\n"
+            f"SPEECH_TO_TEXT_MODEL_TYPE: {self.speech_to_text_model_type}\n"
+            f"SPEECH_TO_TEXT_MODEL_DOWNLOAD_PATH: {self.speech_to_text_model_download_path}\n"
             f"TRANSLATION_MODEL_NAME: {self.translation_model_name}\n"
             f"TRANSLATION_MODEL_DOWNLOAD_PATH: {self.translation_model_download_path}\n"
             f"MODEL_IDLE_TIMEOUT: {self.model_idle_timeout}"

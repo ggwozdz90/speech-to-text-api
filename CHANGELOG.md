@@ -16,7 +16,7 @@
 ### Refactor
 
 - rename and restructure translation and speech-to-text worker classes
-- rename Whisper references to SpeachToText for consistency
+- rename Whisper references to SpeechToText for consistency
 - restructure WhisperWorker and introduce BaseWorker for improved extensibility
 
 ## 0.5.0 (2024-12-21)
@@ -41,7 +41,7 @@
 
 ### Feat
 
-- add speach-to-text API project using Whisper model
+- add speech-to-text API project using Whisper model
 
 ### Fix
 
