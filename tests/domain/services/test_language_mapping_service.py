@@ -19,9 +19,12 @@ def mock_mappings() -> dict[str, dict[str, str]]:
 
 @pytest.fixture
 def language_mapping_service(mock_mappings: dict[str, dict[str, str]]) -> LanguageMappingService:
-    with patch("builtins.open", mock_open(read_data=json.dumps(mock_mappings["whisper_mapping.json"]))), patch(
-        "os.path.join",
-        return_value="whisper_mapping.json",
+    with (
+        patch("builtins.open", mock_open(read_data=json.dumps(mock_mappings["whisper_mapping.json"]))),
+        patch(
+            "os.path.join",
+            return_value="whisper_mapping.json",
+        ),
     ):
         service = LanguageMappingService()
 

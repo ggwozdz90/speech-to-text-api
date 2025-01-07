@@ -2,7 +2,7 @@
 FROM python:3.12-slim-bookworm AS builder
 
 # Setup Poetry
-RUN pip install --no-cache-dir poetry==1.8.3
+RUN pip install --no-cache-dir poetry==2.0.0
 ENV POETRY_NO_INTERACTION=1 \
     POETRY_VIRTUALENVS_IN_PROJECT=1 \
     POETRY_VIRTUALENVS_CREATE=1 \

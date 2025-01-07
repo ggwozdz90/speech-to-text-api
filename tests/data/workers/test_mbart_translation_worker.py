@@ -48,11 +48,15 @@ class MockTensor:
 
 
 def test_translate_sends_correct_command(mbart_worker: MBartTranslationWorker) -> None:
-    with patch("multiprocessing.Process") as MockProcess, patch(
-        "data.workers.mbart_translation_worker.AutoModelForSeq2SeqLM.from_pretrained",
-    ) as mock_load_model, patch(
-        "data.workers.mbart_translation_worker.AutoTokenizer.from_pretrained",
-    ) as mock_load_tokenizer:
+    with (
+        patch("multiprocessing.Process") as MockProcess,
+        patch(
+            "data.workers.mbart_translation_worker.AutoModelForSeq2SeqLM.from_pretrained",
+        ) as mock_load_model,
+        patch(
+            "data.workers.mbart_translation_worker.AutoTokenizer.from_pretrained",
+        ) as mock_load_tokenizer,
+    ):
         mock_process = Mock()
         MockProcess.return_value = mock_process
         mock_model = Mock()
@@ -67,10 +71,13 @@ def test_translate_sends_correct_command(mbart_worker: MBartTranslationWorker) -
         target_language = "fr"
 
         # When
-        with patch.object(mbart_worker._pipe_parent, "send") as mock_send, patch.object(
-            mbart_worker._pipe_parent,
-            "recv",
-            return_value="Bonjour, le monde!",
+        with (
+            patch.object(mbart_worker._pipe_parent, "send") as mock_send,
+            patch.object(
+                mbart_worker._pipe_parent,
+                "recv",
+                return_value="Bonjour, le monde!",
+            ),
         ):
             mbart_worker.translate(text, source_language, target_language)
 
@@ -91,9 +98,12 @@ def test_translate_raises_error_if_worker_not_running(mbart_worker: MBartTransla
 
 def test_initialize_shared_object(mbart_config: MBartTranslationConfig, mock_logger: Logger) -> None:
     worker = MBartTranslationWorker(mbart_config, mock_logger)
-    with patch("data.workers.mbart_translation_worker.AutoModelForSeq2SeqLM.from_pretrained") as mock_load_model, patch(
-        "data.workers.mbart_translation_worker.AutoTokenizer.from_pretrained",
-    ) as mock_load_tokenizer:
+    with (
+        patch("data.workers.mbart_translation_worker.AutoModelForSeq2SeqLM.from_pretrained") as mock_load_model,
+        patch(
+            "data.workers.mbart_translation_worker.AutoTokenizer.from_pretrained",
+        ) as mock_load_tokenizer,
+    ):
         mock_model = Mock()
         mock_tokenizer = Mock()
         mock_load_model.return_value = mock_model
@@ -117,9 +127,13 @@ def test_initialize_shared_object(mbart_config: MBartTranslationConfig, mock_log
 
 
 def test_handle_command_translate(mbart_worker: MBartTranslationWorker, mbart_config: MBartTranslationConfig) -> None:
-    with patch("data.workers.mbart_translation_worker.AutoModelForSeq2SeqLM.from_pretrained") as mock_load_model, patch(
-        "data.workers.mbart_translation_worker.AutoTokenizer.from_pretrained",
-    ) as mock_load_tokenizer, patch("torch.no_grad"):
+    with (
+        patch("data.workers.mbart_translation_worker.AutoModelForSeq2SeqLM.from_pretrained") as mock_load_model,
+        patch(
+            "data.workers.mbart_translation_worker.AutoTokenizer.from_pretrained",
+        ) as mock_load_tokenizer,
+        patch("torch.no_grad"),
+    ):
         mock_model = Mock()
         mock_tokenizer = Mock()
         mock_load_model.return_value = mock_model
@@ -162,9 +176,13 @@ def test_handle_command_translate_error(
     mbart_worker: MBartTranslationWorker,
     mbart_config: MBartTranslationConfig,
 ) -> None:
-    with patch("data.workers.mbart_translation_worker.AutoModelForSeq2SeqLM.from_pretrained") as mock_load_model, patch(
-        "data.workers.mbart_translation_worker.AutoTokenizer.from_pretrained",
-    ) as mock_load_tokenizer, patch("torch.no_grad"):
+    with (
+        patch("data.workers.mbart_translation_worker.AutoModelForSeq2SeqLM.from_pretrained") as mock_load_model,
+        patch(
+            "data.workers.mbart_translation_worker.AutoTokenizer.from_pretrained",
+        ) as mock_load_tokenizer,
+        patch("torch.no_grad"),
+    ):
         mock_model = Mock()
         mock_tokenizer = Mock()
         mock_load_model.return_value = mock_model

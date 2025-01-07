@@ -1,19 +1,36 @@
-[tool.poetry]
+[project]
 name = "speech-to-text-api"
 version = "0.8.0"
 description = "A FastAPI project integrating speech to text and translation services."
-authors = ["Grzegorz Gwóźdź"]
+authors = [{ name = "Grzegorz Gwóźdź" }]
+requires-python = ">=3.12,<3.13"
+readme = "README.md"
+dependencies = [
+    "python-dotenv>=1.0.1",
+    "fastapi[all]>=0.115.6",
+    "openai-whisper==v20240930",
+    "numba>=0.60.0",
+    "transformers>=4.47.1",
+    "protobuf>=5.29.0",
+    "sentencepiece>=0.2.0",
+]
+
+[project.urls]
+homepage = "https://github.com/ggwozdz90/speech-to-text-api"
+repository = "https://github.com/ggwozdz90/speech-to-text-api"
+documentation = "https://github.com/ggwozdz90/speech-to-text-api/blob/develop/README.md"
+"Bug Tracker" = "https://github.com/ggwozdz90/speech-to-text-api/issues"
+
+[project.scripts]
+start = "src.main:main"
+
+[tool.poetry]
+requires-poetry = ">=2.0"
 packages = [{ include = "*", from = "src" }]
 
-[tool.poetry.dependencies]
-python = ">=3.12,<3.14"
-python-dotenv = "^1.0.1"
-fastapi = { extras = ["all"], version = "^0.115.6" }
-openai-whisper = "v20240930"
-numba = "^0.60.0"
-transformers = "^4.47.1"
-protobuf = "^5.29.0"
-sentencepiece = "^0.2.0"
+[build-system]
+requires = ["poetry-core>=2.0"]
+build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^4.0.1"
@@ -40,17 +57,10 @@ codespell = "^2.3.0"
 name = "cz_conventional_commits"
 tag_format = "$version"
 version_scheme = "semver"
-version_provider = "poetry"
+version_provider = "pep621"
 update_changelog_on_bump = true
 major_version_zero = true
 bump_message = "chore: release $new_version"
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.poetry.scripts]
-start = "src.main:main"
 
 [tool.flake8]
 max-line-length = 120

@@ -46,10 +46,13 @@ def test_main_load_config_exception(
     mock_server: APIServer,
 ) -> None:
     # Given
-    with patch.object(mock_config, "initialize", side_effect=Exception("Initialize error")), patch.object(
-        mock_server,
-        "start",
-    ) as mock_start:
+    with (
+        patch.object(mock_config, "initialize", side_effect=Exception("Initialize error")),
+        patch.object(
+            mock_server,
+            "start",
+        ) as mock_start,
+    ):
 
         # When / Then
         with pytest.raises(Exception, match="Initialize error"):
@@ -65,10 +68,13 @@ def test_main_start_exception(
 ) -> None:
     # Given
     mock_config.log_level = "INFO"
-    with patch.object(mock_config, "initialize") as mock_load_config, patch.object(
-        mock_server,
-        "start",
-        side_effect=Exception("Start error"),
+    with (
+        patch.object(mock_config, "initialize") as mock_load_config,
+        patch.object(
+            mock_server,
+            "start",
+            side_effect=Exception("Start error"),
+        ),
     ):
 
         # When / Then
