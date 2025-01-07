@@ -40,7 +40,7 @@ You have four options for running the project:
         ```
 
 2. **Using Docker**:
-    - Run the Docker container directly from Docker Hub:
+    - Run the Docker container directly from Docker Hub. You can choose between CPU and CUDA 12.4 dependencies by using the appropriate tag (`v0.0.0-cpu` or `v0.0.0-cuda124`). The `latest` tag corresponds to the CUDA version:
 
         ```sh
         docker run -d -p 8000:8000 \
@@ -55,7 +55,7 @@ You have four options for running the project:
             -e SPEECH_TO_TEXT_MODEL_DOWNLOAD_PATH=downloaded_speech_to_text_models \
             -e TRANSLATION_MODEL_NAME=facebook/mbart-large-50-many-to-many-mmt \
             -e TRANSLATION_MODEL_DOWNLOAD_PATH=downloaded_translation_models \
-            ggwozdz/speech-to-text-api
+            ggwozdz/speech-to-text-api:latest
         ```
 
 3. **Locally using Poetry**:

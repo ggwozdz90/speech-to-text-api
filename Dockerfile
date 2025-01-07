@@ -1,6 +1,12 @@
 # Stage 1: Dockerfile for building the speech-to-text-api image
 FROM python:3.12-slim-bookworm AS builder
 
+# ARG POETRY_INSTALL_ARGS is used to pass the 'extras' parameter to poetry install.
+# It can have the values 'cpu', 'cuda124', or be empty.
+# 'cpu' and empty values install PyTorch dependencies for CPU.
+# 'cuda124' installs dependencies for CUDA 12.4.
+ARG POETRY_INSTALL_ARGS=""
+
 # Setup Poetry
 RUN pip install --no-cache-dir poetry==2.0.0
 ENV POETRY_NO_INTERACTION=1 \
@@ -15,7 +21,7 @@ COPY pyproject.toml poetry.lock ./
 COPY src ./src
 
 # Install dependencies and clean up Poetry cache
-RUN poetry install --without dev --no-root \
+RUN poetry install ${POETRY_INSTALL_ARGS} --without dev --no-root \
     && rm -rf "$POETRY_CACHE_DIR"
 
 

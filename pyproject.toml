@@ -24,13 +24,24 @@ documentation = "https://github.com/ggwozdz90/speech-to-text-api/blob/develop/RE
 [project.scripts]
 start = "src.main:main"
 
-[tool.poetry]
-requires-poetry = ">=2.0"
-packages = [{ include = "*", from = "src" }]
+[project.optional-dependencies]
+cpu = ["torch (==2.5.1+cpu)"]
+cuda124 = ["torch (==2.5.1+cu124)"]
 
 [build-system]
 requires = ["poetry-core>=2.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+requires-poetry = ">=2.0"
+packages = [{ include = "*", from = "src" }]
+
+[tool.poetry.dependencies]
+torch = [
+    { markers = "extra == 'cpu' and extra != 'cuda124'", source = "pytorch-cpu" },
+    { markers = "extra == 'cuda124' and extra != 'cpu'", source = "pytorch-cuda124" },
+]
+
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^4.0.1"
@@ -52,6 +63,16 @@ tryceratops = "^2.4.1"
 flake8-fastapi = "^0.7.0"
 ssort = "^0.14.0"
 codespell = "^2.3.0"
+
+[[tool.poetry.source]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+priority = "explicit"
+
+[[tool.poetry.source]]
+name = "pytorch-cuda124"
+url = "https://download.pytorch.org/whl/cu124"
+priority = "explicit"
 
 [tool.commitizen]
 name = "cz_conventional_commits"
