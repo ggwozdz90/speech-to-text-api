@@ -25,7 +25,7 @@ jobs:
       with:
         push: true
         build-args: |
-          POETRY_INSTALL_ARGS=--extras "cuda124"
+          POETRY_INSTALL_ARGS=--extras cuda124
         labels: |
           org.opencontainers.image.title="Speech to Text API"
           org.opencontainers.image.description="A FastAPI project integrating speech to text and translation services."
@@ -53,7 +53,7 @@ jobs:
       with:
         push: true
         build-args: |
-          POETRY_INSTALL_ARGS=--extras "cpu"
+          POETRY_INSTALL_ARGS=--extras cpu
         labels: |
           org.opencontainers.image.title="Speech to Text API"
           org.opencontainers.image.description="A FastAPI project integrating speech to text and translation services."
