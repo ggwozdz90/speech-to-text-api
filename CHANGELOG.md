@@ -1,3 +1,9 @@
+## 0.9.0 (2025-01-08)
+
+### Feat
+
+- add support for CPU and CUDA 12.4 builds in Docker workflow
+
 ## 0.8.0 (2025-01-05)
 
 ### Feat
