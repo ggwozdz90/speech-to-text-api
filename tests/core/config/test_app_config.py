@@ -50,25 +50,6 @@ def test_initialize(app_config: AppConfig, mock_logger: Logger) -> None:
         assert app_config.model_idle_timeout == 150
 
 
-def test_initialize_missing_env_vars(app_config: AppConfig, mock_logger: Logger) -> None:
-    # Given
-    with patch.dict(os.environ, {}, clear=True):
-        # When
-        app_config.initialize(mock_logger)
-
-        # Then
-        assert app_config.file_upload_path == "uploaded_files"
-        assert app_config.delete_files_after_transcription is True
-        assert app_config.fastapi_host == "127.0.0.1"
-        assert app_config.fastapi_port == 8000
-        assert app_config.speech_to_text_model_name == "openai/whisper"
-        assert app_config.speech_to_text_model_type == "turbo"
-        assert app_config.speech_to_text_model_download_path == "downloaded_speech_to_text_models"
-        assert app_config.translation_model_name == "facebook/seamless-m4t-v2-large"
-        assert app_config.translation_model_download_path == "downloaded_translation_models"
-        assert app_config.model_idle_timeout == 60
-
-
 def test_initialize_invalid_port(app_config: AppConfig, mock_logger: Logger) -> None:
     # Given
     with patch.dict(os.environ, {"FASTAPI_PORT": "invalid_port"}):

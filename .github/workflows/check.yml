@@ -24,7 +24,7 @@ jobs:
         echo "$HOME/.local/bin" >> $GITHUB_PATH
 
     - name: Install dependencies
-      run: poetry install
+      run: poetry install --extras cpu
 
     - name: Run pre-commit hooks
       run: poetry run pre-commit run --all-files

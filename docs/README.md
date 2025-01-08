@@ -69,7 +69,11 @@ You have four options for running the project:
     - Install dependencies locally using Poetry:
 
         ```sh
-        poetry install
+        poetry install --extras cpu
+
+        or
+
+        poetry install --extras cuda124
         ```
 
     - Run the application

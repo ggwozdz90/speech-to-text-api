@@ -4,7 +4,7 @@ version = "0.8.0"
 description = "A FastAPI project integrating speech to text and translation services."
 authors = [{ name = "Grzegorz Gwóźdź" }]
 requires-python = ">=3.12,<3.13"
-readme = "README.md"
+readme = "docs/README.md"
 dependencies = [
     "python-dotenv>=1.0.1",
     "fastapi[all]>=0.115.6",
@@ -18,7 +18,7 @@ dependencies = [
 [project.urls]
 homepage = "https://github.com/ggwozdz90/speech-to-text-api"
 repository = "https://github.com/ggwozdz90/speech-to-text-api"
-documentation = "https://github.com/ggwozdz90/speech-to-text-api/blob/develop/README.md"
+documentation = "https://github.com/ggwozdz90/speech-to-text-api/blob/develop/docs/README.md"
 "Bug Tracker" = "https://github.com/ggwozdz90/speech-to-text-api/issues"
 
 [project.scripts]
@@ -112,4 +112,4 @@ source = ["src"]
 relative_files = true
 
 [tool.codespell]
-skip = 'src/assets/*,script/*'
+skip = 'src/assets/*,scripts/*'

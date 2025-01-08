@@ -28,13 +28,13 @@ jobs:
       run: poetry config virtualenvs.in-project true
 
     - name: Install dependencies
-      run: poetry install
+      run: poetry install --extras cpu
     
     - name: Build
       run: poetry build
 
     - name: Create EXE
-      run: poetry run pyinstaller script/speech-to-text-api.spec --clean --noconfirm
+      run: poetry run pyinstaller scripts/speech-to-text-api.spec --clean --noconfirm
 
     - name: Zip EXE
       run: | 
