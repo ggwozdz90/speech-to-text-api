@@ -1,9 +1,10 @@
 services:
   api:
-    image: speech-to-text-api
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - POETRY_INSTALL_ARGS=--extras cuda124
     environment:
       - LOG_LEVEL=INFO
       - DEVICE=cpu
@@ -21,4 +22,5 @@ services:
       - "8000:8000"
     volumes:
       - ./volume/downloaded_speech_to_text_models:/app/downloaded_speech_to_text_models
+      - ./volume/downloaded_translation_models:/app/downloaded_translation_models
       - ./volume/uploaded_files:/app/uploaded_files

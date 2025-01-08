@@ -67,10 +67,13 @@ def test_translate_exception(mock_worker: SeamlessTranslationWorker) -> None:
 
 def test_initialize_shared_object(mock_config: SeamlessTranslationConfig, mock_logger: Logger) -> None:
     # Given
-    with patch.object(SeamlessM4Tv2ForTextToText, "from_pretrained") as mock_model, patch.object(
-        AutoProcessor,
-        "from_pretrained",
-    ) as mock_processor:
+    with (
+        patch.object(SeamlessM4Tv2ForTextToText, "from_pretrained") as mock_model,
+        patch.object(
+            AutoProcessor,
+            "from_pretrained",
+        ) as mock_processor,
+    ):
         mock_model.return_value = MagicMock()
         mock_processor.return_value = MagicMock()
 

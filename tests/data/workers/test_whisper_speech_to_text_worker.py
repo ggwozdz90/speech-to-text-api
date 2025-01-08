@@ -37,9 +37,12 @@ def whisper_worker(
 
 
 def test_transcribe_sends_correct_command(whisper_worker: WhisperSpeechToTextWorker) -> None:
-    with patch("multiprocessing.Process") as MockProcess, patch(
-        "data.workers.whisper_speech_to_text_worker.whisper.load_model",
-    ) as mock_load_model:
+    with (
+        patch("multiprocessing.Process") as MockProcess,
+        patch(
+            "data.workers.whisper_speech_to_text_worker.whisper.load_model",
+        ) as mock_load_model,
+    ):
         mock_process = Mock()
         MockProcess.return_value = mock_process
         mock_model = Mock()
@@ -51,10 +54,13 @@ def test_transcribe_sends_correct_command(whisper_worker: WhisperSpeechToTextWor
         language = "en"
 
         # When
-        with patch.object(whisper_worker._pipe_parent, "send") as mock_send, patch.object(
-            whisper_worker._pipe_parent,
-            "recv",
-            return_value={},
+        with (
+            patch.object(whisper_worker._pipe_parent, "send") as mock_send,
+            patch.object(
+                whisper_worker._pipe_parent,
+                "recv",
+                return_value={},
+            ),
         ):
             whisper_worker.transcribe(file_path, language)
 
