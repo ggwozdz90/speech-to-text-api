@@ -36,7 +36,7 @@ jobs:
         git reset --hard
         git clean -fd
 
-    - name: Create release branch
+    - name: Create release branch and bump version in changelog
       env:
         GITHUB_TOKEN: ${{ secrets.REPOSITORY_TOKEN }}
       run: |

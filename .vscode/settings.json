@@ -43,5 +43,11 @@
     {
       "file": ".github/copilot-instructions/copilot-commit-instructions.md"
     }
-  ]
+  ],
+  "github.copilot.enable": {
+    "*": true,
+    "yaml": true,
+    "plaintext": true,
+    "markdown": true
+  }
 }
