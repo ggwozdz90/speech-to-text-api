@@ -1,50 +1,38 @@
 # Speech to Text API
 
-This project provides an API for transcribing text from uploaded audio/video files using the OpenAI Whisper model. Additionally, it offers text translation using Facebook/Meta's mBART and Seamless models. A key aspect of this project is memory optimization; models are loaded in separate processes and terminated after a configurable idle timeout to conserve RAM. The application can also be run in a Docker container.
+This project provides an API for transcribing and translating audio/video content using state-of-the-art AI models. Convert speech to text using OpenAI's Whisper model and translate using Facebook/Meta's mBART or Seamless models.
 
-## Docker Image Tags
+## Features
 
-The Docker images for this project are built and tagged with specific identifiers to indicate the type of dependencies included. Below are the types of images and their corresponding tags:
+- **RESTful API**: Exposes RESTful API endpoints
+- **Transcription**: Utilizes OpenAI Whisper model for transcription
+- **Translation**: Translates detected text using translation models like Facebook/Meta's mBART and Seamless
+- **Configuration**: The repository includes a `.env` file that defines configurable environment variables.
+- **Memory Optimization**: Models are loaded in separate processes and terminated after a configurable idle timeout to conserve RAM
 
-- **CUDA 12.4 Dependencies**: These images include dependencies for CUDA 12.4, allowing the application to leverage GPU acceleration for improved performance. The tag format is `version-cuda124`.
-- **CPU Dependencies**: These images include dependencies for CPU execution, suitable for environments without GPU support. The tag format is `version-cpu`.
+## Available Distributions
 
-The `latest` tag always points to the most recent CUDA version image.
+### Docker Images
 
-## Getting Started
+Available versions:
 
-You have four options for running the project:
+- `version-cuda124`: NVIDIA CUDA 12.4 support for GPU acceleration
+- `version-rocm62`: AMD ROCm 6.2 support for GPU acceleration (require build from source code)
+- `version-cpu`: CPU-only version
+- `latest`: Points to latest CUDA version
 
-- **Using Docker-Compose**:
+## Quick Start
 
-  ```yaml
-  services:
-    api:
-      image: ggwozdz/speech-to-text-api
-      environment:
-        - LOG_LEVEL=INFO
-        - DEVICE=cpu
-        - FILE_UPLOAD_PATH=uploaded_files
-        - DELETE_FILES_AFTER_TRANSCRIPTION=true
-        - FASTAPI_HOST=0.0.0.0
-        - FASTAPI_PORT=8000
-        - MODEL_IDLE_TIMEOUT=60
-        - SPEECH_TO_TEXT_MODEL_NAME=openai/whisper
-        - SPEECH_TO_TEXT_MODEL_TYPE=turbo
-        - SPEECH_TO_TEXT_MODEL_DOWNLOAD_PATH=downloaded_speech_to_text_models
-        - TRANSLATION_MODEL_NAME=facebook/mbart-large-50-many-to-many-mmt
-        - TRANSLATION_MODEL_DOWNLOAD_PATH=downloaded_translation_models
-      ports:
-        - "8000:8000"
-      volumes:
-        - ./volume/downloaded_speech_to_text_models:/app/downloaded_speech_to_text_models
-        - ./volume/uploaded_files:/app/uploaded_files
-  ```
+### Prerequisites
 
-- **Using Docker**:
+- [Docker](https://www.docker.com/get-started/)
 
-  ```sh
-  docker run -d -p 8000:8000 \
+### Using Docker
+
+- Run the following command to start the API server:
+
+    ```bash
+    docker run -d -p 8000:8000 \
       -e LOG_LEVEL=INFO \
       -e DEVICE=cpu \
       -e FILE_UPLOAD_PATH=uploaded_files \
@@ -57,67 +45,124 @@ You have four options for running the project:
       -e SPEECH_TO_TEXT_MODEL_DOWNLOAD_PATH=downloaded_speech_to_text_models \
       -e TRANSLATION_MODEL_NAME=facebook/mbart-large-50-many-to-many-mmt \
       -e TRANSLATION_MODEL_DOWNLOAD_PATH=downloaded_translation_models \
-      ggwozdz/speech-to-text-api
-  ```
+      -v ./volume/downloaded_speech_to_text_models:/app/downloaded_speech_to_text_models \
+      -v ./volume/downloaded_translation_models:/app/downloaded_translation_models \
+      -v ./volume/uploaded_files:/app/uploaded_files \
+      ggwozdz/speech-to-text-api:latest
+    ```
 
-## Usage
+### Using Docker Compose
 
-Once the Docker container is running, you can access the FastAPI documentation at `http://localhost:8000/docs`.
+- Create a `docker-compose.yml` file with the following content and run `docker-compose up`:
 
-### Transcribe Audio to Text
+    ```yaml
+    services:
+      api:
+        image: ggwozdz/speech-to-text-api:latest
+        environment:
+          - LOG_LEVEL=INFO
+          - DEVICE=cpu
+          - FILE_UPLOAD_PATH=uploaded_files
+          - DELETE_FILES_AFTER_TRANSCRIPTION=true
+          - FASTAPI_HOST=0.0.0.0
+          - FASTAPI_PORT=8000
+          - MODEL_IDLE_TIMEOUT=60
+          - SPEECH_TO_TEXT_MODEL_NAME=openai/whisper
+          - SPEECH_TO_TEXT_MODEL_TYPE=turbo
+          - SPEECH_TO_TEXT_MODEL_DOWNLOAD_PATH=downloaded_speech_to_text_models
+          - TRANSLATION_MODEL_NAME=facebook/mbart-large-50-many-to-many-mmt
+          - TRANSLATION_MODEL_DOWNLOAD_PATH=downloaded_translation_models
+        ports:
+          - "8000:8000"
+        volumes:
+          - ./volume/downloaded_speech_to_text_models:/app/downloaded_speech_to_text_models
+          - ./volume/downloaded_translation_models:/app/downloaded_translation_models
+          - ./volume/uploaded_files:/app/uploaded_files
+    ```
 
-To transcribe an audio file, use the `/transcribe` endpoint. This endpoint accepts the following parameters:
+## API Features
 
-- `file`: The audio file to be transcribed.
-- `source_language`: The language of the audio file (e.g., `en_US` for English).
-- `target_language`: (Optional) The target language for translation(e.g., `pl_PL` for Polish).
+### Transcribe Audio/Video
 
-Request:
+- Request:
 
-  ```sh
-  curl -X POST "http://localhost:8000/transcribe" \
-       -F "file=@/home/user/video.mp4" \
-       -F "source_language=en_US" \
-       -F "target_language=pl_PL"
-  ```
+    ```bash
+    curl -X POST "http://localhost:8000/transcribe" \
+        -F "file=@video.mp4" \
+        -F "source_language=en_US"
+    ```
 
-Response:
+- Response:
 
-  ```json
-  {
-    "filename": "your_file_name",
-    "content": "transcribed text"
-  }
-  ```
+    ```json
+    {
+      "filename": "your_file_name",
+      "content": "transcribed text"
+    }
+    ```
 
-### Generate Subtitles in SRT Format
+### Transcribe Audio/Video with Translation
 
-To generate subtitles in SRT format from an audio file, use the `/transcribe/srt` endpoint. This endpoint accepts the following parameters:
+- Request:
 
-- `file`: The audio file to be transcribed.
-- `source_language`: The language of the audio file (e.g., `en_US` for English).
-- `target_language`: (Optional) The target language for translation(e.g., `pl_PL` for Polish).
+    ```bash
+    curl -X POST "http://localhost:8000/transcribe" \
+        -F "file=@video.mp4" \
+        -F "source_language=en_US"
+        -F "target_language=pl_PL"
+    ```
 
-Request:
+- Response:
 
-  ```sh
-  curl -X POST "http://localhost:8000/transcribe/srt" \
-       -F "file=@/home/user/video.mp4" \
-       -F "source_language=en_US" \
-       -F "target_language=pl_PL"
-  ```
+    ```json
+    {
+      "filename": "your_file_name",
+      "content": "transkrypcja tekstu"
+    }
+    ```
 
-Response:
+### Generate Subtitles
 
-  ```plaintext
-  1
-  00:00:00,000 --> 00:00:05,000
-  Hello, world!
-  
-  2
-  00:00:05,000 --> 00:00:10,000
-  This is a subtitle.
-  ```
+- Request:
+
+    ```bash
+    curl -X POST "http://localhost:8000/transcribe/srt" \
+         -F "file=@video.mp4" \
+         -F "source_language=en_US"
+    ```
+
+- Response:
+
+    ```plaintext
+    1
+    00:00:00,000 --> 00:00:05,000
+    Hello, world!
+    2
+    00:00:05,000 --> 00:00:10,000
+    This is a subtitle.
+    ```
+
+### Generate Subtitles with Translation
+
+- Request:
+
+    ```bash
+    curl -X POST "http://localhost:8000/transcribe/srt" \
+        -F "file=@video.mp4" \
+        -F "source_language=en_US"
+        -F "target_language=pl_PL"
+    ```
+
+- Response:
+
+    ```plaintext
+    1
+    00:00:00,000 --> 00:00:05,000
+    Cześć, świat!
+    2
+    00:00:05,000 --> 00:00:10,000
+    To jest napis.
+    ```
 
 ## Configuration
 
@@ -136,6 +181,14 @@ The application uses a `.env` file or Docker Compose to define configurable envi
 - `TRANSLATION_MODEL_DOWNLOAD_PATH`: Path where translation models are downloaded. Default is `downloaded_translation_models`.
 - `MODEL_IDLE_TIMEOUT`: Time in seconds after which the model will be unloaded if not used. Default is `60`.
 
-## Source Code
+## Supported Languages
 
-The source code for this project can be found at [GitHub](https://github.com/ggwozdz90/speech-to-text-api)
+Refer to mapping files in source code for supported languages:
+
+- Whisper: [whisper_mapping.json](https://github.com/ggwozdz90/speech-to-text-api/blob/main/src/assets/mappings/whisper_mapping.json)
+- mBART: [mbart_mapping.json](https://github.com/ggwozdz90/speech-to-text-api/blob/main/src/assets/mappings/mbart_mapping.json)
+- Seamless: [seamless_mapping.json](https://github.com/ggwozdz90/speech-to-text-api/blob/main/src/assets/mappings/seamless_mapping.json)
+
+## Developer Guide
+
+Developer guide is available in [docs/DEVELOPER.md](https://github.com/ggwozdz90/speech-to-text-api/blob/main/docs/DEVELOPER.md).

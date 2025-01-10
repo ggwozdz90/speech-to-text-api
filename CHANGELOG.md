@@ -1,3 +1,16 @@
+## 0.10.0 (2025-01-10)
+
+### Feat
+
+- update Dockerfile and GitHub Actions for improved deployment
+- add ROCm 6.2 support in Docker workflow and dependencies
+- add CudaChecker class for CUDA support verification
+
+### Refactor
+
+- update import paths for CudaChecker class
+- update import path for CudaChecker class
+
 ## 0.9.0 (2025-01-08)
 
 ### Feat
