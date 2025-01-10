@@ -2,8 +2,8 @@ import multiprocessing
 
 from api.server import APIServer
 from core.config.app_config import AppConfig
-from core.logger.logger import Logger
 from core.cuda.cuda_checker import CudaChecker
+from core.logger.logger import Logger
 
 
 def main(

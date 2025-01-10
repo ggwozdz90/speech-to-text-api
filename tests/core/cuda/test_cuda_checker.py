@@ -2,8 +2,8 @@ from unittest.mock import Mock, patch
 
 import pytest
 
+from core.cuda.cuda_checker import CudaChecker
 from core.logger.logger import Logger
-from core.utils.cuda_checker import CudaChecker
 
 
 @pytest.fixture
