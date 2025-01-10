@@ -3,7 +3,7 @@ import multiprocessing
 from api.server import APIServer
 from core.config.app_config import AppConfig
 from core.logger.logger import Logger
-from core.utils.cuda_checker import CudaChecker
+from core.cuda.cuda_checker import CudaChecker
 
 
 def main(
