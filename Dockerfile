@@ -18,7 +18,7 @@ ENV POETRY_NO_INTERACTION=1 \
 WORKDIR /app
 
 # Copy dependency files and source code
-COPY pyproject.toml poetry.lock ./
+COPY pyproject.toml ./
 COPY src ./src
 
 # Install dependencies and clean up Poetry cache
