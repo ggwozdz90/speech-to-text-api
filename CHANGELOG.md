@@ -1,3 +1,9 @@
+## 0.12.0 (2025-01-11)
+
+### Feat
+
+- add health check endpoint
+
 ## 0.11.0 (2025-01-11)
 
 ### Feat
