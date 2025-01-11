@@ -81,7 +81,25 @@ Choose your hardware acceleration:
     cd speech-to-text-api
     ```
 
-2. Install dependencies:
+2. Install poetry:
+
+    ```bash
+    pip install poetry==2.0.0
+    ```
+
+3. Create virtual environment:
+
+    ```bash
+    python -m venv .venv
+    ```
+
+4. Select the appropriate Python environment in VSCode:
+
+    - Open the Command Palette (`Ctrl+Shift+P`)
+    - Select `Python: Select Interpreter`
+    - Choose the `.venv` environment
+
+5. Install dependencies:
 
     ```bash
     # text-to-speech processing on CPU
@@ -94,7 +112,7 @@ Choose your hardware acceleration:
     poetry install --extras rocm62
     ```
 
-3. Start the application:
+6. Start the application:
 
     - Local development with VSCode using `F5` key (using `.vscode/launch.json` configuration)
 
@@ -104,7 +122,7 @@ Choose your hardware acceleration:
       docker-compose up
       ```
 
-4. Access the API documentation:
+7. Access the API documentation:
 
    - Open [http://localhost:8000/docs](http://localhost:8000/docs) in your browser
 
