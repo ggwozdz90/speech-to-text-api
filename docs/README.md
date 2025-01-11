@@ -181,6 +181,22 @@ Choose your preferred distribution:
     To jest napis.
     ```
 
+### Health Check
+
+- Request:
+
+    ```bash
+    curl -X GET "http://localhost:8000/healthcheck"
+    ```
+
+- Response:
+
+    ```json
+    {
+      "status": "OK"
+    }
+    ```
+
 ## Configuration
 
 The application uses a `.env` file or Docker Compose to define configurable environment variables. Below are the available configuration options:
@@ -227,6 +243,7 @@ Developer guide is available in [docs/DEVELOPER.md](DEVELOPER.md).
     - [Transcribe Audio/Video with Translation](#transcribe-audiovideo-with-translation)
     - [Generate Subtitles](#generate-subtitles)
     - [Generate Subtitles with Translation](#generate-subtitles-with-translation)
+    - [Health Check](#health-check)
   - [Configuration](#configuration)
   - [Supported Languages](#supported-languages)
   - [Developer Guide](#developer-guide)

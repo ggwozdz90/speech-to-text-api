@@ -166,6 +166,22 @@ Available versions:
     To jest napis.
     ```
 
+### Health Check
+
+- Request:
+
+    ```bash
+    curl -X GET "http://localhost:8000/healthcheck"
+    ```
+
+- Response:
+
+    ```json
+    {
+      "status": "OK"
+    }
+    ```
+
 ## Configuration
 
 The application uses a `.env` file or Docker Compose to define configurable environment variables. Below are the available configuration options:
