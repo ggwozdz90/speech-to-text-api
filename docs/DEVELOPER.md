@@ -18,8 +18,11 @@
 
 ### Deployment Options
 
-- **Docker Support**: Application runs in a Docker container for easy deployment (CPU, CUDA, ROCm versions)
-- **Windows Executable**: Provides a standalone Windows executable for local use (CPU version)
+- **Docker Support**: Application runs in a Docker container for easy deployment:
+  - CPU version (fully tested and production-ready)
+  - CUDA version (proof-of-concept implementation)
+  - ROCm version (proof-of-concept implementation)
+- **Windows Executable**: Provides a standalone Windows executable for local use (CPU version, fully tested)
 
 ### Quality Assurance
 
@@ -55,17 +58,19 @@ Choose your development environment:
 
 Choose your hardware acceleration:
 
-- **CPU Version**:
-  - Operating System: Windows, macOS, Linux
+- **CPU Version** (Recommended):
+  - Thoroughly tested and validated for stability
 
-- **CUDA Version**:
+- **CUDA Version** (Proof of concept):
   - NVIDIA GPU with CUDA support
   - NVIDIA Container Toolkit
-  - Operating System: Windows, Linux
+  - Note: May require additional configuration and GPU support software
+  - Current implementation handles basic scenarios but needs further testing
 
-- **ROCm Version**:
+- **ROCm Version** (Proof of concept):
   - AMD GPU with ROCm support
-  - Operating System: Linux
+  - Note: May require additional configuration and GPU support software
+  - Current implementation handles basic scenarios but needs further testing
 
 ### Environment setup
 
@@ -143,13 +148,15 @@ Choose your hardware acceleration:
 - Build Docker images for CPU, CUDA and ROCm:
 
     ```bash
-    # CPU Version (2.19 GB image size)
+    # CPU Version (2.19 GB image size) - Recommended
     docker build --build-arg POETRY_INSTALL_ARGS="--extras=cpu" -t speech-to-text-api:cpu .
 
-    # CUDA Version (6.16 GB image size)
+    # CUDA Version (6.16 GB image size) - Proof of concept implementation
+    # Note: May require additional GPU support software
     docker build --build-arg POETRY_INSTALL_ARGS="--extras=cuda124" -t speech-to-text-api:cuda .
 
-    # ROCm Version (19.16 GB image size)
+    # ROCm Version (19.16 GB image size) - Proof of concept implementation
+    # Note: May require additional GPU support software
     docker build --build-arg POETRY_INSTALL_ARGS="--extras=rocm62" -t speech-to-text-api:rocm .
     ```
 

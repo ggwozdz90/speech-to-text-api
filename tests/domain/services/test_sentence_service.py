@@ -126,7 +126,9 @@ def test_create_sentence_models_split_segments(sentence_service: SentenceService
 
 def test_apply_translated_sentences_single_sentence(sentence_service: SentenceService, mock_segment: Mock) -> None:
     # Given
-    translated_sentences = [SentenceModel(text="This is a test.", segment_percentage={"1": 1.0})]
+    translated_sentences = [
+        SentenceModel(text="This is a test.", translation="To jest test.", segment_percentage={"1": 1.0}),
+    ]
     segments = [mock_segment]
     mock_segment.counter = "1"
 
@@ -134,14 +136,14 @@ def test_apply_translated_sentences_single_sentence(sentence_service: SentenceSe
     sentence_service.apply_translated_sentences(segments, translated_sentences)
 
     # Then
-    assert mock_segment.text == "This is a test."
+    assert mock_segment.text == "To jest test."
 
 
 def test_apply_translated_sentences_multiple_sentences(sentence_service: SentenceService, mock_segment: Mock) -> None:
     # Given
     translated_sentences = [
-        SentenceModel(text="First sentence.", segment_percentage={"1": 1.0}),
-        SentenceModel(text="Second sentence.", segment_percentage={"2": 1.0}),
+        SentenceModel(text="First sentence.", translation="Pierwsze zdanie.", segment_percentage={"1": 1.0}),
+        SentenceModel(text="Second sentence.", translation="Drugie zdanie.", segment_percentage={"2": 1.0}),
     ]
     mock_segment_1 = Mock(spec=SubtitleSegmentModel)
     mock_segment_1.counter = "1"
@@ -153,15 +155,23 @@ def test_apply_translated_sentences_multiple_sentences(sentence_service: Sentenc
     sentence_service.apply_translated_sentences(segments, translated_sentences)
 
     # Then
-    assert mock_segment_1.text == "First sentence."
-    assert mock_segment_2.text == "Second sentence."
+    assert mock_segment_1.text == "Pierwsze zdanie."
+    assert mock_segment_2.text == "Drugie zdanie."
 
 
 def test_apply_translated_sentences_split_segments(sentence_service: SentenceService, mock_segment: Mock) -> None:
     # Given
     translated_sentences = [
-        SentenceModel(text="The quick brown fox jumps over the lazy dog.", segment_percentage={"1": 0.33, "2": 0.67}),
-        SentenceModel(text="The dog is very lazy.", segment_percentage={"2": 0.20, "3": 0.80}),
+        SentenceModel(
+            text="The quick brown fox jumps over the lazy dog.",
+            translation="Szybki brązowy lis przeskakuje nad leniwym psem.",
+            segment_percentage={"1": 0.33, "2": 0.67},
+        ),
+        SentenceModel(
+            text="The dog is very lazy.",
+            translation="Pies jest bardzo leniwy.",
+            segment_percentage={"2": 0.20, "3": 0.80},
+        ),
     ]
     mock_segment_1 = Mock(spec=SubtitleSegmentModel)
     mock_segment_1.counter = "1"
@@ -175,6 +185,6 @@ def test_apply_translated_sentences_split_segments(sentence_service: SentenceSer
     sentence_service.apply_translated_sentences(segments, translated_sentences)
 
     # Then
-    assert mock_segment_1.text == "The quick brown"
-    assert mock_segment_2.text == "fox jumps over the lazy dog. The"
-    assert mock_segment_3.text == "dog is very lazy."
+    assert mock_segment_1.text == "Szybki brązowy"
+    assert mock_segment_2.text == "lis przeskakuje nad leniwym psem. Pies"
+    assert mock_segment_3.text == "jest bardzo leniwy."

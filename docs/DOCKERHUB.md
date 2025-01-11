@@ -16,10 +16,12 @@ This project provides an API for transcribing and translating audio/video conten
 
 Available versions:
 
-- `version-cuda124`: NVIDIA CUDA 12.4 support for GPU acceleration
-- `version-rocm62`: AMD ROCm 6.2 support for GPU acceleration (require build from source code)
-- `version-cpu`: CPU-only version
-- `latest`: Points to latest CUDA version
+- `version-cpu`: CPU-only version (fully tested and stable)
+- `version-cuda124`: NVIDIA CUDA 12.4 support for GPU acceleration (proof-of-concept implementation)*
+- `version-rocm62`: AMD ROCm 6.2 support for GPU acceleration (proof-of-concept implementation, requires build from source code)*
+- `latest`: Points to latest CPU version
+
+*Note on GPU Support: The CUDA and ROCm implementations are currently in a proof-of-concept stage. While functional for basic use cases, they have not been comprehensively tested across all scenarios. Users may need to customize Docker images with additional GPU support software for their specific computing environments. I recommend the CPU version which has been thoroughly tested and validated. The GPU implementations serve as a foundation for future development of more advanced functionality.
 
 ## Quick Start
 

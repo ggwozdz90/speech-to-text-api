@@ -47,7 +47,7 @@ class TranslationService:
         for i, sentence in enumerate(sentences):
             self.logger.debug(f"Translating sentence {i + 1}/{len(sentences)}")
 
-            sentence.text = self.translation_model_repository.translate(
+            sentence.translation = self.translation_model_repository.translate(
                 sentence.text,
                 source_language_mapped,
                 target_language_mapped,

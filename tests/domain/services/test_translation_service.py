@@ -66,8 +66,8 @@ def test_translate_sentences_success(
     translation_service.translate_sentences(sentences, source_language, target_language)
 
     # Then
-    assert sentences[0].text == "Hola"
-    assert sentences[1].text == "Mundo"
+    assert sentences[0].translation == "Hola"
+    assert sentences[1].translation == "Mundo"
     mock_translation_model_repository.translate.assert_any_call("Hello", source_language, target_language)
     mock_translation_model_repository.translate.assert_any_call("World", source_language, target_language)
 
