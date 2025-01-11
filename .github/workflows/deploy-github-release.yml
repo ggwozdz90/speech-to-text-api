@@ -1,0 +1,50 @@
+name: deploy-github-release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4.2.2
+
+    - name: Set up Python
+      uses: actions/setup-python@v5.3.0
+      with:
+        python-version: '3.12'
+
+    - name: Install Poetry
+      run: |
+        curl -sSL https://install.python-poetry.org | python3 -
+        echo "C:\\Users\\runneradmin\\AppData\\Roaming\\Python\\Scripts" >> $env:GITHUB_PATH
+
+    - name: Configure Poetry to create virtual environment in project
+      run: poetry config virtualenvs.in-project true
+
+    - name: Install dependencies
+      run: poetry install
+    
+    - name: Build
+      run: poetry build
+
+    - name: Create EXE
+      run: poetry run pyinstaller scripts/pyinstaller.spec --clean --noconfirm
+
+    - name: Zip EXE
+      run: | 
+        cp .env dist/{{{PROJECT-NAME}}}
+        Compress-Archive -Path dist/{{{PROJECT-NAME}}} -DestinationPath dist/{{{PROJECT-NAME}}}-exe.zip
+        Remove-Item -Recurse -Force dist/{{{PROJECT-NAME}}}
+
+    - name: Deploy GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: dist/*
+        token: ${{ secrets.REPOSITORY_TOKEN }}
+        body_path: CHANGELOG.md

@@ -1,0 +1,86 @@
+[project]
+name = "{{{PROJECT-NAME}}}"
+version = "0.1.0"
+description = "{{{PROJECT-DESCRIPTION}}}"
+authors = [{ name = "Grzegorz Gwóźdź" }]
+requires-python = ">=3.12,<3.13"
+readme = "docs/README.md"
+dependencies = ["python-dotenv>=1.0.1", "fastapi[all]>=0.115.6"]
+
+[project.urls]
+homepage = "https://github.com/ggwozdz90/{{{PROJECT-NAME}}}"
+repository = "https://github.com/ggwozdz90/{{{PROJECT-NAME}}}"
+documentation = "https://github.com/ggwozdz90/{{{PROJECT-NAME}}}/blob/develop/docs/README.md"
+"Bug Tracker" = "https://github.com/ggwozdz90/{{{PROJECT-NAME}}}/issues"
+
+[project.scripts]
+start = "src.main:main"
+
+[build-system]
+requires = ["poetry-core>=2.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+requires-poetry = ">=2.0"
+packages = [{ include = "*", from = "src" }]
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^4.0.1"
+flake8 = "^7.1.1"
+Flake8-pyproject = "^1.2.3"
+black = "^24.10.0"
+isort = "^5.13.2"
+bandit = "^1.8.0"
+vulture = "^2.14"
+pytest = "^8.3.4"
+pytest-asyncio = "^0.25.0"
+pytest-cov = "^6.0.0"
+coverage = "^7.6.9"
+commitizen = "^4.1.0"
+pyinstaller = "^6.11.1"
+flake8-clean-block = "^0.1.2"
+flake8-simplify = "^0.21.0"
+tryceratops = "^2.4.1"
+flake8-fastapi = "^0.7.0"
+ssort = "^0.14.0"
+codespell = "^2.3.0"
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "$version"
+version_scheme = "semver"
+version_provider = "pep621"
+update_changelog_on_bump = true
+major_version_zero = true
+bump_message = "chore: release $new_version"
+
+[tool.flake8]
+max-line-length = 120
+
+[tool.black]
+line-length = 120
+
+[tool.isort]
+profile = "black"
+
+[tool.mypy]
+files = ["src", "tests"]
+strict = true
+ignore_missing_imports = true
+
+[tool.vulture]
+paths = ["src", "tests"]
+min_confidence = 70
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "tests"]
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.coverage.run]
+branch = true
+command_line = "-m pytest"
+source = ["src"]
+relative_files = true
+
+[tool.codespell]
+skip = 'src/assets/*,scripts/*'

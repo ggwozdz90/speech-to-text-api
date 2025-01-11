@@ -1,0 +1,79 @@
+name: release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4.2.2
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v5.3.0
+      with:
+        python-version: '3.12'
+
+    - name: Install Poetry
+      run: |
+        curl -sSL https://install.python-poetry.org | python3 -
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+    - name: Install dependencies
+      run: poetry install
+
+    - name: Store next release version
+      run: | 
+        git config user.name 'github-actions[release-bot]'
+        git config user.email 'github-actions[release-bot]@users.noreply.github.com'
+        poetry run cz bump --yes --files-only
+        RELEASE_VERSION=$(poetry version -s)
+        echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
+        git reset --hard
+        git clean -fd
+
+    - name: Create release branch and bump version in changelog
+      env:
+        GITHUB_TOKEN: ${{ secrets.REPOSITORY_TOKEN }}
+      run: |
+        git checkout -b release/v$RELEASE_VERSION
+        poetry run cz bump --yes --changelog
+        git push origin release/v$RELEASE_VERSION
+
+    - name: Merge release branch to main branch and create annotated tag
+      env:
+        GITHUB_TOKEN: ${{ secrets.REPOSITORY_TOKEN }}
+      run: |
+        git checkout main
+        git pull origin main
+        git merge --no-ff release/v$RELEASE_VERSION -m "chore(release): merge release v$RELEASE_VERSION"
+        git tag -a v$RELEASE_VERSION -m "Release v$RELEASE_VERSION"
+        git push origin main --follow-tags
+
+    - name: Remove release branch
+      env:
+        GITHUB_TOKEN: ${{ secrets.REPOSITORY_TOKEN }}
+      run: git push origin --delete release/v$RELEASE_VERSION
+
+    - name: Merge main branch to develop branch
+      env:
+        GITHUB_TOKEN: ${{ secrets.REPOSITORY_TOKEN }}
+      run: |
+        git checkout develop
+        git pull origin develop
+        git merge --no-ff main -m "chore(release): merge main into develop"
+        git push origin develop
+
+    - name: Trigger deploy source code and windows exe workflow
+      env:
+        GITHUB_TOKEN: ${{ secrets.REPOSITORY_TOKEN }}
+      run: gh workflow run deploy-github-release.yml --ref v$RELEASE_VERSION
+
+    - name: Trigger deploy docker image workflow
+      env:
+        GITHUB_TOKEN: ${{ secrets.REPOSITORY_TOKEN }}
+      run: gh workflow run deploy-docker-image.yml --ref v$RELEASE_VERSION

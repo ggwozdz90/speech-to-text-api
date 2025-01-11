@@ -1,0 +1,13 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - POETRY_INSTALL_ARGS=
+    environment:
+      - LOG_LEVEL=INFO
+      - FASTAPI_HOST=0.0.0.0
+      - FASTAPI_PORT=8000
+    ports:
+      - "8000:8000"
