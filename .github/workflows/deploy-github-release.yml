@@ -34,7 +34,7 @@ jobs:
       run: poetry build
 
     - name: Create EXE
-      run: poetry run pyinstaller scripts/speech-to-text-api.spec --clean --noconfirm
+      run: poetry run pyinstaller scripts/pyinstaller.spec --clean --noconfirm
 
     - name: Zip EXE
       run: | 

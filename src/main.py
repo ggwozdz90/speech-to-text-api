@@ -12,7 +12,7 @@ def main(
     cuda_checker: CudaChecker,
     server: APIServer,
 ) -> None:
-    logger.info("Starting the Speech-to-Text API server...")
+    logger.info("Starting the speech-to-text-api server...")
     config.initialize(logger)
     logger.set_level(config.log_level)
     cuda_checker.check_cuda_support()

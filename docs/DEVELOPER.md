@@ -158,7 +158,7 @@ Choose your hardware acceleration:
 - Create a standalone Windows executable using PyInstaller:
 
     ```bash
-    poetry run pyinstaller scripts/speech-to-text-api.spec
+    poetry run pyinstaller scripts/pyinstaller.spec
     ```
 
 #### Docker Images
