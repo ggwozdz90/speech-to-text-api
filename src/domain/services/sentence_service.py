@@ -1,3 +1,4 @@
+import re
 from typing import Annotated, List
 
 from fastapi import Depends
@@ -34,7 +35,7 @@ class SentenceService:
             current_sentence.append(word)
             counter_word_counts[counter] = counter_word_counts.get(counter, 0) + 1
 
-            if word.endswith(".") or word == words_with_counters[-1][0]:
+            if re.search(r"[.!?]", word) or word == words_with_counters[-1][0]:
                 total_words = sum(counter_word_counts.values())
                 sentence = SentenceModel(
                     text=" ".join(current_sentence),
@@ -57,7 +58,7 @@ class SentenceService:
     ) -> None:
         self.logger.debug("Starting application of translated sentences to subtitle segments")
 
-        sentences_words = {i: sentence.text.split() for i, sentence in enumerate(translated_sentences)}
+        sentences_words = {i: sentence.translation.split() for i, sentence in enumerate(translated_sentences)}
 
         for segment in segments:
             segment_text = []
@@ -65,7 +66,7 @@ class SentenceService:
             for i, sentence in enumerate(translated_sentences):
                 if segment.counter in sentence.segment_percentage:
                     words = sentences_words[i]
-                    total_words = len(sentence.text.split())
+                    total_words = len(sentence.translation.split())
                     segment_part = sentence.segment_percentage[segment.counter]
                     word_count = int(round(total_words * segment_part))
 

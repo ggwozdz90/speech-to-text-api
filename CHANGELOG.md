@@ -1,3 +1,9 @@
+## 0.11.0 (2025-01-11)
+
+### Feat
+
+- enhance SentenceModel with translation field and improve sentence processing
+
 ## 0.10.0 (2025-01-10)
 
 ### Feat

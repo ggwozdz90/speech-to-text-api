@@ -16,10 +16,12 @@ This project provides an API for transcribing and translating audio/video conten
 
 Available on [Docker Hub](https://hub.docker.com/r/ggwozdz/speech-to-text-api):
 
-- `version-cuda124`: NVIDIA CUDA 12.4 support for GPU acceleration
-- `version-rocm62`: AMD ROCm 6.2 support for GPU acceleration (require build from source code)
-- `version-cpu`: CPU-only version
-- `latest`: Points to latest CUDA version
+- `version-cpu`: CPU-only version (fully tested and stable)
+- `version-cuda124`: NVIDIA CUDA 12.4 support for GPU acceleration (proof-of-concept implementation)*
+- `version-rocm62`: AMD ROCm 6.2 support for GPU acceleration (proof-of-concept implementation, requires build from source code)*
+- `latest`: Points to latest CPU version
+
+*Note on GPU Support: The current implementations of CUDA and ROCm support are provided as proof-of-concept solutions. While these implementations handle basic scenarios effectively, they haven't undergone comprehensive testing across all use cases. Users planning to utilize GPU acceleration may need to modify the Docker images to include additional environment-specific GPU support software. I recommend using the CPU version, which has been thoroughly tested and validated. The GPU implementations serve as a foundation for future development of more sophisticated functionality.
 
 ### Windows Executable
 
