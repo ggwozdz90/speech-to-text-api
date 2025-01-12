@@ -40,6 +40,10 @@
 - **Commit Message**: Custom guidelines and tools for generating standardized commit messages to ensure consistency and clarity. Used when `Generate Commit Message with Copilot` button is clicked.
 - **Test**: Custom guidelines and tools for writing and running tests to improve code quality and development speed. Used when copilot command `/test` is invoked.
 
+### Template Synchronization
+
+- **Template Repository Sync**: This repository is configured to  synchronize with the template repository [ggwozdz90/fastapi-project-template](https://github.com/ggwozdz90/fastapi-project-template). This ensures that boilerplate code is unified and accelerates the start of new projects.
+
 ## Getting Started
 
 ### Prerequisites
@@ -81,7 +85,25 @@ Choose your hardware acceleration:
     cd speech-to-text-api
     ```
 
-2. Install dependencies:
+2. Install poetry:
+
+    ```bash
+    pip install poetry==2.0.0
+    ```
+
+3. Create virtual environment:
+
+    ```bash
+    python -m venv .venv
+    ```
+
+4. Select the appropriate Python environment in VSCode:
+
+    - Open the Command Palette (`Ctrl+Shift+P`)
+    - Select `Python: Select Interpreter`
+    - Choose the `.venv` environment
+
+5. Install dependencies:
 
     ```bash
     # text-to-speech processing on CPU
@@ -94,7 +116,7 @@ Choose your hardware acceleration:
     poetry install --extras rocm62
     ```
 
-3. Start the application:
+6. Start the application:
 
     - Local development with VSCode using `F5` key (using `.vscode/launch.json` configuration)
 
@@ -104,7 +126,7 @@ Choose your hardware acceleration:
       docker-compose up
       ```
 
-4. Access the API documentation:
+7. Access the API documentation:
 
    - Open [http://localhost:8000/docs](http://localhost:8000/docs) in your browser
 
@@ -140,7 +162,7 @@ Choose your hardware acceleration:
 - Create a standalone Windows executable using PyInstaller:
 
     ```bash
-    poetry run pyinstaller scripts/speech-to-text-api.spec
+    poetry run pyinstaller scripts/pyinstaller.spec
     ```
 
 #### Docker Images
@@ -211,6 +233,7 @@ src/
     - [Deployment Options](#deployment-options)
     - [Quality Assurance](#quality-assurance)
     - [Copilot Customizations](#copilot-customizations)
+    - [Template Synchronization](#template-synchronization)
   - [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
     - [Environment setup](#environment-setup)

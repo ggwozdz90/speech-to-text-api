@@ -1,3 +1,13 @@
+## 0.13.0 (2025-01-12)
+
+### Feat
+
+- initialize FastAPI application
+
+### Refactor
+
+- standardize logger naming and update build scripts
+
 ## 0.12.0 (2025-01-11)
 
 ### Feat

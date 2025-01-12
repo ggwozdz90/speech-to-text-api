@@ -29,7 +29,7 @@ class Logger:
             uvicorn_access_logger.addHandler(handler)
 
     def _initialize(self) -> None:
-        self.logger = logging.getLogger("speech_to_text_api")
+        self.logger = logging.getLogger("speech-to-text-api")
         self.logger.setLevel(logging.INFO)
         handler = logging.StreamHandler()
         handler.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
