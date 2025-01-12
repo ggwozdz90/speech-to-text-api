@@ -12,13 +12,15 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4.2.2
+      with:
+        token: ${{ secrets.REPOSITORY_TOKEN }}
 
     - name: Template repository sync
       uses: AndreasAugustin/actions-template-sync@v2
       with:
         github_token: ${{ secrets.REPOSITORY_TOKEN }}
         source_repo_path: ggwozdz90/fastapi-project-template
-        upstream_branch: main
+        upstream_branch: develop
         pr_labels: template_sync
         pr_branch_name_prefix: chore/template_sync
         pr_title: "chore: sync with template repository"
