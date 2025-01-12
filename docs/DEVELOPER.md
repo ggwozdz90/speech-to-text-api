@@ -40,6 +40,10 @@
 - **Commit Message**: Custom guidelines and tools for generating standardized commit messages to ensure consistency and clarity. Used when `Generate Commit Message with Copilot` button is clicked.
 - **Test**: Custom guidelines and tools for writing and running tests to improve code quality and development speed. Used when copilot command `/test` is invoked.
 
+### Template Synchronization
+
+- **Template Repository Sync**: This repository is configured to  synchronize with the template repository [ggwozdz90/fastapi-project-template](https://github.com/ggwozdz90/fastapi-project-template). This ensures that boilerplate code is unified and accelerates the start of new projects.
+
 ## Getting Started
 
 ### Prerequisites
@@ -229,6 +233,7 @@ src/
     - [Deployment Options](#deployment-options)
     - [Quality Assurance](#quality-assurance)
     - [Copilot Customizations](#copilot-customizations)
+    - [Template Synchronization](#template-synchronization)
   - [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
     - [Environment setup](#environment-setup)
