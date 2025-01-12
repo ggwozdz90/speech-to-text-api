@@ -1,0 +1,31 @@
+name: template-sync
+
+on:
+  schedule:
+  - cron: "0 0 1 * *"
+  workflow_dispatch:
+
+jobs:
+  template-sync:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4.2.2
+      with:
+        token: ${{ secrets.REPOSITORY_TOKEN }}
+
+    - name: Template repository sync
+      uses: AndreasAugustin/actions-template-sync@v2
+      with:
+        github_token: ${{ secrets.REPOSITORY_TOKEN }}
+        source_repo_path: ggwozdz90/fastapi-project-template
+        upstream_branch: develop
+        pr_labels: template_sync
+        pr_branch_name_prefix: chore/template_sync
+        pr_title: "chore: sync with template repository"
+        pr_body: "This PR was automatically created to sync with the latest changes from the template repository."
+        pr_reviewers: "ggwozdz90"
+        pr_commit_msg: "chore: sync with template repository"
+        git_user_name: "github-actions[template-sync-bot]"
+        git_user_email: "github-actions[template-sync-bot]@users.noreply.github.com"

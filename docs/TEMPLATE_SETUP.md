@@ -19,7 +19,7 @@ This document describes how to clone the repository and start working on a new p
     git remote set-url origin https://github.com/your-username/your-new-repo.git
     ```
 
-## Initial Setup
+## Initial Setup on the New Repository
 
 1. Search and replace the following strings in all files downloaded from the repository:
     - `{{{PROJECT-NAME}}}` -> e.g. "speech-to-text-api" (use hyphens to separate words, e.g., "my-new-project")
@@ -27,28 +27,56 @@ This document describes how to clone the repository and start working on a new p
     - `{{{PROJECT-TITLE}}}` -> e.g. "Speech to text API" (same as `{{{PROJECT-NAME}}}` but with spaces instead of hyphens)
     - If you cloned the repository from a user other than the author `ggwozdz90`, replace all occurrences of `ggwozdz90` with your GitHub and DockerHub username.
 
-2. Optionally, you can remove the TEMPLATE_SETUP.md file:
-
-    ```bash
-    rm docs/TEMPLATE_SETUP.md
-    ```
-
-3. Enable push trigger in the `.github/workflows/checks.yml` file by uncommenting the following lines:
+2. Enable push trigger in the `.github/workflows/checks.yml` file by uncommenting the following lines:
 
     ```yaml
     on:
     #  push: <-- Uncomment this line>
-      pull_request:
       workflow_dispatch:
     ```
 
-4. Push the initial commit to your new repository:
+3. Push the initial commit to your new repository:
 
     ```bash
     git add .
-    git commit -m "feat: Initial version"
+    git commit -m "feat: Initial version from template"
     git push origin develop
     ```
+
+## Initial Setup on the Existing Repository
+
+1. Add the template repository as a remote:
+
+    ```bash
+    git remote add template https://github.com/ggwozdz90/fastapi-project-template
+    ```
+
+2. Fetch the template repository:
+
+    ```bash
+    git fetch template
+    ```
+
+3. Create a new branch from before merging the template repository:
+
+    ```bash
+    git checkout -b chore/template_sync
+    ```
+
+4. Merge the template repository into the new branch:
+
+    ```bash
+    git merge template/develop --allow-unrelated-histories
+    ```
+
+5. Resolve any conflicts that may arise during the merge.
+6. Push the new branch to the remote repository:
+
+    ```bash
+    git push origin chore/template_sync
+    ```
+
+7. Create a pull request to merge the `chore/template_sync` branch into the `develop` branch.
 
 ## GitHub Configuration
 

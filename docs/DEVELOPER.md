@@ -13,6 +13,7 @@
 - **Comprehensive Configuration**: Uses `.env` file for flexible environment configuration
 - **Logging System**: Detailed operation logging for traceability and debugging
 - **Conventional Commits**: Follows conventional commit messages for automated versioning and changelog generation
+- **Template Sync**: Compares the code in this repository with the template repository and creates a pull request if there are any changes.
 
 ### Deployment Options
 
@@ -34,6 +35,10 @@
 
 - **Commit Message**: Custom guidelines and tools for generating standardized commit messages to ensure consistency and clarity. Used when `Generate Commit Message with Copilot` button is clicked.
 - **Test**: Custom guidelines and tools for writing and running tests to improve code quality and development speed. Used when copilot command `/test` is invoked.
+
+### Template Synchronization
+
+- **Template Repository Sync**: This repository is configured to automatically synchronize with the template repository [ggwozdz90/fastapi-project-template](https://github.com/ggwozdz90/fastapi-project-template). This ensures that boilerplate code is unified and accelerates the start of new projects.
 
 ## Getting Started
 
@@ -150,6 +155,7 @@ The project implements automated pipelines for:
 - **Release**: Creates a new release with version bump and changelog generation (using Conventional Commits). This workflow is triggered manually and automatically invokes the Docker and Windows build workflows.
 - **Docker Build**: Builds and pushes Docker images to Docker Hub
 - **Windows Executable**: Builds and uploads Windows executable to GitHub Releases
+- **Template Sync**: Compares the code in this repository with the template repository and creates a pull request if there are any changes.
 
 ## Project Structure
 
@@ -176,6 +182,7 @@ src/
     - [Deployment Options](#deployment-options)
     - [Quality Assurance](#quality-assurance)
     - [Copilot Customizations](#copilot-customizations)
+    - [Template Synchronization](#template-synchronization)
   - [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
     - [Environment setup](#environment-setup)
