@@ -12,6 +12,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4.2.2
+      with:
+        token: ${{ secrets.REPOSITORY_TOKEN }}
 
     - name: Template repository sync
       uses: AndreasAugustin/actions-template-sync@v2
