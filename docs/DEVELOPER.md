@@ -1,28 +1,23 @@
-# Speech to Text API - Developer Guide
+# {{{PROJECT-TITLE}}} - Developer Guide
 
 ## Features & Technical Highlights
 
 ### Core Capabilities
 
-- **Speech-to-Text Model Integration**: Utilizes OpenAI Whisper model for transcription
-- **Translation Model Integration**: Translates detected text using translation models like Facebook/Meta's mBART and Seamless
-- **Memory Optimization**: Models are loaded in separate processes and terminated after a configurable idle timeout to conserve RAM
+- **Template Project**: Provides a starting point for new FastAPI projects with a focus on code quality and maintainability
 
 ### Technical Architecture
 
 - **Clean Architecture**: Project structure follows clean architecture principles, ensuring separation of concerns and maintainability
-- **FastAPI Implementation**: Exposes RESTful API endpoints for file uploads, text extraction, and subtitle generation
+- **FastAPI Implementation**: Exposes RESTful API endpoints
 - **Comprehensive Configuration**: Uses `.env` file for flexible environment configuration
 - **Logging System**: Detailed operation logging for traceability and debugging
 - **Conventional Commits**: Follows conventional commit messages for automated versioning and changelog generation
 
 ### Deployment Options
 
-- **Docker Support**: Application runs in a Docker container for easy deployment:
-  - CPU version (fully tested and production-ready)
-  - CUDA version (proof-of-concept implementation)
-  - ROCm version (proof-of-concept implementation)
-- **Windows Executable**: Provides a standalone Windows executable for local use (CPU version, fully tested)
+- **Docker Support**: Application runs in a Docker container for easy deployment
+- **Windows Executable**: Provides a standalone Windows executable for local use
 
 ### Quality Assurance
 
@@ -49,36 +44,19 @@ Choose your development environment:
 - **Source Code Development**:
   - Python 3.12
   - Poetry
-  - ffmpeg
 
 - **Container Development**:
   - Python 3.12
   - Poetry
   - Docker
 
-Choose your hardware acceleration:
-
-- **CPU Version** (Recommended):
-  - Thoroughly tested and validated for stability
-
-- **CUDA Version** (Proof of concept):
-  - NVIDIA GPU with CUDA support
-  - NVIDIA Container Toolkit
-  - Note: May require additional configuration and GPU support software
-  - Current implementation handles basic scenarios but needs further testing
-
-- **ROCm Version** (Proof of concept):
-  - AMD GPU with ROCm support
-  - Note: May require additional configuration and GPU support software
-  - Current implementation handles basic scenarios but needs further testing
-
 ### Environment setup
 
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/ggwozdz90/speech-to-text-api
-    cd speech-to-text-api
+    git clone https://github.com/ggwozdz90/{{{PROJECT-NAME}}}
+    cd {{{PROJECT-NAME}}}
     ```
 
 2. Install poetry:
@@ -102,14 +80,7 @@ Choose your hardware acceleration:
 5. Install dependencies:
 
     ```bash
-    # text-to-speech processing on CPU
-    poetry install --extras cpu
-  
-    # text-to-speech processing on GPU  (NVIDIA CUDA 12.4)
-    poetry install --extras cuda124
-
-    # text-to speech processing on GPU (AMD ROCm 6.2)
-    poetry install --extras rocm62
+    poetry install
     ```
 
 6. Start the application:
@@ -166,16 +137,7 @@ Choose your hardware acceleration:
 - Build Docker images for CPU, CUDA and ROCm:
 
     ```bash
-    # CPU Version (2.19 GB image size) - Recommended
-    docker build --build-arg POETRY_INSTALL_ARGS="--extras=cpu" -t speech-to-text-api:cpu .
-
-    # CUDA Version (6.16 GB image size) - Proof of concept implementation
-    # Note: May require additional GPU support software
-    docker build --build-arg POETRY_INSTALL_ARGS="--extras=cuda124" -t speech-to-text-api:cuda .
-
-    # ROCm Version (19.16 GB image size) - Proof of concept implementation
-    # Note: May require additional GPU support software
-    docker build --build-arg POETRY_INSTALL_ARGS="--extras=rocm62" -t speech-to-text-api:rocm .
+    docker build -t {{{PROJECT-NAME}}}:latest .
     ```
 
 ## CI/CD Pipeline
@@ -193,36 +155,21 @@ The project implements automated pipelines for:
 
 ```plaintext
 src/
-├── api/                   # API Layer
-│   ├── dtos/               # Data Transfer Objects
-│   ├── handlers/           # Request Handlers
-│   ├── middlewares/        # API Middlewares
-│   ├── routers/            # Route Definitions
-│   └── server.py           # Server Configuration
-├── application/           # Application Layer
-│   └── usecases/           # Business Logic Use Cases
-├── assets/                # Static Resources
-│   └── mappings/           # Language Mappings
-├── core/                  # Core Components
-│   ├── config/             # Configuration Management
-│   ├── logger/             # Logging Setup
-│   ├── timer/              # Timing Utilities
-│   └── cuda/               # CUDA Utilities
-├── data/                  # Data Layer
-│   ├── factories/          # Object Factories
-│   ├── repositories/       # Data Access
-│   └── workers/            # Background Workers
-├── domain/                # Domain Layer
-│   ├── exceptions/         # Custom Exceptions
-│   ├── models/             # Domain Models
-│   ├── repositories/       # Repository Interfaces
-│   └── services/           # Domain Services
-└── main.py                # Application Entry Point
+┣ api/                   # API Layer
+┃ ┣ dtos/                 # Data Transfer Objects
+┃ ┣ handlers/             # Request Handlers
+┃ ┣ middlewares/          # API Middlewares
+┃ ┣ routers/              # Route Definitions
+┃ ┗ server.py             # Server Configuration
+┣ core/                  # Core Components
+┃ ┣ config/               # Configuration Management
+┃ ┗ logger/               # Logging Setup
+┗ main.py                # Application Entry Point
 ```
 
 ## Table of Contents
 
-- [Speech to Text API - Developer Guide](#speech-to-text-api---developer-guide)
+- [{{{PROJECT-TITLE}}} - Developer Guide](#{{{PROJECT-NAME}}}---developer-guide)
   - [Features \& Technical Highlights](#features--technical-highlights)
     - [Core Capabilities](#core-capabilities)
     - [Technical Architecture](#technical-architecture)

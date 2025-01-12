@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy-cuda124:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,74 +25,19 @@ jobs:
       with:
         push: true
         build-args: |
-          POETRY_INSTALL_ARGS=--extras cuda124
+          POETRY_INSTALL_ARGS=
         labels: |
-          org.opencontainers.image.title="Speech to Text API"
-          org.opencontainers.image.description="A FastAPI project integrating speech to text and translation services."
-          org.opencontainers.image.source="https://github.com/ggwozdz90/speech-to-text-api"
-          org.opencontainers.image.documentation="https://github.com/ggwozdz90/speech-to-text-api/blob/main/docs/README.md"
+          org.opencontainers.image.title="{{{PROJECT-TITLE}}}"
+          org.opencontainers.image.description="{{{PROJECT-DESCRIPTION}}}"
+          org.opencontainers.image.source="https://github.com/ggwozdz90/{{{PROJECT-NAME}}}"
+          org.opencontainers.image.documentation="https://github.com/ggwozdz90/{{{PROJECT-NAME}}}/blob/main/docs/README.md"
         tags: | 
-          ggwozdz/speech-to-text-api:${{ github.ref_name }}-cuda124
-
-  deploy-rocm62:
-    if: false
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4.2.2
-
-    - name: Login to Docker Hub
-      uses: docker/login-action@v3.3.0
-      with:
-        username: ${{ vars.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-    - name: Build and push
-      uses: docker/build-push-action@v6.10.0
-      with:
-        push: true
-        build-args: |
-          POETRY_INSTALL_ARGS=--extras rocm62
-        labels: |
-          org.opencontainers.image.title="Speech to Text API"
-          org.opencontainers.image.description="A FastAPI project integrating speech to text and translation services."
-          org.opencontainers.image.source="https://github.com/ggwozdz90/speech-to-text-api"
-          org.opencontainers.image.documentation="https://github.com/ggwozdz90/speech-to-text-api/blob/main/docs/README.md"
-        tags: | 
-          ggwozdz/speech-to-text-api:${{ github.ref_name }}-rocm62
-
-  deploy-cpu:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4.2.2
-
-    - name: Login to Docker Hub
-      uses: docker/login-action@v3.3.0
-      with:
-        username: ${{ vars.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-    - name: Build and push
-      uses: docker/build-push-action@v6.10.0
-      with:
-        push: true
-        build-args: |
-          POETRY_INSTALL_ARGS=--extras cpu
-        labels: |
-          org.opencontainers.image.title="Speech to Text API"
-          org.opencontainers.image.description="A FastAPI project integrating speech to text and translation services."
-          org.opencontainers.image.source="https://github.com/ggwozdz90/speech-to-text-api"
-          org.opencontainers.image.documentation="https://github.com/ggwozdz90/speech-to-text-api/blob/main/docs/README.md"
-        tags: | 
-          ggwozdz/speech-to-text-api:${{ github.ref_name }}-cpu
-          ggwozdz/speech-to-text-api:latest
+          ggwozdz/{{{PROJECT-NAME}}}:${{ github.ref_name }}
+          ggwozdz/{{{PROJECT-NAME}}}:latest
 
   deploy-dockerhub-overview:
     runs-on: ubuntu-latest
-    needs: [deploy-cpu, deploy-cuda124]
+    needs: [deploy]
 
     steps:
     - name: Checkout code
@@ -103,5 +48,5 @@ jobs:
       with:
         username: ${{ vars.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-        repository: ggwozdz/speech-to-text-api
+        repository: ggwozdz/{{{PROJECT-NAME}}}
         readme-filepath: ./docs/DOCKERHUB.md

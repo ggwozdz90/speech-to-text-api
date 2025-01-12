@@ -1,11 +1,7 @@
-# Stage 1: Dockerfile for building the speech-to-text-api image
+# Stage 1: Dockerfile for building the {{{PROJECT-NAME}}} image
 FROM python:3.12-slim-bookworm AS builder
 
 # ARG POETRY_INSTALL_ARGS is used to pass the 'extras' parameter to poetry install.
-# It can have the values 'cpu', 'cuda124', 'rocm62', or be empty.
-# 'cpu' and empty values install PyTorch dependencies for CPU.
-# 'cuda124' installs dependencies for CUDA 12.4.
-# 'rocm62' installs dependencies for ROCm 6.2.
 ARG POETRY_INSTALL_ARGS=""
 
 # Setup Poetry
@@ -26,7 +22,7 @@ RUN poetry install ${POETRY_INSTALL_ARGS} --without dev --no-root \
     && rm -rf "$POETRY_CACHE_DIR"
 
 
-# Stage 2: Dockerfile for running the API speech-to-text-api image
+# Stage 2: Dockerfile for running the {{{PROJECT-NAME}}} image
 FROM python:3.12-slim-bookworm AS runtime
 
 # Set environment variables for the virtual environment
@@ -34,9 +30,8 @@ ENV VIRTUAL_ENV=/app/.venv \
     PATH="/app/.venv/bin:$PATH" \
     PYTHONPATH=/app/src
 
-# Install ffmpeg and create a non-root user
+# Install updates and create a non-root user
 RUN apt-get update \
-    && apt-get --no-install-recommends install -y ffmpeg \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && groupadd -r appuser && useradd -r -g appuser appuser \

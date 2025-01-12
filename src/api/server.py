@@ -4,7 +4,6 @@ from fastapi import FastAPI
 from api.handlers.global_exception_handler import GlobalExceptionHandler
 from api.middlewares.process_time_middleware import ProcessTimeMiddleware
 from api.routers.health_check_router import HealthCheckRouter
-from api.routers.transcribe_router import TranscribeRouter
 from core.config.app_config import AppConfig
 from core.logger.logger import Logger
 
@@ -20,7 +19,6 @@ class APIServer:
         self.app = FastAPI()
         self.exception_handler = GlobalExceptionHandler(self.app, logger)
         self.app.add_middleware(ProcessTimeMiddleware, logger=logger)
-        self.app.include_router(TranscribeRouter().router, tags=["Transcribe"])
         self.app.include_router(HealthCheckRouter().router, tags=["HealthCheck"])
 
     def start(self) -> None:

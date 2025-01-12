@@ -11,10 +11,7 @@ a = Analysis(
     [os.path.join(project_dir, 'src', 'main.py')],
     pathex=[os.path.join(project_dir, 'src')],
     binaries=[],
-    datas=[
-        (os.path.join(project_dir, 'src', 'assets', 'mappings'), 'assets/mappings'),
-        (os.path.join(project_dir, '.venv', 'lib', 'site-packages', 'whisper', 'assets'), 'whisper/assets'),
-    ],
+    datas=[],
     hiddenimports=[],
     hookspath=[],
     runtime_hooks=[],
@@ -29,7 +26,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name='speech-to-text-api',
+    name='{{{PROJECT-NAME}}}',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -46,5 +43,5 @@ coll = COLLECT(
     strip=False,
     upx=True,
     upx_exclude=[],
-    name='speech-to-text-api',
+    name='{{{PROJECT-NAME}}}',
 )

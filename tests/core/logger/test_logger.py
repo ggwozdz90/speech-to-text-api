@@ -85,7 +85,7 @@ def test_logger_initialization() -> None:
     logger_instance = Logger()
 
     # Then
-    assert logger_instance.logger.name == "speech-to-text-api"
+    assert logger_instance.logger.name == "{{{PROJECT-NAME}}}"
     assert logger_instance.logger.level == logging.INFO
     assert len(logger_instance.logger.handlers) > 0
     assert isinstance(logger_instance.logger.handlers[0], logging.StreamHandler)

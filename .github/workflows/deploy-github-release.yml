@@ -28,7 +28,7 @@ jobs:
       run: poetry config virtualenvs.in-project true
 
     - name: Install dependencies
-      run: poetry install --extras cpu
+      run: poetry install
     
     - name: Build
       run: poetry build
@@ -38,9 +38,9 @@ jobs:
 
     - name: Zip EXE
       run: | 
-        cp .env dist/speech-to-text-api
-        Compress-Archive -Path dist/speech-to-text-api -DestinationPath dist/speech-to-text-api-exe.zip
-        Remove-Item -Recurse -Force dist/speech-to-text-api
+        cp .env dist/{{{PROJECT-NAME}}}
+        Compress-Archive -Path dist/{{{PROJECT-NAME}}} -DestinationPath dist/{{{PROJECT-NAME}}}-exe.zip
+        Remove-Item -Recurse -Force dist/{{{PROJECT-NAME}}}
 
     - name: Deploy GitHub Release
       uses: softprops/action-gh-release@v2
