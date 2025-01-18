@@ -1,3 +1,9 @@
+## 0.14.0 (2025-01-18)
+
+### Feat
+
+- add transcription and translation parameters to processing models
+
 ## 0.13.0 (2025-01-12)
 
 ### Feat
