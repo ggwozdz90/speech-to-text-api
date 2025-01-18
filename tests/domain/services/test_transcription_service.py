@@ -71,12 +71,12 @@ async def test_transcribe_success(
     mock_language_mapping_service.map_language.return_value = "en"
 
     # When
-    result = await transcription_service.transcribe(mock_file, "en")
+    result = await transcription_service.transcribe(mock_file, "en", {})
 
     # Then
     assert result.text == "transcribed text"
     mock_file_repository.save_file.assert_awaited_once_with(mock_file)
-    mock_speech_to_text_repository.transcribe.assert_called_once_with("test_path", language="en")
+    mock_speech_to_text_repository.transcribe.assert_called_once_with("test_path", "en", {})
     mock_file_repository.delete_file.assert_called_once_with("test_path")
 
 
@@ -97,12 +97,12 @@ async def test_transcribe_with_file_deletion_disabled(
     mock_language_mapping_service.map_language.return_value = "en"
 
     # When
-    result = await transcription_service.transcribe(mock_file, "en")
+    result = await transcription_service.transcribe(mock_file, "en", {})
 
     # Then
     assert result.text == "transcribed text"
     mock_file_repository.save_file.assert_awaited_once_with(mock_file)
-    mock_speech_to_text_repository.transcribe.assert_called_once_with("test_path", language="en")
+    mock_speech_to_text_repository.transcribe.assert_called_once_with("test_path", "en", {})
     mock_file_repository.delete_file.assert_not_called()
 
 
@@ -119,7 +119,7 @@ async def test_transcribe_failure(
 
     # When / Then
     with pytest.raises(Exception, match="Save failed"):
-        await transcription_service.transcribe(mock_file, "en")
+        await transcription_service.transcribe(mock_file, "en", {})
 
     mock_file_repository.save_file.assert_awaited_once_with(mock_file)
     mock_speech_to_text_repository.transcribe.assert_not_called()

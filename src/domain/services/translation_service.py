@@ -1,4 +1,4 @@
-from typing import Annotated, List
+from typing import Annotated, Any, Dict, List, Optional
 
 from fastapi import Depends
 
@@ -30,6 +30,7 @@ class TranslationService:
         sentences: List[SentenceModel],
         source_language: str,
         target_language: str,
+        translation_parameters: Optional[Dict[str, Any]],
     ) -> None:
         self.logger.debug(
             f"Starting translation of {len(sentences)} sentences from '{source_language}' to '{target_language}'",
@@ -51,6 +52,7 @@ class TranslationService:
                 sentence.text,
                 source_language_mapped,
                 target_language_mapped,
+                translation_parameters,
             )
 
         self.logger.debug("Completed translation of sentences")
@@ -60,6 +62,7 @@ class TranslationService:
         text: str,
         source_language: str,
         target_language: str,
+        translation_parameters: Dict[str, Any],
     ) -> str:
         self.logger.debug(f"Starting translation of text from '{source_language}' to '{target_language}'")
 
@@ -76,6 +79,7 @@ class TranslationService:
             text,
             source_language_mapped,
             target_language_mapped,
+            translation_parameters,
         )
 
         self.logger.debug("Completed translation of text")

@@ -89,17 +89,20 @@ Available versions:
 - Request:
 
     ```bash
-    curl -X POST "http://localhost:8000/transcribe" \
-        -F "file=@video.mp4" \
-        -F "source_language=en_US"
+    curl -X 'POST' \
+      'http://127.0.0.1:8000/transcribe' \
+      -H 'accept: application/json' \
+      -H 'Content-Type: multipart/form-data' \
+      -F 'file=@file.mp3;type=audio/mpeg' \
+      -F 'source_language=en_US' \
+      -F 'transcription_parameters={"num_beams": 5}'
     ```
 
 - Response:
 
     ```json
     {
-      "filename": "your_file_name",
-      "content": "transcribed text"
+      "transcription": "transcribed text"
     }
     ```
 
@@ -108,18 +111,22 @@ Available versions:
 - Request:
 
     ```bash
-    curl -X POST "http://localhost:8000/transcribe" \
-        -F "file=@video.mp4" \
-        -F "source_language=en_US"
-        -F "target_language=pl_PL"
+    curl -X 'POST' \
+      'http://127.0.0.1:8000/transcribe' \
+      -H 'accept: application/json' \
+      -H 'Content-Type: multipart/form-data' \
+      -F 'file=@file.mp3;type=audio/mpeg' \
+      -F 'source_language=en_US' \
+      -F 'target_language=pl_PL' \
+      -F 'transcription_parameters={"num_beams": 5}' \
+      -F 'translation_parameters={"num_beams": 5}'
     ```
 
 - Response:
 
     ```json
     {
-      "filename": "your_file_name",
-      "content": "transkrypcja tekstu"
+      "transcription": "transkrypcja tekstu"
     }
     ```
 
@@ -129,8 +136,11 @@ Available versions:
 
     ```bash
     curl -X POST "http://localhost:8000/transcribe/srt" \
-         -F "file=@video.mp4" \
-         -F "source_language=en_US"
+      -H 'accept: application/json' \
+      -H 'Content-Type: multipart/form-data' \
+      -F 'file=@file.mp3;type=audio/mpeg' \
+      -F 'source_language=en_US' \
+      -F 'transcription_parameters={"num_beams": 5}'
     ```
 
 - Response:
@@ -150,9 +160,13 @@ Available versions:
 
     ```bash
     curl -X POST "http://localhost:8000/transcribe/srt" \
-        -F "file=@video.mp4" \
-        -F "source_language=en_US"
-        -F "target_language=pl_PL"
+      -H 'accept: application/json' \
+      -H 'Content-Type: multipart/form-data' \
+      -F 'file=@file.mp3;type=audio/mpeg' \
+      -F 'source_language=en_US' \
+      -F 'target_language=pl_PL' \
+      -F 'transcription_parameters={"num_beams": 5}' \
+      -F 'translation_parameters={"num_beams": 5}'
     ```
 
 - Response:
@@ -165,6 +179,12 @@ Available versions:
     00:00:05,000 --> 00:00:10,000
     To jest napis.
     ```
+
+#### Generation parameters
+
+The `translation_parameters` and `transcription_parameters` field in the request allows you to specify the parameters which are described in the model documentation.
+
+[For Seamless model](https://huggingface.co/docs/transformers/main/en/model_doc/seamless_m4t#transformers.SeamlessM4TForTextToText.generate), [for mBART model](https://huggingface.co/docs/transformers/main/en/model_doc/mbart#transformers.MBartForConditionalGeneration.generate) and [for Whisper model](https://github.com/openai/whisper/blob/main/whisper/transcribe.py).
 
 ### Health Check
 

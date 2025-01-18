@@ -46,18 +46,19 @@ def test_transcribe_success(
     # When
     response = client.post(
         "/transcribe",
-        params={
+        data={
             "source_language": "en_US",
             "target_language": "pl_PL",
         },
-        files={"file": ("test_file.txt", b"file content")},
+        files={
+            "file": ("test_file.txt", "file content"),
+        },
     )
 
     # Then
     assert response.status_code == 200
     assert response.json() == {
-        "filename": "test_file.txt",
-        "content": "transcription_result",
+        "transcription": "transcription_result",
     }
     mock_transcribe_file_to_text_usecase.execute.assert_awaited_once()
 
@@ -91,11 +92,13 @@ def test_transcribe_srt_success(
     # When
     response = client.post(
         "/transcribe/srt",
-        params={
+        data={
             "source_language": "en_US",
             "target_language": "pl_PL",
         },
-        files={"file": ("test_file.txt", b"file content")},
+        files={
+            "file": ("test_file.txt", "file content"),
+        },
     )
 
     # Then

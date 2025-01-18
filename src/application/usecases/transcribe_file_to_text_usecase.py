@@ -1,4 +1,4 @@
-from typing import Annotated, Optional
+from typing import Annotated, Any, Dict, Optional
 
 from fastapi import Depends, UploadFile
 
@@ -26,12 +26,18 @@ class TranscribeFileToTextUseCase:
         file: UploadFile,
         source_language: str,
         target_language: Optional[str],
+        transcription_parameters: Dict[str, Any],
+        translation_parameters: Dict[str, Any],
     ) -> str:
         self.logger.info(
             f"Executing transcription for file '{file.filename}' from '{source_language}' to '{target_language}'",
         )
 
-        transcription_result = await self.transcription_service.transcribe(file, source_language)
+        transcription_result = await self.transcription_service.transcribe(
+            file,
+            source_language,
+            transcription_parameters,
+        )
 
         if not target_language or source_language == target_language:
             self.logger.info(f"Returning transcription result for file '{file.filename}'")
@@ -42,6 +48,7 @@ class TranscribeFileToTextUseCase:
             transcription_result.text,
             source_language,
             target_language,
+            translation_parameters,
         )
 
         self.logger.info(f"Returning translation result for file '{file.filename}'")

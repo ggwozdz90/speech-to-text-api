@@ -3,7 +3,7 @@ import multiprocessing.connection
 import multiprocessing.synchronize
 from dataclasses import dataclass
 from multiprocessing.sharedctypes import Synchronized
-from typing import Any, Tuple
+from typing import Any, Dict, Tuple
 
 import whisper
 
@@ -21,7 +21,7 @@ class WhisperSpeechToTextConfig:
 
 class WhisperSpeechToTextWorker(
     BaseWorker[  # type: ignore
-        Tuple[str, str],
+        Tuple[str, str, Dict[str, Any]],
         dict[str, str],
         WhisperSpeechToTextConfig,
         whisper.Whisper,
@@ -31,11 +31,21 @@ class WhisperSpeechToTextWorker(
         self,
         file_path: str,
         language: str,
+        transcription_parameters: Dict[str, Any],
     ) -> dict[str, str]:
         if not self.is_alive():
             raise WorkerNotRunningError()
 
-        self._pipe_parent.send(("transcribe", (file_path, language)))
+        self._pipe_parent.send(
+            (
+                "transcribe",
+                (
+                    file_path,
+                    language,
+                    transcription_parameters,
+                ),
+            ),
+        )
         result = self._pipe_parent.recv()
 
         if isinstance(result, Exception):
@@ -55,7 +65,7 @@ class WhisperSpeechToTextWorker(
     def handle_command(
         self,
         command: str,
-        args: Tuple[str, str],
+        args: Tuple[str, str, Dict[str, Any]],
         model: whisper.Whisper,
         config: WhisperSpeechToTextConfig,
         pipe: multiprocessing.connection.Connection,
@@ -67,13 +77,15 @@ class WhisperSpeechToTextWorker(
                 with processing_lock:
                     is_processing.value = True
 
-                file_path, language = args
-                kwargs: dict[str, Any] = {"language": language}
+                file_path, language, transcription_parameters = args
 
-                if config.device == "cpu":
-                    kwargs["fp16"] = False
+                if "language" not in transcription_parameters:
+                    transcription_parameters["language"] = language
 
-                result = model.transcribe(file_path, **kwargs)
+                if "fp16" not in transcription_parameters:
+                    transcription_parameters["fp16"] = config.device != "cpu"
+
+                result = model.transcribe(file_path, **transcription_parameters)
                 pipe.send(result)
 
             except Exception as e:

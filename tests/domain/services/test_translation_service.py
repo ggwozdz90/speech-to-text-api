@@ -63,13 +63,13 @@ def test_translate_sentences_success(
     mock_translation_model_repository.translate.side_effect = ["Hola", "Mundo"]
 
     # When
-    translation_service.translate_sentences(sentences, source_language, target_language)
+    translation_service.translate_sentences(sentences, source_language, target_language, {})
 
     # Then
     assert sentences[0].translation == "Hola"
     assert sentences[1].translation == "Mundo"
-    mock_translation_model_repository.translate.assert_any_call("Hello", source_language, target_language)
-    mock_translation_model_repository.translate.assert_any_call("World", source_language, target_language)
+    mock_translation_model_repository.translate.assert_any_call("Hello", source_language, target_language, {})
+    mock_translation_model_repository.translate.assert_any_call("World", source_language, target_language, {})
 
 
 def test_translate_sentences_exception(
@@ -86,7 +86,7 @@ def test_translate_sentences_exception(
 
     # When / Then
     with pytest.raises(Exception, match="Translation error"):
-        translation_service.translate_sentences(sentences, source_language, target_language)
+        translation_service.translate_sentences(sentences, source_language, target_language, {})
 
 
 def test_translate_text_success(
@@ -102,11 +102,11 @@ def test_translate_text_success(
     mock_translation_model_repository.translate.return_value = "Hola Mundo"
 
     # When
-    result = translation_service.translate_text(text, source_language, target_language)
+    result = translation_service.translate_text(text, source_language, target_language, {})
 
     # Then
     assert result == "Hola Mundo"
-    mock_translation_model_repository.translate.assert_called_once_with(text, source_language, target_language)
+    mock_translation_model_repository.translate.assert_called_once_with(text, source_language, target_language, {})
 
 
 def test_translate_text_exception(
@@ -123,4 +123,4 @@ def test_translate_text_exception(
 
     # When / Then
     with pytest.raises(Exception, match="Translation error"):
-        translation_service.translate_text(text, source_language, target_language)
+        translation_service.translate_text(text, source_language, target_language, {})

@@ -39,11 +39,11 @@ def test_translate_success(mock_worker: SeamlessTranslationWorker) -> None:
     mock_worker._pipe_parent.recv = Mock(return_value="translated text")
 
     # When
-    result = mock_worker.translate("hello", "en", "fr")
+    result = mock_worker.translate("hello", "en", "fr", {})
 
     # Then
     assert result == "translated text"
-    mock_worker._pipe_parent.send.assert_called_once_with(("translate", ("hello", "en", "fr")))
+    mock_worker._pipe_parent.send.assert_called_once_with(("translate", ("hello", "en", "fr", {})))
 
 
 def test_translate_worker_not_running(mock_worker: SeamlessTranslationWorker) -> None:
@@ -52,7 +52,7 @@ def test_translate_worker_not_running(mock_worker: SeamlessTranslationWorker) ->
 
     # When / Then
     with pytest.raises(RuntimeError, match="Worker process is not running"):
-        mock_worker.translate("hello", "en", "fr")
+        mock_worker.translate("hello", "en", "fr", {})
 
 
 def test_translate_exception(mock_worker: SeamlessTranslationWorker) -> None:
@@ -62,7 +62,7 @@ def test_translate_exception(mock_worker: SeamlessTranslationWorker) -> None:
 
     # When / Then
     with pytest.raises(Exception, match="Translation error"):
-        mock_worker.translate("hello", "en", "fr")
+        mock_worker.translate("hello", "en", "fr", {})
 
 
 def test_initialize_shared_object(mock_config: SeamlessTranslationConfig, mock_logger: Logger) -> None:
@@ -104,7 +104,7 @@ def test_handle_command_translate_success(
     # When
     mock_worker.handle_command(
         "translate",
-        ("hello", "en", "fr"),
+        ("hello", "en", "fr", {}),
         (mock_model, mock_processor),
         mock_config,
         mock_pipe,
@@ -131,7 +131,7 @@ def test_handle_command_translate_exception(
     # When
     mock_worker.handle_command(
         "translate",
-        ("hello", "en", "fr"),
+        ("hello", "en", "fr", {}),
         (mock_model, mock_processor),
         mock_config,
         mock_pipe,

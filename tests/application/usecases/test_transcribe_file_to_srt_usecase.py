@@ -79,11 +79,11 @@ async def test_execute_success_no_translation(
     mock_subtitle_service.generate_srt_result.return_value = "srt_result"
 
     # When
-    result = await usecase.execute(mock_file, "en", None)
+    result = await usecase.execute(mock_file, "en", None, {}, {})
 
     # Then
     assert result == "srt_result"
-    mock_transcription_service.transcribe.assert_awaited_once_with(mock_file, "en")
+    mock_transcription_service.transcribe.assert_awaited_once_with(mock_file, "en", {})
     mock_subtitle_service.convert_to_subtitle_segments.assert_called_once_with("transcription_result")
     mock_subtitle_service.generate_srt_result.assert_called_once_with(["segment1", "segment2"])
     mock_sentence_service.create_sentence_models.assert_not_called()
@@ -110,14 +110,14 @@ async def test_execute_success_with_translation(
     mock_subtitle_service.generate_srt_result.return_value = "translated_srt_result"
 
     # When
-    result = await usecase.execute(mock_file, "en", "pl")
+    result = await usecase.execute(mock_file, "en", "pl", {}, {})
 
     # Then
     assert result == "translated_srt_result"
-    mock_transcription_service.transcribe.assert_awaited_once_with(mock_file, "en")
+    mock_transcription_service.transcribe.assert_awaited_once_with(mock_file, "en", {})
     mock_subtitle_service.convert_to_subtitle_segments.assert_called_once_with("transcription_result")
     mock_sentence_service.create_sentence_models.assert_called_once_with(["segment1", "segment2"])
-    mock_translation_service.translate_sentences.assert_called_once_with(["sentence1", "sentence2"], "en", "pl")
+    mock_translation_service.translate_sentences.assert_called_once_with(["sentence1", "sentence2"], "en", "pl", {})
     mock_sentence_service.apply_translated_sentences.assert_called_once_with(
         ["segment1", "segment2"],
         ["sentence1", "sentence2"],
@@ -140,10 +140,10 @@ async def test_execute_failure(
 
     # When
     with pytest.raises(Exception, match="Transcription error"):
-        await usecase.execute(mock_file, "en", "pl")
+        await usecase.execute(mock_file, "en", "pl", {}, {})
 
     # Then
-    mock_transcription_service.transcribe.assert_awaited_once_with(mock_file, "en")
+    mock_transcription_service.transcribe.assert_awaited_once_with(mock_file, "en", {})
     mock_subtitle_service.convert_to_subtitle_segments.assert_not_called()
     mock_sentence_service.create_sentence_models.assert_not_called()
     mock_translation_service.translate_sentences.assert_not_called()

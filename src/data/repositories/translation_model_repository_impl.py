@@ -1,6 +1,6 @@
 import threading
 import time
-from typing import Annotated, Optional
+from typing import Annotated, Any, Dict, Optional
 
 from fastapi import Depends
 
@@ -62,6 +62,7 @@ class TranslationModelRepositoryImpl(TranslationModelRepository):  # type: ignor
         text: str,
         source_language: str,
         target_language: str,
+        translation_parameters: Dict[str, Any],
     ) -> str:
         with self._lock:
             if not self.worker.is_alive():
@@ -76,6 +77,7 @@ class TranslationModelRepositoryImpl(TranslationModelRepository):  # type: ignor
             text,
             source_language,
             target_language,
+            translation_parameters,
         )
 
         self.timer.start(

@@ -106,13 +106,13 @@ Choose your hardware acceleration:
 5. Install dependencies:
 
     ```bash
-    # text-to-speech processing on CPU
+    # speech-to-text processing on CPU
     poetry install --extras cpu
   
-    # text-to-speech processing on GPU  (NVIDIA CUDA 12.4)
+    # speech-to-text processing on GPU  (NVIDIA CUDA 12.4)
     poetry install --extras cuda124
 
-    # text-to speech processing on GPU (AMD ROCm 6.2)
+    # speech-to-text processing on GPU (AMD ROCm 6.2)
     poetry install --extras rocm62
     ```
 

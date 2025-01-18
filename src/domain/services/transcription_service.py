@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Any, Dict
 
 from fastapi import Depends, UploadFile
 
@@ -31,6 +31,7 @@ class TranscriptionService:
         self,
         file: UploadFile,
         language: str,
+        transcription_parameters: Dict[str, Any],
     ) -> TranscriptionResultModel:
         file_path = await self.file_repository.save_file(file)
 
@@ -43,7 +44,8 @@ class TranscriptionService:
 
         result = self.speech_to_text_repository.transcribe(
             file_path,
-            language=language_mapped,
+            language_mapped,
+            transcription_parameters,
         )
         self.logger.debug(f"Completed transcription for file '{file.filename}'")
 
