@@ -1,7 +1,6 @@
 import re
-from typing import Optional
+from typing import Any, Dict, Optional
 
-from fastapi import UploadFile
 from pydantic import BaseModel, field_validator
 
 from domain.exceptions.invalid_language_format_error import InvalidLanguageFormatError
@@ -10,7 +9,8 @@ from domain.exceptions.invalid_language_format_error import InvalidLanguageForma
 class TranscribeDTO(BaseModel):
     source_language: str
     target_language: Optional[str] = None
-    file: UploadFile
+    transcription_parameters: Dict[str, Any] = {}
+    translation_parameters: Dict[str, Any] = {}
 
     @staticmethod
     def validate_language_format(v: str) -> str:

@@ -3,7 +3,7 @@ import multiprocessing.connection
 import multiprocessing.synchronize
 from dataclasses import dataclass
 from multiprocessing.sharedctypes import Synchronized
-from typing import Tuple
+from typing import Any, Dict, Tuple
 
 from transformers import AutoProcessor, SeamlessM4Tv2ForTextToText
 
@@ -21,7 +21,7 @@ class SeamlessTranslationConfig:
 
 class SeamlessTranslationWorker(
     BaseWorker[  # type: ignore
-        Tuple[str, str, str],
+        Tuple[str, str, str, Dict[str, Any]],
         str,
         SeamlessTranslationConfig,
         Tuple[SeamlessM4Tv2ForTextToText, AutoProcessor],
@@ -32,11 +32,22 @@ class SeamlessTranslationWorker(
         text: str,
         source_language: str,
         target_language: str,
+        translation_parameters: Dict[str, Any],
     ) -> str:
         if not self.is_alive():
             raise WorkerNotRunningError()
 
-        self._pipe_parent.send(("translate", (text, source_language, target_language)))
+        self._pipe_parent.send(
+            (
+                "translate",
+                (
+                    text,
+                    source_language,
+                    target_language,
+                    translation_parameters,
+                ),
+            ),
+        )
         result = self._pipe_parent.recv()
 
         if isinstance(result, Exception):
@@ -61,7 +72,7 @@ class SeamlessTranslationWorker(
     def handle_command(
         self,
         command: str,
-        args: Tuple[str, str, str],
+        args: Tuple[str, str, str, Dict[str, Any]],
         shared_object: Tuple[SeamlessM4Tv2ForTextToText, AutoProcessor],
         config: SeamlessTranslationConfig,
         pipe: multiprocessing.connection.Connection,
@@ -73,15 +84,26 @@ class SeamlessTranslationWorker(
                 with processing_lock:
                     is_processing.value = True
 
-                text, source_language, target_language = args
+                text, source_language, target_language, translation_parameters = args
                 model, processor = shared_object
 
-                processor.src_lang = source_language
-                input_tokens = processor(text, return_tensors="pt", padding=True).to(config.device)
+                input_tokens = processor(
+                    text,
+                    src_lang=source_language,
+                    return_tensors="pt",
+                    padding=True,
+                ).to(config.device)
 
-                output_tokens = model.generate(**input_tokens, tgt_lang=target_language)[0].tolist()
+                output_tokens = model.generate(
+                    **input_tokens,
+                    tgt_lang=target_language,
+                    **translation_parameters,
+                )[0].tolist()
 
-                text_output = processor.decode(output_tokens, skip_special_tokens=True)
+                text_output = processor.decode(
+                    output_tokens,
+                    skip_special_tokens=True,
+                )
 
                 pipe.send("".join(text_output))
 

@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Any, Dict
 
 
 class TranslationModelRepository(ABC):
@@ -8,5 +9,6 @@ class TranslationModelRepository(ABC):
         text: str,
         source_language: str,
         target_language: str,
+        translation_parameters: Dict[str, Any],
     ) -> str:
         pass

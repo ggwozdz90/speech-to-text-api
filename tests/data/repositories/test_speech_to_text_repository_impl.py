@@ -85,12 +85,12 @@ def test_transcribe_success(
     mock_worker.transcribe.return_value = {"text": "transcribed text"}
 
     # When
-    result = speech_to_text_repository_impl.transcribe("path/to/file", "en")
+    result = speech_to_text_repository_impl.transcribe("path/to/file", "en", {})
 
     # Then
     assert result == {"text": "transcribed text"}
     mock_worker.start.assert_called_once()
-    mock_worker.transcribe.assert_called_once_with("path/to/file", "en")
+    mock_worker.transcribe.assert_called_once_with("path/to/file", "en", {})
     mock_timer.start.assert_called_once_with(60, speech_to_text_repository_impl._check_idle_timeout)
 
 

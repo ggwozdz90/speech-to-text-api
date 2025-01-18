@@ -1,5 +1,5 @@
 import multiprocessing
-from typing import Generator
+from typing import Any, Generator
 from unittest.mock import Mock, patch
 
 import pytest
@@ -62,10 +62,10 @@ def test_transcribe_sends_correct_command(whisper_worker: WhisperSpeechToTextWor
                 return_value={},
             ),
         ):
-            whisper_worker.transcribe(file_path, language)
+            whisper_worker.transcribe(file_path, language, {})
 
             # Then
-            mock_send.assert_called_once_with(("transcribe", (file_path, language)))
+            mock_send.assert_called_once_with(("transcribe", (file_path, language, {})))
 
 
 def test_transcribe_raises_error_if_worker_not_running(whisper_worker: WhisperSpeechToTextWorker) -> None:
@@ -75,7 +75,7 @@ def test_transcribe_raises_error_if_worker_not_running(whisper_worker: WhisperSp
 
     # When / Then
     with pytest.raises(RuntimeError, match="Worker process is not running"):
-        whisper_worker.transcribe(file_path, language)
+        whisper_worker.transcribe(file_path, language, {})
 
 
 def test_initialize_shared_object(whisper_config: WhisperSpeechToTextConfig, mock_logger: Logger) -> None:
@@ -106,14 +106,14 @@ def test_handle_command_transcribe(whisper_config: WhisperSpeechToTextConfig, mo
     file_path = "test.wav"
     language = "en"
     command = "transcribe"
-    args = (file_path, language)
+    args: tuple[str, str, dict[str, Any]] = (file_path, language, {})
 
     with patch.object(model, "transcribe", return_value={"text": "transcribed text"}):
         # When
         worker.handle_command(command, args, model, whisper_config, pipe, is_processing, processing_lock)
 
         # Then
-        model.transcribe.assert_called_once_with(file_path, language="en")
+        model.transcribe.assert_called_once_with(file_path, language="en", fp16=True)
         pipe.send.assert_called_once_with({"text": "transcribed text"})
 
 
@@ -127,7 +127,7 @@ def test_handle_command_transcribe_error(whisper_config: WhisperSpeechToTextConf
     file_path = "test.wav"
     language = "en"
     command = "transcribe"
-    args = (file_path, language)
+    args: tuple[str, str, dict[str, Any]] = (file_path, language, {})
 
     with patch.object(model, "transcribe", side_effect=RuntimeError("Transcription error")):
         # When

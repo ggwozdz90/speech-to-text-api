@@ -1,6 +1,6 @@
-from typing import Annotated
+from typing import Annotated, Any, Dict, Optional
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, File, Form, UploadFile
 from fastapi.responses import PlainTextResponse
 
 from api.dtos.transcribe_dto import TranscribeDTO
@@ -22,28 +22,53 @@ class TranscribeRouter:
     async def transcribe(
         self,
         transcribe_file_to_text_usecase: Annotated[TranscribeFileToTextUseCase, Depends()],
-        transcribe_dto: TranscribeDTO = Depends(),
+        file: UploadFile = File(...),
+        source_language: str = Form(...),
+        target_language: Optional[str] = Form(None),
+        transcription_parameters: Dict[str, Any] = Form({}),
+        translation_parameters: Dict[str, Any] = Form({}),
     ) -> TranscribeTextResultDTO:
-        result = await transcribe_file_to_text_usecase.execute(
-            transcribe_dto.file,
+        transcribe_dto = TranscribeDTO(
+            source_language=source_language,
+            target_language=target_language,
+            transcription_parameters=transcription_parameters,
+            translation_parameters=translation_parameters,
+        )
+
+        transcription = await transcribe_file_to_text_usecase.execute(
+            file,
             transcribe_dto.source_language,
             transcribe_dto.target_language,
+            transcribe_dto.transcription_parameters,
+            transcribe_dto.translation_parameters,
         )
 
         return TranscribeTextResultDTO(
-            filename=transcribe_dto.file.filename or "unknown",
-            content=result,
+            transcription=transcription,
         )
 
     async def transcribe_srt(
         self,
         transcribe_file_to_srt_usecase: Annotated[TranscribeFileToSrtUseCase, Depends()],
-        transcribe_dto: TranscribeDTO = Depends(),
+        file: UploadFile = File(...),
+        source_language: str = Form(...),
+        target_language: Optional[str] = Form(None),
+        transcription_parameters: Dict[str, Any] = Form({}),
+        translation_parameters: Dict[str, Any] = Form({}),
     ) -> PlainTextResponse:
-        result = await transcribe_file_to_srt_usecase.execute(
-            transcribe_dto.file,
-            transcribe_dto.source_language,
-            transcribe_dto.target_language,
+        transcribe_dto = TranscribeDTO(
+            source_language=source_language,
+            target_language=target_language,
+            transcription_parameters=transcription_parameters,
+            translation_parameters=translation_parameters,
         )
 
-        return PlainTextResponse(content=result)
+        srt = await transcribe_file_to_srt_usecase.execute(
+            file,
+            transcribe_dto.source_language,
+            transcribe_dto.target_language,
+            transcribe_dto.transcription_parameters,
+            transcribe_dto.translation_parameters,
+        )
+
+        return PlainTextResponse(content=srt)

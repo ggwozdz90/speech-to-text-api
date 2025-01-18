@@ -1,4 +1,4 @@
-from typing import Annotated, Optional
+from typing import Annotated, Any, Dict, Optional
 
 from fastapi import Depends, UploadFile
 
@@ -40,23 +40,38 @@ class TranscribeFileToSrtUseCase:
         subtitle_segments: list[SubtitleSegmentModel],
         source_language: str,
         target_language: str,
+        translation_parameters: Dict[str, Any],
     ) -> None:
         sentences = self.sentence_service.create_sentence_models(subtitle_segments)
-        self.translation_service.translate_sentences(sentences, source_language, target_language)
-        self.sentence_service.apply_translated_sentences(subtitle_segments, sentences)
+        self.translation_service.translate_sentences(
+            sentences,
+            source_language,
+            target_language,
+            translation_parameters,
+        )
+        self.sentence_service.apply_translated_sentences(
+            subtitle_segments,
+            sentences,
+        )
 
     async def execute(
         self,
         file: UploadFile,
         source_language: str,
         target_language: Optional[str],
+        transcription_parameters: Dict[str, Any],
+        translation_parameters: Dict[str, Any],
     ) -> str:
         self.logger.info(
             f"Executing transcription to SRT for file '{file.filename}' "
             f"from '{source_language}' to '{target_language}'",
         )
 
-        transcription_result = await self.transcription_service.transcribe(file, source_language)
+        transcription_result = await self.transcription_service.transcribe(
+            file,
+            source_language,
+            transcription_parameters,
+        )
         subtitle_segments = self.subtitle_service.convert_to_subtitle_segments(transcription_result)
 
         if not target_language or source_language == target_language:
@@ -64,7 +79,12 @@ class TranscribeFileToSrtUseCase:
 
             return self._generate_srt(subtitle_segments)
 
-        self._translate_subtitles(subtitle_segments, source_language, target_language)
+        self._translate_subtitles(
+            subtitle_segments,
+            source_language,
+            target_language,
+            translation_parameters,
+        )
 
         self.logger.info(f"Returning translated SRT result for file '{file.filename}'")
 

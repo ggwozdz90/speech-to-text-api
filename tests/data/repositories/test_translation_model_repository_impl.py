@@ -85,12 +85,12 @@ def test_translate_success(
     mock_worker.translate.return_value = "translated text"
 
     # When
-    result = translation_model_repository_impl.translate("text to translate", "en", "fr")
+    result = translation_model_repository_impl.translate("text to translate", "en", "fr", {})
 
     # Then
     assert result == "translated text"
     mock_worker.start.assert_called_once()
-    mock_worker.translate.assert_called_once_with("text to translate", "en", "fr")
+    mock_worker.translate.assert_called_once_with("text to translate", "en", "fr", {})
     mock_timer.start.assert_called_once_with(60, translation_model_repository_impl._check_idle_timeout)
 
 

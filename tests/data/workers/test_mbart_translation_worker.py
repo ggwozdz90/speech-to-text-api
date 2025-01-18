@@ -79,10 +79,10 @@ def test_translate_sends_correct_command(mbart_worker: MBartTranslationWorker) -
                 return_value="Bonjour, le monde!",
             ),
         ):
-            mbart_worker.translate(text, source_language, target_language)
+            mbart_worker.translate(text, source_language, target_language, {})
 
             # Then
-            mock_send.assert_called_once_with(("translate", (text, source_language, target_language)))
+            mock_send.assert_called_once_with(("translate", (text, source_language, target_language, {})))
 
 
 def test_translate_raises_error_if_worker_not_running(mbart_worker: MBartTranslationWorker) -> None:
@@ -93,7 +93,7 @@ def test_translate_raises_error_if_worker_not_running(mbart_worker: MBartTransla
 
     # When / Then
     with pytest.raises(RuntimeError, match="Worker process is not running"):
-        mbart_worker.translate(text, source_language, target_language)
+        mbart_worker.translate(text, source_language, target_language, {})
 
 
 def test_initialize_shared_object(mbart_config: MBartTranslationConfig, mock_logger: Logger) -> None:
@@ -132,7 +132,6 @@ def test_handle_command_translate(mbart_worker: MBartTranslationWorker, mbart_co
         patch(
             "data.workers.mbart_translation_worker.AutoTokenizer.from_pretrained",
         ) as mock_load_tokenizer,
-        patch("torch.no_grad"),
     ):
         mock_model = Mock()
         mock_tokenizer = Mock()
@@ -151,7 +150,7 @@ def test_handle_command_translate(mbart_worker: MBartTranslationWorker, mbart_co
         # When
         mbart_worker.handle_command(
             command="translate",
-            args=("Hello, world!", "en", "fr"),
+            args=("Hello, world!", "en", "fr", {}),
             shared_object=(mock_model, mock_tokenizer),
             config=mbart_config,
             pipe=pipe,
@@ -161,14 +160,8 @@ def test_handle_command_translate(mbart_worker: MBartTranslationWorker, mbart_co
 
         # Then
         assert not mock_is_processing.value
-        mock_tokenizer.assert_called_once_with(
-            ["Hello, world!"],
-            truncation=True,
-            padding=True,
-            max_length=1024,
-            return_tensors="pt",
-        )
-        mock_model.generate.assert_called_once_with(**mock_input_tensors, num_beams=5, forced_bos_token_id=1)
+        mock_tokenizer.assert_called_once_with("Hello, world!", return_tensors="pt")
+        mock_model.generate.assert_called_once_with(**mock_input_tensors, forced_bos_token_id=1)
         pipe.send.assert_called_once_with("Bonjour, le monde!")
 
 
@@ -198,7 +191,7 @@ def test_handle_command_translate_error(
         # When
         mbart_worker.handle_command(
             command="translate",
-            args=("Hello, world!", "en", "fr"),
+            args=("Hello, world!", "en", "fr", {}),
             shared_object=(mock_model, mock_tokenizer),
             config=mbart_config,
             pipe=pipe,

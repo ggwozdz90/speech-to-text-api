@@ -68,11 +68,11 @@ async def test_execute_success_no_translation(
     )
 
     # When
-    result = await use_case.execute(mock_file, "en", None)
+    result = await use_case.execute(mock_file, "en", None, {}, {})
 
     # Then
     assert result == "transcription_result"
-    mock_transcription_service.transcribe.assert_awaited_once_with(mock_file, "en")
+    mock_transcription_service.transcribe.assert_awaited_once_with(mock_file, "en", {})
     mock_translation_service.translate_text.assert_not_called()
 
 
@@ -91,12 +91,12 @@ async def test_execute_success_with_translation(
     mock_translation_service.translate_text = Mock(return_value="translated_result")
 
     # When
-    result = await use_case.execute(mock_file, "en", "pl")
+    result = await use_case.execute(mock_file, "en", "pl", {}, {})
 
     # Then
     assert result == "translated_result"
-    mock_transcription_service.transcribe.assert_awaited_once_with(mock_file, "en")
-    mock_translation_service.translate_text.assert_called_once_with("transcription_result", "en", "pl")
+    mock_transcription_service.transcribe.assert_awaited_once_with(mock_file, "en", {})
+    mock_translation_service.translate_text.assert_called_once_with("transcription_result", "en", "pl", {})
 
 
 @pytest.mark.asyncio
@@ -112,8 +112,8 @@ async def test_execute_failure(
 
     # When
     with pytest.raises(Exception, match="Transcription error"):
-        await use_case.execute(mock_file, "en", "pl")
+        await use_case.execute(mock_file, "en", "pl", {}, {})
 
     # Then
-    mock_transcription_service.transcribe.assert_awaited_once_with(mock_file, "en")
+    mock_transcription_service.transcribe.assert_awaited_once_with(mock_file, "en", {})
     mock_translation_service.translate_text.assert_not_called()

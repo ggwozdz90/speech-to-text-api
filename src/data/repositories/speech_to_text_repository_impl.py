@@ -1,6 +1,6 @@
 import threading
 import time
-from typing import Annotated, Optional
+from typing import Annotated, Any, Dict, Optional
 
 from fastapi import Depends
 
@@ -61,6 +61,7 @@ class SpeechToTextRepositoryImpl(SpeechToTextRepository):  # type: ignore
         self,
         file_path: str,
         language: str,
+        transcription_parameters: Dict[str, Any],
     ) -> dict[str, str]:
         with self._lock:
             if not self.worker.is_alive():
@@ -72,6 +73,7 @@ class SpeechToTextRepositoryImpl(SpeechToTextRepository):  # type: ignore
         result: dict[str, str] = self.worker.transcribe(
             file_path,
             language,
+            transcription_parameters,
         )
 
         self.timer.start(
