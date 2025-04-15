@@ -17,7 +17,8 @@ This project provides an API for transcribing and translating audio/video conten
 Available versions:
 
 - `version-cpu`: CPU-only version (fully tested and stable)
-- `version-cuda124`: NVIDIA CUDA 12.4 support for GPU acceleration (proof-of-concept implementation)*
+- `version-cuda128`: NVIDIA CUDA 12.8 support for RTX 50XX GPU acceleration (tested and stable)
+- `version-cuda124`: NVIDIA CUDA 12.4 support for GPU acceleration (not tested)*
 - `version-rocm62`: AMD ROCm 6.2 support for GPU acceleration (proof-of-concept implementation, requires build from source code)*
 - `latest`: Points to latest CPU version
 
