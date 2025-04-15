@@ -4,10 +4,10 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        - POETRY_INSTALL_ARGS=--extras cuda124
+        - POETRY_INSTALL_ARGS=--extras cuda128
     environment:
       - LOG_LEVEL=INFO
-      - DEVICE=cpu
+      - DEVICE=cuda
       - FILE_UPLOAD_PATH=uploaded_files
       - DELETE_FILES_AFTER_TRANSCRIPTION=true
       - FASTAPI_HOST=0.0.0.0
@@ -16,7 +16,7 @@ services:
       - SPEECH_TO_TEXT_MODEL_NAME=openai/whisper
       - SPEECH_TO_TEXT_MODEL_TYPE=turbo
       - SPEECH_TO_TEXT_MODEL_DOWNLOAD_PATH=downloaded_speech_to_text_models
-      - TRANSLATION_MODEL_NAME=facebook/mbart-large-50-many-to-many-mmt
+      - TRANSLATION_MODEL_NAME=facebook/seamless-m4t-v2-large
       - TRANSLATION_MODEL_DOWNLOAD_PATH=downloaded_translation_models
     ports:
       - "8000:8000"
@@ -24,3 +24,10 @@ services:
       - ./volume/downloaded_speech_to_text_models:/app/downloaded_speech_to_text_models
       - ./volume/downloaded_translation_models:/app/downloaded_translation_models
       - ./volume/uploaded_files:/app/uploaded_files
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [ gpu ]
