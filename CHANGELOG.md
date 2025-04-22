@@ -1,3 +1,9 @@
+## 0.15.0 (2025-04-22)
+
+### Feat
+
+- add support for CUDA 12.8 in Docker and documentation updates
+
 ## 0.14.0 (2025-01-18)
 
 ### Feat
