@@ -1,6 +1,6 @@
 [project]
 name = "speech-to-text-api"
-version = "0.14.0"
+version = "0.15.0"
 description = "A FastAPI project integrating speech to text and translation services."
 authors = [{ name = "Grzegorz Gwóźdź" }]
 requires-python = ">=3.12,<3.13"
@@ -27,6 +27,7 @@ start = "src.main:main"
 [project.optional-dependencies]
 cpu = ["torch (==2.5.1+cpu)"]
 cuda124 = ["torch (==2.5.1+cu124)"]
+cuda128 = ["torch (==2.8.0.dev20250415+cu128)", "pytorch-triton (==3.3.0)"]
 rocm62 = ["torch (==2.5.1+rocm6.2)", "pytorch-triton-rocm (==3.1.0)"]
 
 [build-system]
@@ -39,12 +40,16 @@ packages = [{ include = "*", from = "src" }]
 
 [tool.poetry.dependencies]
 torch = [
-    { markers = "extra == 'cpu' and extra != 'cuda124' and extra != 'rocm62'", source = "pytorch-cpu" },
-    { markers = "extra == 'cuda124' and extra != 'cpu' and extra != 'rocm62'", source = "pytorch-cuda124" },
-    { markers = "extra == 'rocm62' and extra != 'cpu' and extra != 'cuda124'", source = "pytorch-rocm62" },
+    { markers = "extra == 'cpu' and extra != 'cuda124' and extra != 'cuda128' and extra != 'rocm62'", source = "pytorch-cpu" },
+    { markers = "extra == 'cuda124' and extra != 'cpu' and extra != 'cuda128' and extra != 'rocm62'", source = "pytorch-cuda124" },
+    { markers = "extra == 'cuda128' and extra != 'cpu' and extra != 'cuda124' and extra != 'rocm62'", source = "pytorch-cuda128-nightly" },
+    { markers = "extra == 'rocm62' and extra != 'cpu' and extra != 'cuda124' and extra != 'cuda128'", source = "pytorch-rocm62" },
+]
+pytorch-triton = [
+    { version = "3.3.0", markers = "extra == 'cuda128' and extra != 'cpu' and extra != 'cuda124' and extra != 'rocm62'", source = "pytorch-triton-nightly" },
 ]
 pytorch-triton-rocm = [
-    { version = "3.1.0", markers = "extra == 'rocm62' and extra != 'cpu' and extra != 'cuda124'", source = "pytorch-triton-rocm" },
+    { version = "3.1.0", markers = "extra == 'rocm62' and extra != 'cpu' and extra != 'cuda124' and extra != 'cuda128'", source = "pytorch-triton-rocm" },
 ]
 
 [tool.poetry.group.dev.dependencies]
@@ -76,6 +81,16 @@ priority = "explicit"
 [[tool.poetry.source]]
 name = "pytorch-cuda124"
 url = "https://download.pytorch.org/whl/cu124"
+priority = "explicit"
+
+[[tool.poetry.source]]
+name = "pytorch-cuda128-nightly"
+url = "https://download.pytorch.org/whl/nightly/cu128"
+priority = "explicit"
+
+[[tool.poetry.source]]
+name = "pytorch-triton-nightly"
+url = "https://download.pytorch.org/whl/nightly"
 priority = "explicit"
 
 [[tool.poetry.source]]

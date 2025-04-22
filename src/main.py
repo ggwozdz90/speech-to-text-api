@@ -21,6 +21,7 @@ def main(
 
 if __name__ == "__main__":
     multiprocessing.freeze_support()
+    multiprocessing.set_start_method("spawn", force=True)
     logger = Logger()
     config = AppConfig()
     cuda_checker = CudaChecker(logger)
