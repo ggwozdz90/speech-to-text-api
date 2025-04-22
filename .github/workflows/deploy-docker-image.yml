@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy-cuda124:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
     - name: Checkout code
@@ -35,7 +35,7 @@ jobs:
           ggwozdz/speech-to-text-api:${{ github.ref_name }}-cuda124
 
   deploy-cuda128:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
     - name: Checkout code
@@ -63,7 +63,7 @@ jobs:
 
   deploy-rocm62:
     if: false
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
     - name: Checkout code
@@ -90,7 +90,7 @@ jobs:
           ggwozdz/speech-to-text-api:${{ github.ref_name }}-rocm62
 
   deploy-cpu:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
     - name: Checkout code
@@ -118,8 +118,8 @@ jobs:
           ggwozdz/speech-to-text-api:latest
 
   deploy-dockerhub-overview:
-    runs-on: ubuntu-latest
-    needs: [deploy-cpu, deploy-cuda124]
+    runs-on: self-hosted
+    needs: [deploy-cpu, deploy-cuda124, deploy-cuda128]
 
     steps:
     - name: Checkout code
